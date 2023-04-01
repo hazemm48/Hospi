@@ -1,5 +1,5 @@
-const api = "https://hospi-server.vercel.app/api/v1/admin";
-const loginApi = "https://hospi-server.vercel.app/api/v1/adminLogin";
+const api = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/admin";
+const loginApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/adminLogin";
 
 export const login = async (body) =>
   await fetch(loginApi, {
