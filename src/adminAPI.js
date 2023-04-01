@@ -7,6 +7,8 @@ export const login = async (body) =>
     body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
+      'Access-Control-Allow-Origin':'*',
+      'Access-Control-Allow-Methods':'POST,PATCH,OPTIONS'
     },
   })
     .then((res) => res.json())
