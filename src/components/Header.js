@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate,Link } from "react-router-dom";
-import logo from '../images/hospi.png'
+import logo from '../images/hospi 2.png'
+import manImg from '../images/man.svg'
 
 const Header = (props) => {
   let navigate = useNavigate();
@@ -26,10 +27,10 @@ const Header = (props) => {
   return (
     <header>
       <nav className="navbar navbar-expand-lg shadow-sm fixed-top">
-        <a className="navbar-brand">
+        <Link to="/home/dashboard" className="navbar-brand">
           <img src={logo} />
           <span>HOSPI</span>
-        </a>
+        </Link>
         <div className="navbar-collapse">
           <ul className="navbar-nav">
             <li
@@ -49,7 +50,7 @@ const Header = (props) => {
               >
                 <img
                   className="rounded-circle"
-                  src="../SiteAssets/images/person.jpg"
+                  src={manImg}
                 />
                 <span className="d">{props.name}</span>
               </a>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { users } from "../adminAPI.js";
+import manImg from '../images/man.svg'
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState();
@@ -11,7 +12,7 @@ const Doctors = () => {
         role: "doctor",
       };
       let user = await users(body);
-      setDoctors(user);
+      setDoctors(user.users);
     };
     GetDetails();
   }, []);
@@ -75,7 +76,13 @@ const Doctors = () => {
                 ? doctors.map((doc) => {
                     return (
                       <tr>
-                        <td className="ml-2">{doc.name}
+                        <td className="ml-2">
+                        <img
+                            className="rounded-circle"
+                            src={manImg}
+                            loading="lazy"
+                          />
+                          <span className="ml-2">{doc.name}</span>
                         </td>
                         <td className="text-muted">{doc.gender}</td>
                         <td>{doc.doctorInfo?.speciality}</td>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { changePass } from "../adminAPI.js";
+import manImg from '../images/man.svg'
 
 const Settings = (props) => {
 
@@ -72,7 +73,7 @@ const Settings = (props) => {
                     <div className="col-lg-2 col-md-4">
                       <img
                         className="rounded-circle"
-                        src="../SiteAssets/images/doctor.svg"
+                        src={manImg}
                       />
                     </div>
                   </div>

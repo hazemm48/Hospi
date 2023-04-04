@@ -7,8 +7,6 @@ export const login = async (body) =>
     body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
-      'Access-Control-Allow-Origin':'*',
-      'Access-Control-Allow-Methods':'POST,PATCH,OPTIONS'
     },
   })
     .then((res) => res.json())
@@ -26,7 +24,7 @@ export const users = async (body) => {
   })
     .then((res) => res.json())
     .then((data) => data);
-  return data.users;
+  return data;
 };
 
 export const changePass = async (body) => {

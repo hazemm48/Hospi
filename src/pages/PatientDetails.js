@@ -2,6 +2,7 @@ import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { updateUser, users } from "../adminAPI.js";
+import manImg from '../images/man.svg'
 
 const PatientDetails = () => {
   const id = useLocation();
@@ -14,7 +15,7 @@ const PatientDetails = () => {
         id: id.state,
       };
       let user = await users(body);
-      setState(user);
+      setState(user.users);
     };
     GetDetails();
   }, []);
@@ -127,7 +128,7 @@ const PatientDetails = () => {
                             <div className="card-header">
                               <img
                                 className="rounded-circle"
-                                src="https://placebeard.it/640x360"
+                                src={manImg}
                                 loading="lazy"
                               />
                             </div>
@@ -176,7 +177,9 @@ const PatientDetails = () => {
                                         className="form-control"
                                         readOnly="readonly"
                                         defaultValue={
-                                         moment(state.patientInfo?.birthDate).format('DD/MM/YYYY') 
+                                          state.patientInfo?.birthDate?
+                                         moment(state.patientInfo?.birthDate).format('DD/MM/YYYY') :
+                                         ""
                                         }
                                       />
                                     </div>

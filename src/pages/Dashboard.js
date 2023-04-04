@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { users, reserve } from "../../src/adminAPI";
+import manImg from '../images/man.svg'
 import moment from "moment";
 
 const Dashboard = (props) => {
@@ -14,8 +15,10 @@ const Dashboard = (props) => {
     const GetDetails = async () => {
       let body = {
         role: "all",
+        sort: "-createdAt",
       };
-      let user = await users(body);
+      let res = await users(body);
+      let user = res.users
       setAllUsers(user);
       let pats = user.filter((e) => {
         return e.role === "patient";
@@ -39,6 +42,7 @@ const Dashboard = (props) => {
       setDoctors(docs);
     };
     GetDetails();
+    console.log(reserveUsers);
   }, []);
 
   return (
@@ -47,7 +51,7 @@ const Dashboard = (props) => {
         <div className="section">
           <div className="row">
             <div className="col-md-6">
-            <h5 className="page-title" >Dashboard</h5>
+              <h5 className="page-title">Dashboard</h5>
             </div>
           </div>
         </div>
@@ -60,7 +64,7 @@ const Dashboard = (props) => {
                     <div className="col-lg-9 welcome-text-wrapper align-self-center">
                       <h3>
                         Hello,
-                        <span style={{ color: "crimson" }}>{props.name}</span>
+                        <span style={{ color: "#0466c8" }}>{props.name}</span>
                       </h3>
                       <h5>Welcome to your dashboard</h5>
                     </div>
@@ -83,9 +87,7 @@ const Dashboard = (props) => {
                     <div className="col-md-4">
                       <i className="las la-calendar-check la-3x align-self-center" />
                       <p>total reservations</p>
-                      <h4>
-                        {reserveUsers?.length}
-                      </h4>
+                      <h4>{reserveUsers?.length}</h4>
                     </div>
                   </div>
                 </div>
@@ -116,17 +118,20 @@ const Dashboard = (props) => {
                   <p>add a patient</p>
                 </div>
               </Link>
-              {props.email=="admin@hospi.com"?(<Link to="/home/addAdmin" className="card text-center">
-                <div className="card-title">
-                  <div className="icon-wrapper">
-                    <i className="las la-user-lock" />
+              {props.email == "admin@hospi.com" ? (
+                <Link to="/home/addAdmin" className="card text-center">
+                  <div className="card-title">
+                    <div className="icon-wrapper">
+                      <i className="las la-user-lock" />
+                    </div>
                   </div>
-                </div>
-                <div className="card-body">
-                  <p>add an admin</p>
-                </div>
-              </Link>):""}
-              
+                  <div className="card-body">
+                    <p>add an admin</p>
+                  </div>
+                </Link>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>
@@ -197,35 +202,39 @@ const Dashboard = (props) => {
                 <div className="card-body">
                   <table className="table table-hover table-responsive-md table-borderless">
                     <tbody>
-                      <tr>
-                        <td>
-                          <img
-                            className="rounded-circle"
-                            src="../SiteAssets/images/man.svg"
-                            loading="lazy"
-                          />
-                        </td>
-                        <td>
-                          <p>john doe</p>
-                          <small className="text-muted">dentist</small>
-                        </td>
-                        <td>
-                          <p className="text-muted">male</p>
-                        </td>
-                        <td>
-                          <button className="btn btn-sm">
-                            <i className="las la-ellipsis-h" />
-                          </button>
-                        </td>
-                      </tr>
+                      {patients?.slice(0, 4).map((pat) => {
+                        return (
+                          <tr>
+                            <td>
+                              <img
+                                className="rounded-circle"
+                                src={manImg}
+                                loading="lazy"
+                              />
+                            </td>
+                            <td>
+                              <p>{pat.name}</p>
+                              <small className="text-muted">{pat.gender}</small>
+                            </td>
+                            <td>
+                              <p className="text-muted">{moment().diff(pat.patientInfo?.birthDate, "years")}</p>
+                            </td>
+                            <td>
+                              <Link to="/home/patientDetails" state={pat._id} className="btn btn-sm">
+                                <i className="las la-info-circle" />
+                              </Link>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
                 <div className="card-footer">
-                  <a className="view-more">
+                  <Link to="/home/patients" className="view-more">
                     more
                     <i className="las la-angle-right" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -244,7 +253,7 @@ const Dashboard = (props) => {
                                 <td>
                                   <img
                                     className="rounded-circle"
-                                    src="../SiteAssets/images/man.svg"
+                                    src={manImg}
                                     loading="lazy"
                                   />
                                 </td>
@@ -266,9 +275,13 @@ const Dashboard = (props) => {
                                   </button>
                                 </td>
                                 <td>
-                                  <button className="btn btn-sm">
+                                  <Link
+                                    to="/home/doctorDetails"
+                                    state={doc._id}
+                                    className="btn btn-sm"
+                                  >
                                     <i className="las la-info-circle" />
-                                  </button>
+                                  </Link>
                                 </td>
                               </tr>
                             );
@@ -286,147 +299,60 @@ const Dashboard = (props) => {
               </div>
               <div className="card">
                 <div className="card-header">
-                  <h5>upcoming appointments</h5>
+                  <h5>upcoming doctors appointments</h5>
                 </div>
                 <div className="card-body">
                   <table className="table table-borderless table-hover table-responsive-md">
                     <tbody>
-                      <tr>
-                        <td>
-                          <img
-                            className="rounded-circle"
-                            src="../SiteAssets/images/man.svg"
-                            loading="lazy"
-                          />
-                        </td>
-                        <td>
-                          <p>john doe</p>
-                          <small className="text-muted">dentist</small>
-                        </td>
-                        <td>
-                          <p className="text-muted">male</p>
-                        </td>
-                        <td className="text-right">
-                          <p>24y</p>
-                        </td>
-                        <td className="text-right">
-                          <button className="btn">
-                            <i className="las la-check-circle" />
-                          </button>
-                          <button className="btn">
-                            <i className="las la-times-circle" />
-                          </button>
-                        </td>
-                        <td>
-                          <button className="btn btn-sm">
-                            <i className="las la-ellipsis-h" />
-                          </button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <img
-                            className="rounded-circle"
-                            src="../SiteAssets/images/man.svg"
-                            loading="lazy"
-                          />
-                        </td>
-                        <td>
-                          <p>john doe</p>
-                          <small className="text-muted">dentist</small>
-                        </td>
-                        <td>
-                          <p className="text-muted">male</p>
-                        </td>
-                        <td className="text-right">
-                          <p>24y</p>
-                        </td>
-                        <td className="text-right">
-                          <button className="btn">
-                            <i className="las la-check-circle" />
-                          </button>
-                          <button className="btn">
-                            <i className="las la-times-circle" />
-                          </button>
-                        </td>
-                        <td>
-                          <button className="btn btn-sm">
-                            <i className="las la-ellipsis-h" />
-                          </button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <img
-                            className="rounded-circle"
-                            src="../SiteAssets/images/man.svg"
-                            loading="lazy"
-                          />
-                        </td>
-                        <td>
-                          <p>john doe</p>
-                          <small className="text-muted">dentist</small>
-                        </td>
-                        <td>
-                          <p className="text-muted">male</p>
-                        </td>
-                        <td className="text-right">
-                          <p>24y</p>
-                        </td>
-                        <td className="text-right">
-                          <button className="btn">
-                            <i className="las la-check-circle" />
-                          </button>
-                          <button className="btn">
-                            <i className="las la-times-circle" />
-                          </button>
-                        </td>
-                        <td>
-                          <button className="btn btn-sm">
-                            <i className="las la-ellipsis-h" />
-                          </button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <img
-                            className="rounded-circle"
-                            src="../SiteAssets/images/man.svg"
-                            loading="lazy"
-                          />
-                        </td>
-                        <td>
-                          <p>john doe</p>
-                          <small className="text-muted">dentist</small>
-                        </td>
-                        <td>
-                          <p className="text-muted">male</p>
-                        </td>
-                        <td className="text-right">
-                          <p>24y</p>
-                        </td>
-                        <td className="text-right">
-                          <button className="btn">
-                            <i className="las la-check-circle" />
-                          </button>
-                          <button className="btn">
-                            <i className="las la-times-circle" />
-                          </button>
-                        </td>
-                        <td>
-                          <button className="btn btn-sm">
-                            <i className="las la-ellipsis-h" />
-                          </button>
-                        </td>
-                      </tr>
+                      {reserveUsers
+                        ? reserveUsers.map((reserve) => {
+                            if (reserve.type == "doctor" && reserve.status) {
+                              return (
+                                <tr>
+                                  <td>
+                                    <img
+                                      className="rounded-circle"
+                                      src={manImg}
+                                      loading="lazy"
+                                    />
+                                  </td>
+                                  <td>
+                                    <p>{reserve.patName}</p>
+                                  </td>
+                                  <td>
+                                    <p>Dr. {reserve.docName}</p>
+                                    <small className="text-muted">
+                                      {reserve.specialty}
+                                    </small>
+                                  </td>
+                                  <td className="text-muted">
+                                    <p>{reserve.date}</p>
+                                  </td>
+                                  <td className="text-muted">
+                                    <p>{reserve.time}</p>
+                                  </td>
+                                  <td>
+                                    <Link
+                                      to="/home/reservationDetails"
+                                      state={reserve._id}
+                                      className="btn btn-sm"
+                                    >
+                                      <i className="las la-info-circle" />
+                                    </Link>
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          })
+                        : ""}
                     </tbody>
                   </table>
                 </div>
                 <div className="card-footer">
-                  <a className="view-more">
+                  <Link to="/home/reservations" className="view-more">
                     more
                     <i className="las la-angle-right" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

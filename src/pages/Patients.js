@@ -1,56 +1,84 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { users } from "../../src/adminAPI";
+import manImg from '../images/man.svg'
 import moment from "moment";
 
 const Patients = () => {
   const [patients, setPatients] = useState();
+  const [pageNo, setPageNo] = useState();
+  const [length, setLength] = useState();
+  let resultLimit = 12;
 
-  let ds = async () => {
+  const GetDetails = async () => {
+    let currentPage = "";
+    document.getElementsByName("page").forEach((e) => {
+      if (e.parentElement.classList.contains("active")) {
+        currentPage = e.tabIndex;
+      }
+    });
+    setPageNo(currentPage);
     let sort = document.getElementById("sort").value;
-    console.log("hiksdf");
     let body = {
       role: "patient",
       sort: sort,
+      pageNo: currentPage,
+      limit: resultLimit,
     };
     let user = await users(body);
-    setPatients(user);
+    setLength(user.length);
+    setPatients(user.users);
   };
-
   useEffect(() => {
-    const GetDetails = async () => {
-      let sort = document.getElementById("sort").value;
-
-      let body = {
-        role: "patient",
-        sort: sort,
-      };
-      let user = await users(body);
-      setPatients(user);
-      console.log("hi");
-    };
     GetDetails();
   }, []);
-  console.log(patients);
 
   let changeViewCard = () => {
     document.getElementById("cv").classList.remove("no-display");
     document.getElementById("tv").classList.add("no-display");
-    document.getElementById("tab").classList.remove("active","focus");
-    document.getElementById("card").classList.add("active","focus");
+    document.getElementById("tab").classList.remove("active", "focus");
+    document.getElementById("card").classList.add("active", "focus");
   };
   let changeViewRow = () => {
     document.getElementById("tv").classList.remove("no-display");
     document.getElementById("cv").classList.add("no-display");
-    document.getElementById("tab").classList.add("active","focus");
-    document.getElementById("card").classList.remove("active","focus");
+    document.getElementById("tab").classList.add("active", "focus");
+    document.getElementById("card").classList.remove("active", "focus");
+  };
+
+  let pagination = () => {
+    let pages = [];
+    for (let i = 2; i <= Math.ceil(length / resultLimit); i++) {
+      pages.push(
+        <li
+          class="page-item"
+          onClick={(e) => {
+            changePage(e);
+          }}
+        >
+          <button class="page-link" name="page" tabIndex={i}>
+            {i}
+          </button>
+        </li>
+      );
+    }
+    return pages;
+  };
+
+  let changePage = (e) => {
+    let btn = document.getElementsByName("page");
+    Array.from(btn).map((e) => {
+      e.parentElement.classList.remove("active");
+    });
+    e.target.parentElement.classList.add("active");
+    GetDetails();
   };
 
   return (
     <div className="main-content">
       <div className="container-fluid">
         <div className="section title-section">
-          <h5 className="page-title" >Patients</h5>
+          <h5 className="page-title">Patients</h5>
         </div>
         <div className="section filters-section">
           <div className="dropdowns-wrapper">
@@ -60,7 +88,7 @@ const Patients = () => {
                 className="form-select dropdown-toggle"
                 role="button"
                 onChange={() => {
-                  ds();
+                  GetDetails();
                 }}
               >
                 <option selected value="-createdAt">
@@ -112,6 +140,20 @@ const Patients = () => {
             </Link>
           </div>
         </div>
+        <div
+          class="section "
+          id="data-table6_info"
+          role="status"
+          aria-live="polite"
+        >
+          Showing{" "}
+          <span style={{ color: "#00b4d8" }}>
+            {pageNo < Math.ceil(length / resultLimit)
+              ? (pageNo - 1) * resultLimit + resultLimit
+              : length}
+          </span>{" "}
+          out of <span style={{ color: "#00b4d8" }}>{length} </span>results
+        </div>
         <div id="cv" className="section patients-card-view">
           <div className="row">
             {patients
@@ -123,7 +165,7 @@ const Patients = () => {
                           <div className="card-img-top">
                             <img
                               className="rounded-circle"
-                              src="../SiteAssets/images/people.svg"
+                              src={manImg}
                               loading="lazy"
                             />
                             <Link
@@ -144,9 +186,11 @@ const Patients = () => {
                             <p>{pat.email}</p>
                             <label className="text-muted">date of birth</label>
                             <p>
-                              {moment(pat.patientInfo?.birthDate).format(
-                                "DD/MM/YYYY"
-                              )}
+                              {pat.patientInfo?.birthDate
+                                ? moment(pat.patientInfo?.birthDate).format(
+                                    "DD/MM/YYYY"
+                                  )
+                                : ""}
                             </p>
                             <label className="text-muted">gender</label>
                             <p>{pat.gender}</p>
@@ -180,7 +224,7 @@ const Patients = () => {
                         <td>
                           <img
                             className="rounded-circle"
-                            src="../SiteAssets/images/people.svg"
+                            src={manImg}
                             loading="lazy"
                           />
                           <span className="ml-2">{pat.name}</span>
@@ -211,6 +255,26 @@ const Patients = () => {
             </tbody>
           </table>
         </div>
+      </div>
+      <div aria-label="Page navigation example" className="section">
+        <ul class="pagination justify-content-start">
+          <li class="page-item disabled">
+            <a class="page-link" tabindex="-1">
+              Pages
+            </a>
+          </li>
+          <li
+            class="page-item active"
+            onClick={(e) => {
+              changePage(e);
+            }}
+          >
+            <button class="page-link" name="page" tabIndex="1">
+              1
+            </button>
+          </li>
+          {pagination()}
+        </ul>
       </div>
     </div>
   );

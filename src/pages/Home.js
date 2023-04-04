@@ -16,7 +16,7 @@ import AddPatient from "./AddPatient.js";
 import AddDoctor from "./AddDoctor.js";
 import AddAdmin from "./AddAdmin.js";
 import Patients from "./Patients.js";
-import { users} from "../../src/adminAPI";
+import { users } from "../../src/adminAPI";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -28,11 +28,9 @@ const Home = () => {
 
   useEffect(() => {
     const GetDetails = async () => {
-      let body = {
-        role: "admin",
-      };
-      let user = await users(body);
-      console.log(user);
+      let body = {};
+      let res = await users(body);
+      let user = res.users;
       setUser({
         name: user.name,
         email: user.email,
@@ -55,7 +53,7 @@ const Home = () => {
           <Route
             exact
             path="/dashboard"
-            element={<Dashboard name={userDet.name } email={userDet.email}/>}
+            element={<Dashboard name={userDet.name} email={userDet.email} />}
           />
           <Route exact path="/patients" element={<Patients />} />
           <Route exact path="/doctors" element={<Doctors />} />
@@ -73,7 +71,11 @@ const Home = () => {
           />
           <Route exact path="/addPatient" element={<AddPatient />} />
           <Route exact path="/addDoctor" element={<AddDoctor />} />
-          {userDet.email=="admin@hospi.com"?<Route exact path="/addAdmin" element={<AddAdmin />} />:""}          
+          {userDet.email == "admin@hospi.com" ? (
+            <Route exact path="/addAdmin" element={<AddAdmin />} />
+          ) : (
+            ""
+          )}
         </Routes>
       </main>
     </React.Fragment>

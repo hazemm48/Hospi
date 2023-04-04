@@ -46,7 +46,7 @@ const SideNav = ()=> {
             <span>Pharmacy</span>
           </NavLink>
           <NavLink
-            to="/home/reserve"
+            to="/home/reservations"
             className="list-group-item"
             data-toggle="tooltip"
             data-placement="bottom"
