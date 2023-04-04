@@ -393,34 +393,20 @@ const PatientDetails = () => {
                   <div className="card-header">
                     <h5>
                       notes
-                      <button className="btn btn-dark-red-f btn-sm">
-                        see all
-                      </button>
                     </h5>
                   </div>
                   <div className="card-body">
                     <textarea
                       className="form-control"
                       placeholder="you can write patient notes over here"
-                      rows={6}
-                      defaultValue={""}
+                      rows={16}
                     />
                     <button className="btn btn-dark-red-f float-right btn-sm">
                       <i className="las la-save" />
                       save note
                     </button>
                   </div>
-                  <div className="card-footer">
-                    <div className="float-left">
-                      <p>
-                        <i className="las la-user" />
-                        dr. jekyll
-                      </p>
-                    </div>
-                    <div className="float-right">
-                      <p>04, may, 2020</p>
-                    </div>
-                  </div>
+                  
                 </div>
                 <div className="card files-card">
                   <div className="card-header">
