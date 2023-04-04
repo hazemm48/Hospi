@@ -90,7 +90,7 @@ const PatientDetails = () => {
         <div className="container-fluid">
           <div className="section row title-section">
             <div className="col-md-8">
-              <nav aria-label="breadcrumb">
+              <div aria-label="breadcrumb">
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <Link to="/home/Patients">
@@ -101,7 +101,7 @@ const PatientDetails = () => {
                     {state.name}
                   </li>
                 </ol>
-              </nav>
+              </div>
             </div>
             <div className="col-md-4">
               <button
