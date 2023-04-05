@@ -14,3 +14,14 @@
   border-radius: 100%;
   animation: spinner 1s linear infinite;
 }
+
+@media only screen and (max-width: 600px) {
+  .loading-spinner {
+    width: 4em;
+    height: 4em;
+    border: 0.4em solid #d7d7d7; /* Light grey */
+    border-top: 0.4em solid #0466c8; /* Black */
+    border-radius: 100%;
+    animation: spinner 1s linear infinite;
+  } 
+}
