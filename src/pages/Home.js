@@ -59,6 +59,7 @@ const Home = () => {
           <Route exact path="/patients" element={<Patients />} />
           <Route exact path="/doctors" element={<Doctors />} />
           <Route exact path="/patientDetails" element={<PatientDetails />} />
+          <Route exact path="/load" element={<LoadingSpinner />} />
           <Route
             exact
             path="/settings"
