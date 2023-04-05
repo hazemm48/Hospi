@@ -17,6 +17,7 @@ import AddDoctor from "./AddDoctor.js";
 import AddAdmin from "./AddAdmin.js";
 import Patients from "./Patients.js";
 import { users } from "../../src/adminAPI";
+import LoadingSpinner from "../components/Loading.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({

@@ -1,12 +1,23 @@
 table thead tr th {
   text-transform: capitalize;
 }
+.page-item.active .page-link {
+  z-index: 3;
+  color: #fff;
+  background-color: #0466c8;
+  border-color: #0466c8;
+}
 
 main .title-section {
   margin-left: 1em;
 }
 main .filters-section {
   display: flex;
+}
+main .filters-section .switch-view-btns .btn-group .active {
+  background-color: #0466c8;
+  border: none;
+  color: white;
 }
 main .filters-section .dropdowns-wrapper {
   display: flex;

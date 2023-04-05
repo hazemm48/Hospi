@@ -7,10 +7,10 @@
   }
 }
 .loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 10px solid #f3f3f3; /* Light grey */
-  border-top: 10px solid #383636; /* Black */
-  border-radius: 50%;
-  animation: spinner 1.5s linear infinite;
+  width: 8em;
+  height: 8em;
+  border: 0.8em solid #d7d7d7; /* Light grey */
+  border-top: 0.8em solid #0466c8; /* Black */
+  border-radius: 100%;
+  animation: spinner 1s linear infinite;
 }
