@@ -542,10 +542,10 @@ main .main-content {
   margin-top: 70px;
 }
 main .side-nav {
-  width: 17.5%;
+  width: 15%;
 }
 main .main-content {
-  width: 82.5%;
+  width: 84%;
 }
 
 @media only screen and (min-width: 600px) {

@@ -1,7 +1,7 @@
 import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { updateUser, users } from "../adminAPI.js";
+import { updateUser, users, reserve } from "../adminAPI.js";
 import LoadingSpinner from "../components/Loading.js";
 import manImg from "../images/man.svg";
 
@@ -10,6 +10,7 @@ const PatientDetails = () => {
   let status = "";
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
+  const [reserves, setreserves] = useState();
 
   const GetDetails = async () => {
     let body = {
@@ -19,9 +20,25 @@ const PatientDetails = () => {
     setState(user.users);
     setLoading(false);
   };
+
+  const GetReserves = async () => {
+    let body = {
+      oper: "get",
+      body: {
+        filter: {
+          patientId: id.state,
+        },
+      },
+    };
+    let reserves = await reserve(body);
+    setreserves(reserves);
+    console.log(reserves);
+  };
+
   useEffect(() => {
     setLoading(true);
     GetDetails();
+    GetReserves();
   }, []);
 
   if (state?.isLoggedIn == true) {
@@ -31,7 +48,6 @@ const PatientDetails = () => {
   }
 
   let age = moment().diff(state?.patientInfo?.birthDate, "years");
-  console.log(age);
 
   const editPat = () => {
     let elements = document
@@ -290,7 +306,7 @@ const PatientDetails = () => {
                               role="tablist"
                             >
                               <li className="nav-item" role="presentation">
-                                <a
+                                <button
                                   className="nav-link active"
                                   id="upcoming-appointments-tab"
                                   data-toggle="tab"
@@ -299,10 +315,10 @@ const PatientDetails = () => {
                                   aria-selected="true"
                                 >
                                   upcoming appointments
-                                </a>
+                                </button>
                               </li>
                               <li className="nav-item" role="presentation">
-                                <a
+                                <button
                                   className="nav-link"
                                   id="past-appointments-tab"
                                   data-toggle="tab"
@@ -311,10 +327,10 @@ const PatientDetails = () => {
                                   aria-selected="false"
                                 >
                                   past appointments
-                                </a>
+                                </button>
                               </li>
                               <li className="nav-item" role="presentation">
-                                <a
+                                <button
                                   className="nav-link"
                                   id="medical-records-tab"
                                   data-toggle="tab"
@@ -323,7 +339,7 @@ const PatientDetails = () => {
                                   aria-selected="false"
                                 >
                                   medical records
-                                </a>
+                                </button>
                               </li>
                             </ul>
                             <div className="tab-content" id="myTabContent">
@@ -339,57 +355,46 @@ const PatientDetails = () => {
                                     create an appointment
                                   </button>
                                 </div>
-                                <div className="media">
-                                  <div className="align-self-center">
-                                    <p>tue</p>
-                                    <h3>05</h3>
-                                    <p>2020</p>
-                                  </div>
-                                  <div className="media-body">
-                                    <div className="row">
-                                      <label className="label-green-bl">
-                                        consultation
-                                      </label>
-                                      <p>with Dr. Jekyll</p>
-                                      <p>
-                                        <i className="las la-tv" />
-                                        on zoom
-                                      </p>
-                                      <p>
-                                        <i className="las la-clock" />
-                                        10.30 - 11.00
-                                      </p>
-                                      <label className="label-cream label-sm">
-                                        <i className="las la-hourglass-half" />
-                                        30 min
-                                      </label>
-                                      <a>
-                                        <i className="las la-ellipsis-v" />
-                                      </a>
-                                    </div>
-                                    <div className="row">
-                                      <label className="label-blue-bl">
-                                        root canal
-                                      </label>
-                                      <p>with Dr. Jekyll</p>
-                                      <p>
-                                        <i className="las la-tv" />
-                                        on zoom
-                                      </p>
-                                      <p>
-                                        <i className="las la-clock" />
-                                        13.30 - 14.15
-                                      </p>
-                                      <label className="label-cream label-sm">
-                                        <i className="las la-hourglass-half" />
-                                        45 min
-                                      </label>
-                                      <a>
-                                        <i className="las la-ellipsis-v" />
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
+                                {reserves
+                                  ? reserves.map((res) => {return(
+                                    <div className="media">
+                                        <div className="align-self-center">
+                                          <p>{moment(res.date,'DD-MM-YYYY').format('dddd')}</p>
+                                          <h4>{moment(res.date,'DD-MM-YYYY').format('DD/MM/YYYY')}</h4>
+                                        </div>
+                                        <div className="media-body">
+                                          <div className="row">
+                                            <label className="label-blue-bl">
+                                              {res.visitType}
+                                            </label>
+                                            <p>with Dr. {res.docName}</p>
+                                            <p>
+                                              {res.fees}
+                                              <i className="las la-dollar-sign " />
+                                              
+                                            </p>
+                                            <p>
+                                              <i className="las la-clock" />
+                                              {moment(res.time,"HH:mm").format('h:mm A')}
+                                            </p>                                           
+                                            {res.anotherPerson?(<p>
+                                              <i className="las la-user-alt" />
+                                              another Person
+                                            </p>):""}  
+                                            <Link to="/home/reserveDetails" state={res._id}>
+                                              <i className="las la-info-circle" />
+                                            </Link>                                          
+                                            <label className="label-cream label-sm">
+                                              <i className="las la-hourglass-half" />
+                                              {moment(moment(moment(res.date,'DD-MM-YYYY').format('DD-MM-YYYY') + ' ' + res.time, 'DD/MM/YYYY HH:mm')).fromNow()  }
+                                            </label>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  )
+                                      
+                                    })
+                                  : ""}
                               </div>
                               <div
                                 className="tab-pane fade"

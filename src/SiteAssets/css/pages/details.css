@@ -112,7 +112,8 @@ label {
 }
 
 .patient-details-section .patients-details-card-wrapper {
-  border-left: 1px solid #cccccc;
+  border-top:  0.05em solid #cccccc;
+  padding-top:2em;
 }
 .patient-details-section .card {
   margin-bottom: 1.5em;

@@ -34,6 +34,7 @@ const Dashboard = (props) => {
       oper: "get",
       body: {
         filter: {},
+        sort:"-date"
       },
     };
     let reserves = await reserve(resBody);
@@ -329,7 +330,7 @@ const Dashboard = (props) => {
                             ? reserveUsers.map((reserve) => {
                                 if (
                                   reserve.type == "doctor" &&
-                                  reserve.status
+                                  !reserve.status
                                 ) {
                                   return (
                                     <tr>
@@ -350,10 +351,10 @@ const Dashboard = (props) => {
                                         </small>
                                       </td>
                                       <td className="text-muted">
-                                        <p>{reserve.date}</p>
+                                        <p>{moment(reserve.date).format('DD/MM/YYYY') }</p>
                                       </td>
                                       <td className="text-muted">
-                                        <p>{reserve.time}</p>
+                                        <p>{moment(reserve.time,"HH:mm").format('h:mm A')}</p>
                                       </td>
                                       <td>
                                         <Link

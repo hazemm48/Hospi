@@ -18,6 +18,7 @@ import AddAdmin from "./AddAdmin.js";
 import Patients from "./Patients.js";
 import { users } from "../../src/adminAPI";
 import LoadingSpinner from "../components/Loading.js";
+import ReserveDetails from "./ReserveDetails.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -59,6 +60,7 @@ const Home = () => {
           <Route exact path="/patients" element={<Patients />} />
           <Route exact path="/doctors" element={<Doctors />} />
           <Route exact path="/patientDetails" element={<PatientDetails />} />
+          <Route exact path="/reserveDetails" element={<ReserveDetails />} />
           <Route exact path="/load" element={<LoadingSpinner />} />
           <Route
             exact
