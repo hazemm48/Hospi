@@ -112,6 +112,10 @@ label {
 }
 
 .patient-details-section .patients-details-card-wrapper {
+  border-left:  0.05em solid #cccccc;
+  padding-top:2em;
+}
+.patient-details-section .res{
   border-top:  0.05em solid #cccccc;
   padding-top:2em;
 }
@@ -135,9 +139,17 @@ label {
   margin: 0;
   text-transform: capitalize;
 }
+.patient-details-section .mini-card .card-body h5{
+  color: #0466c8;
+}
 .patient-details-section .mini-card .card-body input {
-  border-radius: 0;
+  border-radius: 0.4em;
   text-transform: capitalize;
+  height: 3em;
+}
+
+.patient-details-section .mini-card .card-body .row .col-md-4 .form-group  label,.patient-details-section .mini-card .card-body .row .col-md-12 .form-group  label{
+  color: #0466c8;
 }
 .patient-details-section .mini-card .card-footer button {
   width: 100%;

@@ -28,6 +28,8 @@ const PatientDetails = () => {
         filter: {
           patientId: id.state,
         },
+        limit: 6,
+        sort: "date",
       },
     };
     let reserves = await reserve(body);
@@ -356,43 +358,72 @@ const PatientDetails = () => {
                                   </button>
                                 </div>
                                 {reserves
-                                  ? reserves.map((res) => {return(
-                                    <div className="media">
-                                        <div className="align-self-center">
-                                          <p>{moment(res.date,'DD-MM-YYYY').format('dddd')}</p>
-                                          <h4>{moment(res.date,'DD-MM-YYYY').format('DD/MM/YYYY')}</h4>
-                                        </div>
-                                        <div className="media-body">
-                                          <div className="row">
-                                            <label className="label-blue-bl">
-                                              {res.visitType}
-                                            </label>
-                                            <p>with Dr. {res.docName}</p>
+                                  ? reserves.map((res) => {
+                                      return (
+                                        <div className="media">
+                                          <div className="align-self-center">
                                             <p>
-                                              {res.fees}
-                                              <i className="las la-dollar-sign " />
-                                              
+                                              {moment(
+                                                res.date,
+                                                "DD-MM-YYYY"
+                                              ).format("dddd")}
                                             </p>
-                                            <p>
-                                              <i className="las la-clock" />
-                                              {moment(res.time,"HH:mm").format('h:mm A')}
-                                            </p>                                           
-                                            {res.anotherPerson?(<p>
-                                              <i className="las la-user-alt" />
-                                              another Person
-                                            </p>):""}  
-                                            <Link to="/home/reserveDetails" state={res._id}>
-                                              <i className="las la-info-circle" />
-                                            </Link>                                          
-                                            <label className="label-cream label-sm">
-                                              <i className="las la-hourglass-half" />
-                                              {moment(moment(moment(res.date,'DD-MM-YYYY').format('DD-MM-YYYY') + ' ' + res.time, 'DD/MM/YYYY HH:mm')).fromNow()  }
-                                            </label>
+                                            <h4>
+                                              {moment(
+                                                res.date,
+                                                "DD-MM-YYYY"
+                                              ).format("DD/MM/YYYY")}
+                                            </h4>
+                                          </div>
+                                          <div className="media-body">
+                                            <div className="row">
+                                              <label className="label-blue-bl">
+                                                {res.visitType}
+                                              </label>
+                                              <p>with Dr. {res.docName}</p>
+                                              <p>
+                                                {res.fees}
+                                                <i className="las la-dollar-sign " />
+                                              </p>
+                                              <p>
+                                                <i className="las la-clock" />
+                                                {moment(
+                                                  res.time,
+                                                  "HH:mm"
+                                                ).format("h:mm A")}
+                                              </p>
+                                              {res.anotherPerson ? (
+                                                <p>
+                                                  <i className="las la-user-alt" />
+                                                  another Person
+                                                </p>
+                                              ) : (
+                                                ""
+                                              )}
+                                              <Link
+                                                to="/home/reserveDetails"
+                                                state={res._id}
+                                              >
+                                                <i className="las la-info-circle" />
+                                              </Link>
+                                              <label className="label-cream label-sm">
+                                                <i className="las la-hourglass-half" />
+                                                {moment(
+                                                  moment(
+                                                    moment(
+                                                      res.date,
+                                                      "DD-MM-YYYY"
+                                                    ).format("DD-MM-YYYY") +
+                                                      " " +
+                                                      res.time,
+                                                    "DD/MM/YYYY HH:mm"
+                                                  )
+                                                ).fromNow()}
+                                              </label>
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                  )
-                                      
+                                      );
                                     })
                                   : ""}
                               </div>
@@ -409,6 +440,19 @@ const PatientDetails = () => {
                                 aria-labelledby="medical-records-tab"
                               ></div>
                             </div>
+                          </div>
+                          <div className="card-footer d-flex justify-content-end">
+                            
+                              <Link 
+                              to="/home/PatientDetails/reservations"
+                                id="editPat"
+                                className="btn btn-dark-red-f-gr "
+                                style={{ marginTop: "0.5em" }}
+                              >
+                                view more
+                                <i className="las la-angle-right" />
+                              </Link>
+                            
                           </div>
                         </div>
                       </div>
