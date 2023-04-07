@@ -114,7 +114,7 @@ const PatientDetails = () => {
         <LoadingSpinner />
       ) : (
         <div className="main-content">
-          {state ? (
+          {state&&reserves ? (
             <div className="container-fluid">
               <div className="section row title-section">
                 <div className="col-md-8">
@@ -357,7 +357,7 @@ const PatientDetails = () => {
                                     create an appointment
                                   </button>
                                 </div>
-                                {reserves
+                                {reserves.length>0
                                   ? reserves.map((res) => {
                                       return (
                                         <div className="media">
@@ -441,10 +441,10 @@ const PatientDetails = () => {
                               ></div>
                             </div>
                           </div>
-                          <div className="card-footer d-flex justify-content-end">
-                            
-                              <Link 
-                              to="/home/PatientDetails/reservations"
+                          {reserves.length>0 ? (
+                            <div className="card-footer d-flex justify-content-end">
+                              <Link
+                                to="/home/PatientDetails/reservations"
                                 id="editPat"
                                 className="btn btn-dark-red-f-gr "
                                 style={{ marginTop: "0.5em" }}
@@ -452,8 +452,10 @@ const PatientDetails = () => {
                                 view more
                                 <i className="las la-angle-right" />
                               </Link>
-                            
-                          </div>
+                            </div>
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </div>
                     </div>

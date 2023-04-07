@@ -34,7 +34,8 @@ const Dashboard = (props) => {
       oper: "get",
       body: {
         filter: {},
-        sort:"-date"
+        sort:"date",
+        limit:5
       },
     };
     let reserves = await reserve(resBody);
@@ -358,7 +359,7 @@ const Dashboard = (props) => {
                                       </td>
                                       <td>
                                         <Link
-                                          to="/home/reservationDetails"
+                                          to="/home/reserveDetails"
                                           state={reserve._id}
                                           className="btn btn-sm"
                                         >
