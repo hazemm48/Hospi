@@ -1,7 +1,7 @@
-const api = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/admin";
-const loginApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/adminLogin";
-/* const api = "http://localhost:3000/api/v1/admin";
-const loginApi = "http://localhost:3000/api/v1/adminLogin"; */
+/* const api = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/admin";
+const loginApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/adminLogin"; */
+const api = "http://localhost:3000/api/v1/admin";
+const loginApi = "http://localhost:3000/api/v1/adminLogin";
 
 export const login = async (body) =>
   await fetch(loginApi, {
@@ -86,5 +86,20 @@ export const reserve = async (body) => {
   })
     .then((res) => res.json())
     .then((data) => data);
-  return data.reservations;
+  return data;
+};
+
+export const note = async (body) => {
+  let data = await fetch(`${api}/note`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      Accept: "application/json",
+      Authorization: `SIM ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
 };

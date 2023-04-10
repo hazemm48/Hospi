@@ -1,9 +1,9 @@
 .section .card {
   margin-bottom: 1.5em;
 }
-.section .card .card-header {
+/* .section .card .card-header {
   padding: 1em 1em 0 1em;
-}
+} */
 .section .card .card-header p {
   margin: 0;
 }

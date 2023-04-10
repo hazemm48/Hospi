@@ -1,12 +1,11 @@
 import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { updateUser, users, reserve,note } from "../adminAPI.js";
+import { updateUser, users, reserve } from "../adminAPI.js";
 import LoadingSpinner from "../components/Loading.js";
 import manImg from "../images/man.svg";
-import Notes from "./Notes.js";
 
-const PatientDetails = () => {
+const DoctorDetails = () => {
   const id = useLocation();
   let status = "";
   const [loading, setLoading] = useState(true);
@@ -27,7 +26,7 @@ const PatientDetails = () => {
       oper: "get",
       body: {
         filter: {
-          patientId: id.state,
+          doctorId: id.state,
         },
         limit: 6,
         sort: "date",
@@ -40,10 +39,10 @@ const PatientDetails = () => {
   useEffect(() => {
     setLoading(true);
     GetDetails();
-    GetReserves();
+    //GetReserves();
   }, []);
 
-  let age = moment().diff(state?.patientInfo?.birthDate, "years");
+  let age = moment().diff(state?.doctorInfo?.birthDate, "years");
 
   const editPat = () => {
     let elements = document
@@ -56,6 +55,7 @@ const PatientDetails = () => {
         document.getElementById("name").removeAttribute("readOnly");
         document.getElementById("reg").setAttribute("readonly", true);
         document.getElementById("sta").setAttribute("readonly", true);
+        document.getElementById("bio").removeAttribute("readonly");
         e.removeAttribute("readOnly");
         document.getElementById("editPat").innerHTML = "submit";
         return (x = false);
@@ -63,7 +63,8 @@ const PatientDetails = () => {
         e.setAttribute("readonly", true);
         document.getElementById("name").setAttribute("readonly", true);
         document.getElementById("reg").setAttribute("readonly", true);
-        document.getElementById("editPat").innerHTML = "Edit Patient";
+        document.getElementById("bio").setAttribute("readonly", true);
+        document.getElementById("editPat").innerHTML = "Edit doctor";
         return (x = true);
       }
     });
@@ -80,7 +81,7 @@ const PatientDetails = () => {
         email: formData.get("em"),
         gender: formData.get("gen"),
         phone: formData.get("ph"),
-        patientInfo: {
+        doctorInfo: {
           city: formData.get("ci"),
           address: formData.get("add"),
           birthDate: moment(formData.get("bd"), "DDMMYYY")
@@ -94,7 +95,7 @@ const PatientDetails = () => {
     console.log(body);
     let update = await updateUser(body);
     if (update.message == "update success") {
-      if (window.confirm("Patient Updated Successfully")) {
+      if (window.confirm("doctor Updated Successfully")) {
         window.location.reload();
       }
     } else {
@@ -102,32 +103,21 @@ const PatientDetails = () => {
     }
     console.log(body);
   };
-
-  const addNote = async () => {
-    let body = {
-        oper:"add",
-        content:document.getElementById("noteCon").value,
-        id:id.state
-    }
-    let add = await note(body)
-    console.log(add);
-  };
-
   return (
     <React.Fragment>
       {loading ? (
         <LoadingSpinner />
       ) : (
         <div className="main-content">
-          {state && reserves ? (
+          {state ? (
             <div className="container-fluid">
               <div className="section row title-section">
                 <div className="col-md-8">
                   <div aria-label="breadcrumb">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item">
-                        <Link to="/home/Patients">
-                          <a>patients</a>
+                        <Link to="/home/doctors">
+                          <a>doctors</a>
                         </Link>
                       </li>
                       <li
@@ -148,7 +138,7 @@ const PatientDetails = () => {
                     }}
                   >
                     <i className="las la-edit" />
-                    edit patient
+                    edit doctor
                   </button>
                 </div>
               </div>
@@ -188,7 +178,7 @@ const PatientDetails = () => {
 
                             <div
                               id="editDet"
-                              className="col-md-8 patients-details-card-wrapper"
+                              className="col-md-8 doctors-details-card-wrapper"
                             >
                               <form id="form" method="post">
                                 <div className="mini-card">
@@ -198,10 +188,73 @@ const PatientDetails = () => {
                                         <div className="form-group">
                                           <label>gender</label>
                                           <input
-                                            name="gen"
+                                            name="gender"
                                             className="form-control"
                                             readOnly="readonly"
                                             defaultValue={state.gender}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="col-md-4">
+                                        <div className="form-group">
+                                          <label>speciality</label>
+                                          <input
+                                            name="speciality"
+                                            className="form-control"
+                                            readOnly="readonly"
+                                            defaultValue={
+                                              state.doctorInfo?.speciality
+                                            }
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="col-md-4">
+                                        <div className="form-group">
+                                          <label>phone number</label>
+                                          <input
+                                            name="phone"
+                                            className="form-control"
+                                            readOnly="readonly"
+                                            defaultValue={state.phone}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="col-md-4">
+                                        <div className="form-group">
+                                          <label>room</label>
+                                          <input
+                                            name="room"
+                                            className="form-control"
+                                            readOnly="readonly"
+                                            defaultValue={
+                                              state.doctorInfo?.room
+                                            }
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="col-md-4">
+                                        <div className="form-group">
+                                          <label>fees</label>
+                                          <input
+                                            name="fees"
+                                            className="form-control"
+                                            readOnly="readonly"
+                                            defaultValue={
+                                              state.doctorInfo?.fees
+                                            }
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="col-md-4">
+                                        <div className="form-group">
+                                          <label>city</label>
+                                          <input
+                                            name="city"
+                                            className="form-control"
+                                            readOnly="readonly"
+                                            defaultValue={
+                                              state.doctorInfo?.city
+                                            }
                                           />
                                         </div>
                                       </div>
@@ -213,35 +266,11 @@ const PatientDetails = () => {
                                             className="form-control"
                                             readOnly="readonly"
                                             defaultValue={
-                                              state.patientInfo?.birthDate
+                                              state.doctorInfo?.birthDate
                                                 ? moment(
-                                                    state.patientInfo?.birthDate
+                                                    state.doctorInfo?.birthDate
                                                   ).format("DD/MM/YYYY")
                                                 : ""
-                                            }
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>phone number</label>
-                                          <input
-                                            name="ph"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={state.phone}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>city</label>
-                                          <input
-                                            name="ci"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={
-                                              state.patientInfo?.city
                                             }
                                           />
                                         </div>
@@ -280,7 +309,7 @@ const PatientDetails = () => {
                                         <div className="form-group">
                                           <label>email</label>
                                           <input
-                                            name="em"
+                                            name="email"
                                             className="form-control"
                                             readOnly="readonly"
                                             defaultValue={state.email}
@@ -289,13 +318,14 @@ const PatientDetails = () => {
                                       </div>
                                       <div className="col-md-12">
                                         <div className="form-group">
-                                          <label>address</label>
-                                          <input
-                                            name="add"
+                                          <label>bioghraphy</label>
+                                          <textarea
+                                            id="bio"
                                             className="form-control"
+                                            rows={6}
                                             readOnly="readonly"
                                             defaultValue={
-                                              state.patientInfo?.address
+                                              state.doctorInfo?.address
                                             }
                                           />
                                         </div>
@@ -308,172 +338,6 @@ const PatientDetails = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="col-sm-12">
-                        <div className="card">
-                          <div className="card-body">
-                            <ul
-                              className="nav nav-tabs"
-                              id="myTab"
-                              role="tablist"
-                            >
-                              <li className="nav-item" role="presentation">
-                                <button
-                                  className="nav-link active"
-                                  id="upcoming-appointments-tab"
-                                  data-toggle="tab"
-                                  role="tab"
-                                  aria-controls="upcoming-appointments"
-                                  aria-selected="true"
-                                >
-                                  upcoming appointments
-                                </button>
-                              </li>
-                              <li className="nav-item" role="presentation">
-                                <button
-                                  className="nav-link"
-                                  id="past-appointments-tab"
-                                  data-toggle="tab"
-                                  role="tab"
-                                  aria-controls="past-appointments"
-                                  aria-selected="false"
-                                >
-                                  past appointments
-                                </button>
-                              </li>
-                              <li className="nav-item" role="presentation">
-                                <button
-                                  className="nav-link"
-                                  id="medical-records-tab"
-                                  data-toggle="tab"
-                                  role="tab"
-                                  aria-controls="medical-records"
-                                  aria-selected="false"
-                                >
-                                  medical records
-                                </button>
-                              </li>
-                            </ul>
-                            <div className="tab-content" id="myTabContent">
-                              <div
-                                className="tab-pane fade show active"
-                                id="upcoming-appointments"
-                                role="tabpanel"
-                                aria-labelledby="upcoming-appointments-tab"
-                              >
-                                <div className="section-title">
-                                  <button className="btn btn-dark-red-f btn-sm">
-                                    <i className="las la-calendar-plus" />
-                                    create an appointment
-                                  </button>
-                                </div>
-                                {reserves.length > 0
-                                  ? reserves.map((res) => {
-                                      if (res.status == false) {
-                                        return (
-                                          <div className="media">
-                                            <div className="align-self-center">
-                                              <p>
-                                                {moment(
-                                                  res.date,
-                                                  "DD-MM-YYYY"
-                                                ).format("dddd")}
-                                              </p>
-                                              <h4>
-                                                {moment(
-                                                  res.date,
-                                                  "DD-MM-YYYY"
-                                                ).format("DD/MM/YYYY")}
-                                              </h4>
-                                            </div>
-                                            <div className="media-body">
-                                              <div className="row">
-                                                <label className="label-blue-bl">
-                                                  {res.visitType}
-                                                </label>
-                                                <p>with Dr. {res.docName}</p>
-                                                <p>
-                                                  {res.fees}
-                                                  <i className="las la-dollar-sign " />
-                                                </p>
-                                                <p>
-                                                  <i className="las la-clock" />
-                                                  {moment(
-                                                    res.time.from,
-                                                    "HH:mm"
-                                                  ).format("h:mm")}
-                                                  -
-                                                  {moment(
-                                                    res.time.to,
-                                                    "HH:mm"
-                                                  ).format("h:mm A")}
-                                                </p>
-                                                {res.anotherPerson ? (
-                                                  <p>
-                                                    <i className="las la-user-alt" />
-                                                    another Person
-                                                  </p>
-                                                ) : (
-                                                  ""
-                                                )}
-                                                <Link
-                                                  to="/home/reserveDetails"
-                                                  state={res._id}
-                                                >
-                                                  <i className="las la-info-circle" />
-                                                </Link>
-                                                <label className="label-cream label-sm">
-                                                  <i className="las la-hourglass-half" />
-                                                  {moment(
-                                                    moment(
-                                                      moment(
-                                                        res.date,
-                                                        "DD-MM-YYYY"
-                                                      ).format("DD-MM-YYYY") +
-                                                        " " +
-                                                        res.time.from,
-                                                      "DD/MM/YYYY HH:mm"
-                                                    )
-                                                  ).fromNow()}
-                                                </label>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        );
-                                      }
-                                    })
-                                  : ""}
-                              </div>
-                              <div
-                                className="tab-pane fade"
-                                id="past-appointments"
-                                role="tabpanel"
-                                aria-labelledby="past-appointments-tab"
-                              ></div>
-                              <div
-                                className="tab-pane fade"
-                                id="medical-records"
-                                role="tabpanel"
-                                aria-labelledby="medical-records-tab"
-                              ></div>
-                            </div>
-                          </div>
-                          {reserves.length > 0 ? (
-                            <div className="card-footer d-flex justify-content-end">
-                              <Link
-                                to="/home/PatientDetails/reservations"
-                                id="editPat"
-                                className="btn btn-dark-red-f-gr "
-                                style={{ marginTop: "0.5em" }}
-                              >
-                                view more
-                                <i className="las la-angle-right" />
-                              </Link>
-                            </div>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      </div>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -481,20 +345,19 @@ const PatientDetails = () => {
                       <div className="card-header">
                         <h5>
                           notes
-                          <Link to="/home/notes" state={state._id} className="btn btn-dark-red-f btn-sm float-right">
+                          <button className="btn btn-dark-red-f btn-sm">
                             see all
-                          </Link>
+                          </button>
                         </h5>
                       </div>
                       <div className="card-body">
                         <textarea
-                          id="noteCon"
                           className="form-control"
                           placeholder="you can write patient notes over here"
-                          defaultValue=""
                           rows={16}
+                          defaultValue={""}
                         />
-                        <button className="btn btn-dark-red-f float-right btn-sm" onClick={()=>{addNote()}}>
+                        <button className="btn btn-dark-red-f float-right btn-sm">
                           <i className="las la-save" />
                           save note
                         </button>
@@ -505,7 +368,6 @@ const PatientDetails = () => {
                         </div>
                       </div>
                     </div>
-
                     <div className="card files-card">
                       <div className="card-header">
                         <h5>
@@ -549,4 +411,4 @@ const PatientDetails = () => {
   );
 };
 
-export default PatientDetails;
+export default DoctorDetails;

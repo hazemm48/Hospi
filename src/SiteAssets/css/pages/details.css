@@ -128,9 +128,7 @@ label {
   object-fit: cover;
   margin-bottom: 0.5em;
 }
-.patient-details-section .mini-card .card-body {
-  margin-bottom: 0.5em;
-}
+
 .patient-details-section .mini-card .card-body h4,
 .patient-details-section .mini-card .card-body h5,
 .patient-details-section .mini-card .card-body small,
@@ -139,7 +137,8 @@ label {
   margin: 0;
   text-transform: capitalize;
 }
-.patient-details-section .mini-card .card-body h5{
+.patient-details-section .mini-card .card-body h3{
+  text-transform: capitalize;
   color: #0466c8;
 }
 .patient-details-section .mini-card .card-body input {

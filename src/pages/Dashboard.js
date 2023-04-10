@@ -11,6 +11,7 @@ const Dashboard = (props) => {
   const [patients, setPatients] = useState();
   const [doctors, setDoctors] = useState();
   const [admins, setAdmins] = useState();
+  const [length, setLength] = useState();
   const [reserveUsers, setReserveUsers] = useState();
 
   const GetDetails = async () => {
@@ -33,21 +34,26 @@ const Dashboard = (props) => {
     let resBody = {
       oper: "get",
       body: {
-        filter: {},
-        sort:"date",
-        limit:5
+        filter: {
+          status: false,
+          type: "doctor",
+        },
+        sort: "date",
+        limit: 5,
+        count:true
       },
     };
     let reserves = await reserve(resBody);
-    setLoading(false)
-    setReserveUsers(reserves);
+    setLoading(false);
+    setReserveUsers(reserves.reservations);
+    setLength(reserves.length);
     setAdmins(admins);
     setPatients(pats);
     setDoctors(docs);
   };
 
   useEffect(() => {
-    setLoading(true)  
+    setLoading(true);
     GetDetails();
   }, []);
 
@@ -89,17 +95,17 @@ const Dashboard = (props) => {
                         <div className="col-md-4">
                           <i className="las la-user-injured la-3x align-self-center" />
                           <p>total patients</p>
-                          <h4>{patients?.length}</h4>
+                          <h4>{patients?.length?patients?.length:"0"}</h4>
                         </div>
                         <div className="col-md-4">
                           <i className="las la-stethoscope la-3x align-self-center" />
                           <p>total doctors</p>
-                          <h4>{doctors?.length}</h4>
+                          <h4>{doctors?.length?doctors.length:"0"}</h4>
                         </div>
                         <div className="col-md-4">
                           <i className="las la-calendar-check la-3x align-self-center" />
                           <p>total reservations</p>
-                          <h4>{reserveUsers?.length}</h4>
+                          <h4>{length ? length : "0"}</h4>
                         </div>
                       </div>
                     </div>
@@ -329,46 +335,51 @@ const Dashboard = (props) => {
                         <tbody>
                           {reserveUsers
                             ? reserveUsers.map((reserve) => {
-                                if (
-                                  reserve.type == "doctor" &&
-                                  !reserve.status
-                                ) {
-                                  return (
-                                    <tr>
-                                      <td>
-                                        <img
-                                          className="rounded-circle"
-                                          src={manImg}
-                                          loading="lazy"
-                                        />
-                                      </td>
-                                      <td>
-                                        <p>{reserve.patName}</p>
-                                      </td>
-                                      <td>
-                                        <p>Dr. {reserve.docName}</p>
-                                        <small className="text-muted">
-                                          {reserve.specialty}
-                                        </small>
-                                      </td>
-                                      <td className="text-muted">
-                                        <p>{moment(reserve.date).format('DD/MM/YYYY') }</p>
-                                      </td>
-                                      <td className="text-muted">
-                                        <p>{moment(reserve.time,"HH:mm").format('h:mm A')}</p>
-                                      </td>
-                                      <td>
-                                        <Link
-                                          to="/home/reserveDetails"
-                                          state={reserve._id}
-                                          className="btn btn-sm"
-                                        >
-                                          <i className="las la-info-circle" />
-                                        </Link>
-                                      </td>
-                                    </tr>
-                                  );
-                                }
+                                return (
+                                  <tr>
+                                    <td>
+                                      <img
+                                        className="rounded-circle"
+                                        src={manImg}
+                                        loading="lazy"
+                                      />
+                                    </td>
+                                    <td>
+                                      <p>{reserve.patName}</p>
+                                    </td>
+                                    <td>
+                                      <p>Dr. {reserve.docName}</p>
+                                      <small className="text-muted">
+                                        {reserve.specialty}
+                                      </small>
+                                    </td>
+                                    <td className="text-muted">
+                                      <p>
+                                        {moment(reserve.date).format(
+                                          "DD/MM/YYYY"
+                                        )}
+                                      </p>
+                                    </td>
+                                    <td className="text-muted">
+                                      <p>
+                                        {moment(reserve.time.from, "HH:mm").format(
+                                          "h:mm"
+                                        )}-{moment(reserve.time.to, "HH:mm").format(
+                                          "h:mm A"
+                                        )} 
+                                      </p>
+                                    </td>
+                                    <td>
+                                      <Link
+                                        to="/home/reserveDetails"
+                                        state={reserve._id}
+                                        className="btn btn-sm"
+                                      >
+                                        <i className="las la-info-circle" />
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                );
                               })
                             : ""}
                         </tbody>

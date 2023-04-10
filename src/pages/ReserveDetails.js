@@ -1,19 +1,21 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { reserve } from "../adminAPI.js";
 import LoadingSpinner from "../components/Loading.js";
 
 const ReserveDetails = () => {
+  let navigate = useNavigate();
   const id = useLocation();
   const [reserves, setReserves] = useState();
   const [loading, setLoading] = useState(true);
-  let status = "";
   let anPer = "";
+  let type = "";
 
   const Data = async () => {
     let formEl = document.forms.form;
     let formData = new FormData(formEl);
+
     let body = {
       oper: "get",
       body: {
@@ -23,26 +25,87 @@ const ReserveDetails = () => {
       },
     };
     let reserveData = await reserve(body);
-    setReserves(reserveData);
+    setReserves(reserveData.reservations);
     setLoading(false);
   };
   if (reserves) {
-    if (reserves[0].status == true) {
-      status = "done";
-    } else {
-      status = "pending";
-    }
     if (reserves[0].anotherPerson == true) {
       anPer = "yes";
     } else {
       anPer = "no";
     }
+    type = reserves[0].type;
   }
+
+  const Delete = async () => {
+    let body = {
+      oper: "cancel",
+      body: {
+        resId: id.state,
+      },
+    };
+    let deleteReserve = await reserve(body);
+    if (deleteReserve.message == "reservation cancelled") {
+      if (window.confirm("Reserve Deleted Successfully")) {
+        navigate("/home/PatientDetails",{state:reserves[0].patientId})
+      }
+    } else {
+      alert("Wrong Data");
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
     Data();
   }, []);
+
+  const Edit = (e) => {
+    console.log();
+    let formEl = document.forms.form;
+    let editBtn = e.target;
+    if (editBtn.hasAttribute("data-edit")) {
+      formEl.patName.removeAttribute("readOnly");
+      formEl.fees.removeAttribute("readOnly");
+      formEl.phone.removeAttribute("readOnly");
+      formEl.visitType.removeAttribute("readOnly");
+      editBtn.removeAttribute("data-edit");
+      editBtn.innerHTML = "submit";
+    } else {
+      formEl.patName.setAttribute("readOnly", true);
+      formEl.fees.setAttribute("readOnly", true);
+      formEl.phone.setAttribute("readOnly", true);
+      formEl.visitType.setAttribute("readOnly", true);
+      editBtn.setAttribute("data-edit", true);
+      editBtn.innerHTML = "Edit Reserve";
+      updatePat();
+    }
+  };
+
+  const updatePat = async () => {
+    let formEl = document.forms.form;
+    let formData = new FormData(formEl);
+    let body = {
+      oper: "edit",
+      body: {
+        details: {
+          patName: formData.get("patName"),
+          fees: formData.get("fees"),
+          phone: formData.get("phone"),
+          visitType: formData.get("visitType"),
+        },
+        id: id.state,
+      },
+    };
+    let update = await reserve(body);
+    if (update.message == "updated") {
+      if (window.confirm("Reserve Updated Successfully")) {
+        window.location.reload();
+      }
+    } else {
+      alert("Wrong Data");
+    }
+    console.log(body);
+  };
 
   return (
     <React.Fragment>
@@ -54,26 +117,67 @@ const ReserveDetails = () => {
             <div className="section patient-details-section">
               <div className="card ">
                 <div className="">
-                  <div className="col d-flex justify-content-center">
+                  <div className="col ">
                     <div className="mini-card text-center">
-                      <div className="card-body row">
-                        <h5>{reserves[0].type} reserve</h5>
+                      <div
+                        className="card-body row"
+                        style={{ justifyContent: "center" }}
+                      >
+                        <h3>{type} reserve</h3>
                         <small className="text-muted">{reserves[0]._id}</small>
-                        {reserves[0].status == true ? (
+                        {reserves[0].status ? (
                           <label
                             className="label-green"
-                            style={{ padding: "0.3em", borderRadius: "0.4em" }}
+                            style={{
+                              padding: "0.3em",
+                              borderRadius: "0.4em",
+                              width: "5em",
+                            }}
                           >
-                            {status}
+                            Done
                           </label>
                         ) : (
                           <label
                             className="label-blue"
-                            style={{ padding: "0.3em", borderRadius: "0.4em" }}
+                            style={{
+                              padding: "0.3em",
+                              borderRadius: "0.4em",
+                              width: "5em",
+                            }}
                           >
-                            {status}
+                            Pending
                           </label>
                         )}
+
+                        <div className="d-flex justify-content-end ">
+                          <button
+                            id="deleteRes"
+                            className="btn btn-dark-red-f-gr col-md-2"
+                            style={{
+                              margin: "0.3em",
+                            }}
+                            onClick={() => {
+                              Delete();
+                            }}
+                          >
+                            <i className="las la-trash" />
+                            delete reserve
+                          </button>
+                          <button
+                            id="editRes"
+                            className="btn btn-dark-red-f-gr col-md-2"
+                            data-edit
+                            style={{
+                              margin: "0.3em",
+                            }}
+                            onClick={(e) => {
+                              Edit(e);
+                            }}
+                          >
+                            <i className="las la-edit" />
+                            edit reserve
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -97,20 +201,26 @@ const ReserveDetails = () => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>doctor name</label>
-                                <input
-                                  name="docName"
-                                  className="form-control"
-                                  readOnly="readonly"
-                                  defaultValue={reserves[0].docName}
-                                />
+                            {type == "doctor" ? (
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>doctor name</label>
+                                  <input
+                                    name="docName"
+                                    className="form-control"
+                                    readOnly="readonly"
+                                    defaultValue={reserves[0].docName}
+                                  />
+                                </div>
                               </div>
-                            </div>
+                            ) : (
+                              ""
+                            )}
                             <div className="col-md-4">
                               <div className="form-group">
-                                <label>speciality</label>
+                                <label>
+                                  {type == "doctor" ? "speciality" : "category"}
+                                </label>
                                 <input
                                   name="speciality"
                                   className="form-control"
@@ -143,20 +253,42 @@ const ReserveDetails = () => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>time</label>
-                                <input
-                                  id="time"
-                                  className="form-control"
-                                  readOnly="readonly"
-                                  defaultValue={moment(
-                                    reserves[0].time,
-                                    "HH:mm"
-                                  ).format("h:mm A")}
-                                />
+                            {type == "doctor" ? (
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>time</label>
+                                  <input
+                                    id="time"
+                                    className="form-control"
+                                    readOnly="readonly"
+                                    defaultValue={
+                                      moment(
+                                        reserves[0].time.from,
+                                        "HH:mm"
+                                      ).format("h:mm") +
+                                      "-" +
+                                      moment(
+                                        reserves[0].time.to,
+                                        "HH:mm"
+                                      ).format("h:mm A")
+                                    }
+                                  />
+                                </div>
                               </div>
-                            </div>
+                            ) : (
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>sub Category</label>
+                                  <input
+                                    id="subCategory"
+                                    className="form-control"
+                                    readOnly="readonly"
+                                    defaultValue={reserves[0].subCategory}
+                                  />
+                                </div>
+                              </div>
+                            )}
+
                             <div className="col-md-4">
                               <div className="form-group">
                                 <label>phone</label>
@@ -168,17 +300,22 @@ const ReserveDetails = () => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>visit type</label>
-                                <input
-                                  name="visitType"
-                                  className="form-control"
-                                  readOnly="readonly"
-                                  defaultValue={reserves[0].visitType}
-                                />
+                            {type == "doctor" ? (
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>visit type</label>
+                                  <input
+                                    name="visitType"
+                                    className="form-control"
+                                    readOnly="readonly"
+                                    defaultValue={reserves[0].visitType}
+                                  />
+                                </div>
                               </div>
-                            </div>
+                            ) : (
+                              ""
+                            )}
+
                             <div className="col-md-4">
                               <div className="form-group">
                                 <label>another person</label>
@@ -190,17 +327,22 @@ const ReserveDetails = () => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>turn number</label>
-                                <input
-                                  name="turnNum"
-                                  className="form-control"
-                                  readOnly="readonly"
-                                  defaultValue={reserves[0].turnNum}
-                                />
+                            {type == "doctor" ? (
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>turn number</label>
+                                  <input
+                                    name="turnNum"
+                                    className="form-control"
+                                    readOnly="readonly"
+                                    defaultValue={reserves[0].turnNum}
+                                  />
+                                </div>
                               </div>
-                            </div>
+                            ) : (
+                              ""
+                            )}
+
                             <div className="col-md-4">
                               <div className="form-group">
                                 <label>patient id</label>
@@ -212,17 +354,22 @@ const ReserveDetails = () => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>doctor id</label>
-                                <input
-                                  name="doctorId"
-                                  className="form-control"
-                                  readOnly="readonly"
-                                  defaultValue={reserves[0].doctorId}
-                                />
+                            {type == "doctor" ? (
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>doctor id</label>
+                                  <input
+                                    name="doctorId"
+                                    className="form-control"
+                                    readOnly="readonly"
+                                    defaultValue={reserves[0].doctorId}
+                                  />
+                                </div>
                               </div>
-                            </div>
+                            ) : (
+                              ""
+                            )}
+
                             <div className="col-md-4">
                               <div className="form-group">
                                 <label>created at</label>
@@ -270,14 +417,18 @@ const ReserveDetails = () => {
                                 <i className="las la-user-injured" />
                                 View Patient
                               </Link>
-                              <Link
-                                to="/home/doctorDetails"
-                                state={reserves[0].doctorId}
-                                className="btn btn-dark-red-f btn-sm col-sm-2"
-                              >
-                                <i className="las la-stethoscope" />
-                                View Doctor
-                              </Link>
+                              {type == "doctor" ? (
+                                <Link
+                                  to="/home/doctorDetails"
+                                  state={reserves[0].doctorId}
+                                  className="btn btn-dark-red-f btn-sm col-sm-2"
+                                >
+                                  <i className="las la-stethoscope" />
+                                  View Doctor
+                                </Link>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           </div>
                         </div>
@@ -291,9 +442,14 @@ const ReserveDetails = () => {
                   <h2 style={{ textAlign: "center" }}>Report</h2>
                   <div className="card">
                     <div>
-                      <h3 style={{ color: "#0466c8" }}>Prescription</h3>
+                      {type == "doctor" ? (
+                        <h3 style={{ color: "#0466c8" }}>Prescription</h3>
+                      ) : (
+                        ""
+                      )}
+
                       <textarea
-                        name="presc"
+                        name="preserves[0]c"
                         className="form-control"
                         style={{ height: "auto" }}
                         defaultValue=""
@@ -301,17 +457,22 @@ const ReserveDetails = () => {
                         rows={12}
                       />
                     </div>
-                    <div>
-                      <h3 style={{ color: "#0466c8" }}>Notes</h3>
-                      <textarea
-                        name="notes"
-                        className="form-control"
-                        style={{ height: "auto" }}
-                        defaultValue=""
-                        readOnly
-                        rows={12}
-                      />
-                    </div>
+                    {type == "doctor" ? (
+                      <div>
+                        <h3 style={{ color: "#0466c8" }}>Notes</h3>
+                        <textarea
+                          name="notes"
+                          className="form-control"
+                          style={{ height: "auto" }}
+                          defaultValue=""
+                          readOnly
+                          rows={12}
+                        />
+                      </div>
+                    ) : (
+                      ""
+                    )}
+
                     <h3 style={{ color: "#0466c8" }}>Files</h3>
 
                     <div className="card files-card">
@@ -329,7 +490,7 @@ const ReserveDetails = () => {
                         <div className="list-group list-group-flush">
                           <a className="list-group-item">
                             <i className="las la-file-excel" />
-                            check up results.csv
+                            check up reserves[0]ults.csv
                             <div className="float-right">
                               <div className="action-buttons no-display">
                                 <button className="btn btn-sm btn-dark-red-f">

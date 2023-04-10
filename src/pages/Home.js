@@ -19,6 +19,8 @@ import Patients from "./Patients.js";
 import { users } from "../../src/adminAPI";
 import LoadingSpinner from "../components/Loading.js";
 import ReserveDetails from "./ReserveDetails.js";
+import DoctorDetails from "./doctorDetails.js";
+import Notes from "./Notes.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -60,6 +62,8 @@ const Home = () => {
           <Route exact path="/patients" element={<Patients />} />
           <Route exact path="/doctors" element={<Doctors />} />
           <Route exact path="/patientDetails" element={<PatientDetails />} />
+          <Route exact path="/notes" element={<Notes />} />
+          <Route exact path="/doctorDetails" element={<DoctorDetails />} />
           <Route exact path="/reserveDetails" element={<ReserveDetails />} />
           <Route exact path="/load" element={<LoadingSpinner />} />
           <Route
