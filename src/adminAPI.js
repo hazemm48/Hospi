@@ -1,7 +1,7 @@
-/* const api = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/admin";
-const loginApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/adminLogin"; */
-const api = "http://localhost:3000/api/v1/admin";
-const loginApi = "http://localhost:3000/api/v1/adminLogin";
+ const api = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/admin";
+const loginApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/adminLogin"; 
+/*const api = "http://localhost:3000/api/v1/admin";
+const loginApi = "http://localhost:3000/api/v1/adminLogin";*/
 
 export const login = async (body) =>
   await fetch(loginApi, {
