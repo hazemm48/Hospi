@@ -1,8 +1,10 @@
-import React from "react";
-import { addUser } from "../adminAPI.js";
+import React, { useEffect, useState } from "react";
+import { addUser, getGeneral } from "../adminAPI.js";
 import moment from "moment-timezone";
 
 const AddDoctor = () => {
+  const [specialities, setSpecialities] = useState();
+
   const data = async () => {
     let formEl = document.forms.form;
     let formData = new FormData(formEl);
@@ -21,19 +23,13 @@ const AddDoctor = () => {
       const three = [
         schObj[i],
         { time: { ...schObj[i + 1], ...schObj[i + 2] } },
-        schObj[i+3]
+        schObj[i + 3],
       ];
       schedule.push(Object.assign({}, ...three));
     }
     console.log(schedule);
     let bd = moment(
-      formData.get("day") +
-        "/" +
-        formData.get("month") +
-        "/" +
-        formData.get("year")
-    )
-      .tz("GMT+2")
+      formData.get("date"))
       .format("MM-DD-YYYY");
     let body = {
       details: {
@@ -45,7 +41,10 @@ const AddDoctor = () => {
           birthDate: bd,
           speciality: formData.get("speciality"),
           bio: formData.get("bio"),
-          fees: formData.get("fees"),
+          fees: {
+            examin:formData.get("examinFees"),
+            followUp:formData.get("followUpFees")
+          },
           room: formData.get("room"),
           schedule: schedule,
         },
@@ -56,14 +55,26 @@ const AddDoctor = () => {
     };
 
     let add = await addUser(body);
+    console.log(add);
     if (add.message == "doctor added") {
-      if (window.confirm("Patient Added Successfully")) {
+      if (window.confirm("Doctor Added Successfully")) {
         window.location.reload();
       }
     } else {
       alert("Wrong Data");
     }
   };
+  const GetSpecialities = async () => {
+    let body = {
+      filter: "specialities",
+    };
+    let general = await getGeneral(body);
+   delete general.data[0].specialities[0]
+    setSpecialities(general.data[0].specialities);
+  };
+  useEffect(() => {
+    GetSpecialities();
+  }, []);
 
   let addSch = () => {
     let schCard = document.getElementById("schedule").outerHTML;
@@ -104,9 +115,19 @@ const AddDoctor = () => {
                           <label>City</label>
                           <input className="form-control" name="city" />
                         </div>
-                        <div className="form-group col-sm-8">
-                          <label>Speciality</label>
-                          <input className="form-control" name="speciality" />
+                        <div className="form-group col-sm-5">
+                          <label>speciality</label>
+                          <select
+                            className="form-control form-select dropdown-toggle"
+                            name="speciality"
+                          >
+                            {specialities?.map((e)=>{
+                              return(
+                                <option value={e}>{e}</option>
+                              )
+                            })}
+                            
+                          </select>
                         </div>
                         <div className="form-group col-sm-8">
                           <label>Bioghraphy</label>
@@ -118,12 +139,25 @@ const AddDoctor = () => {
                           />
                         </div>
                         <div className="form-group col-sm-3 ">
-                          <label>Fees</label>
+                          <label>Examination Fees</label>
                           <div className="input-group">
                             <input
-                              type="text"
+                              type="number"
                               class="form-control"
-                              name="fees"
+                              name="examinFees"
+                            />
+                            <div class="input-group-append">
+                              <span class="input-group-text" id="basic-addon2">
+                                LE
+                              </span>
+                            </div>
+                          </div>
+                          <label>Follow Up Fees</label>
+                          <div className="input-group">
+                            <input
+                              type="number"
+                              class="form-control"
+                              name="followUpFees"
                             />
                             <div class="input-group-append">
                               <span class="input-group-text" id="basic-addon2">
@@ -147,27 +181,39 @@ const AddDoctor = () => {
                               >
                                 <div className="form-group col-sm-5">
                                   <label>day</label>
-                                  <input className="form-control" name="day" />
+                                  <select
+                                    className="form-control form-select dropdown-toggle"
+                                    name="day"
+                                  >
+                                    <option value="saturday">saturday</option>
+                                    <option value="sunday">sunday</option>
+                                    <option value="monday">monday</option>
+                                    <option value="tuesday">tuesday</option>
+                                    <option value="wednesday">wednesday</option>
+                                    <option value="thursday">thursday</option>
+                                    <option value="friday">friday</option>
+                                  </select>
                                 </div>
                                 <div className="form-group col-sm-3">
                                   <label>From</label>
                                   <input
+                                    type="time"
                                     className="form-control"
-                                    placeholder="17:00"
                                     name="from"
                                   />
                                 </div>
                                 <div className="form-group col-sm-3">
                                   <label>To</label>
                                   <input
+                                    type="time"
                                     className="form-control"
-                                    placeholder="19:00"
                                     name="to"
                                   />
                                 </div>
                                 <div className="form-group col-sm-3">
                                   <label>Limit</label>
                                   <input
+                                    type="number"
                                     className="form-control"
                                     placeholder="10"
                                     name="limit"
@@ -192,28 +238,11 @@ const AddDoctor = () => {
                         <div className="form-group col-sm-6">
                           <label>Birthday</label>
                           <div className="form-row">
-                            <div className="form-group col-sm-3">
-                              <label>Day</label>
+                            <div className="form-group col-sm-6">
                               <input
+                                type="date"
                                 className="form-control"
-                                maxLength="2"
-                                name="day"
-                              />
-                            </div>
-                            <div className="form-group col-sm-3">
-                              <label>Month</label>
-                              <input
-                                className="form-control"
-                                maxLength="2"
-                                name="month"
-                              />
-                            </div>
-                            <div className="form-group col-sm-3">
-                              <label>Year</label>
-                              <input
-                                className="form-control"
-                                maxLength="4"
-                                name="year"
+                                name="date"
                               />
                             </div>
                           </div>

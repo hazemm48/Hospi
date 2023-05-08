@@ -13,12 +13,9 @@ const ReserveDetails = () => {
   let type = "";
 
   const Data = async () => {
-    let formEl = document.forms.form;
-    let formData = new FormData(formEl);
-
     let body = {
       oper: "get",
-      body: {
+      data: {
         filter: {
           _id: id.state,
         },

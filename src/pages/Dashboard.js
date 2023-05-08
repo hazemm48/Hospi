@@ -33,7 +33,7 @@ const Dashboard = (props) => {
     });
     let resBody = {
       oper: "get",
-      body: {
+      data: {
         filter: {
           status: false,
           type: "doctor",

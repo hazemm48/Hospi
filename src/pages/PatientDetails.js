@@ -1,7 +1,7 @@
 import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { updateUser, users, reserve,note } from "../adminAPI.js";
+import { updateUser, users, reserve, note } from "../adminAPI.js";
 import LoadingSpinner from "../components/Loading.js";
 import manImg from "../images/man.svg";
 import Notes from "./Notes.js";
@@ -25,7 +25,7 @@ const PatientDetails = () => {
   const GetReserves = async () => {
     let body = {
       oper: "get",
-      body: {
+      data: {
         filter: {
           patientId: id.state,
         },
@@ -105,11 +105,11 @@ const PatientDetails = () => {
 
   const addNote = async () => {
     let body = {
-        oper:"add",
-        content:document.getElementById("noteCon").value,
-        id:id.state
-    }
-    let add = await note(body)
+      oper: "add",
+      content: document.getElementById("noteCon").value,
+      id: id.state,
+    };
+    let add = await note(body);
     console.log(add);
   };
 
@@ -379,10 +379,9 @@ const PatientDetails = () => {
                                                 ).format("dddd")}
                                               </p>
                                               <h4>
-                                                {moment(
-                                                  res.date,
-                                                  "DD-MM-YYYY"
-                                                ).format("DD/MM/YYYY")}
+                                                {moment(res.date).format(
+                                                  "DD/MM/YYYY"
+                                                )}
                                               </h4>
                                             </div>
                                             <div className="media-body">
@@ -425,10 +424,9 @@ const PatientDetails = () => {
                                                   <i className="las la-hourglass-half" />
                                                   {moment(
                                                     moment(
-                                                      moment(
-                                                        res.date,
+                                                      moment(res.date).format(
                                                         "DD-MM-YYYY"
-                                                      ).format("DD-MM-YYYY") +
+                                                      ) +
                                                         " " +
                                                         res.time.from,
                                                       "DD/MM/YYYY HH:mm"
@@ -481,7 +479,11 @@ const PatientDetails = () => {
                       <div className="card-header">
                         <h5>
                           notes
-                          <Link to="/home/notes" state={state._id} className="btn btn-dark-red-f btn-sm float-right">
+                          <Link
+                            to="/home/notes"
+                            state={state._id}
+                            className="btn btn-dark-red-f btn-sm float-right"
+                          >
                             see all
                           </Link>
                         </h5>
@@ -494,7 +496,12 @@ const PatientDetails = () => {
                           defaultValue=""
                           rows={16}
                         />
-                        <button className="btn btn-dark-red-f float-right btn-sm" onClick={()=>{addNote()}}>
+                        <button
+                          className="btn btn-dark-red-f float-right btn-sm"
+                          onClick={() => {
+                            addNote();
+                          }}
+                        >
                           <i className="las la-save" />
                           save note
                         </button>

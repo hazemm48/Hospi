@@ -21,6 +21,8 @@ import LoadingSpinner from "../components/Loading.js";
 import ReserveDetails from "./ReserveDetails.js";
 import DoctorDetails from "./doctorDetails.js";
 import Notes from "./Notes.js";
+import AddReserve from "./AddReserve.js";
+import Categories from "../components/Categories.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -65,7 +67,7 @@ const Home = () => {
           <Route exact path="/notes" element={<Notes />} />
           <Route exact path="/doctorDetails" element={<DoctorDetails />} />
           <Route exact path="/reserveDetails" element={<ReserveDetails />} />
-          <Route exact path="/load" element={<LoadingSpinner />} />
+          <Route exact path="/categories" element={<Categories />} />
           <Route
             exact
             path="/settings"
@@ -79,6 +81,7 @@ const Home = () => {
           />
           <Route exact path="/addPatient" element={<AddPatient />} />
           <Route exact path="/addDoctor" element={<AddDoctor />} />
+          <Route exact path="/addReserve" element={<AddReserve />} />
           {userDet.email == "admin@hospi.com" ? (
             <Route exact path="/addAdmin" element={<AddAdmin />} />
           ) : (

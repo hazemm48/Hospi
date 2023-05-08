@@ -24,7 +24,7 @@ const DoctorDetails = () => {
   const GetReserves = async () => {
     let body = {
       oper: "get",
-      body: {
+      data: {
         filter: {
           doctorId: id.state,
         },
@@ -78,17 +78,23 @@ const DoctorDetails = () => {
     let formData = new FormData(formEl);
     let body = {
       details: {
-        email: formData.get("em"),
-        gender: formData.get("gen"),
-        phone: formData.get("ph"),
+        name: document.getElementById("name").value,
+        email: formData.get("email"),
+        gender: formData.get("gender"),
+        phone: formData.get("phone"),
         doctorInfo: {
-          city: formData.get("ci"),
-          address: formData.get("add"),
+          city: formData.get("city"),
+          room: formData.get("room"),
+          fees: {
+            examin:formData.get("examiFees"),
+            followUp:formData.get("followUpFees")
+          },
+          bio:formData.get("bio"),
           birthDate: moment(formData.get("bd"), "DDMMYYY")
             .tz("GMT+2")
             .format("MM-DD-YYYY"),
+          speciality:formData.get("speciality")
         },
-        name: document.getElementById("name").value,
       },
       id: state._id,
     };
@@ -234,13 +240,26 @@ const DoctorDetails = () => {
                                       </div>
                                       <div className="col-md-4">
                                         <div className="form-group">
-                                          <label>fees</label>
+                                          <label>examination fees</label>
                                           <input
-                                            name="fees"
+                                            name="examinFees"
                                             className="form-control"
                                             readOnly="readonly"
                                             defaultValue={
-                                              state.doctorInfo?.fees
+                                              state.doctorInfo?.fees.examin
+                                            }
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="col-md-4">
+                                        <div className="form-group">
+                                          <label>follow up fees</label>
+                                          <input
+                                            name="followUpFees"
+                                            className="form-control"
+                                            readOnly="readonly"
+                                            defaultValue={
+                                              state.doctorInfo?.fees.followUp
                                             }
                                           />
                                         </div>
