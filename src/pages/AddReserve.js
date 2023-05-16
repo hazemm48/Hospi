@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -9,14 +9,13 @@ import manImg from "../images/man.svg";
 
 const CreateReserve = () => {
   let navigate = useNavigate();
-  const {state} = useLocation();
-  console.log(state);
-  const [reserves, setReserves] = useState();
+  const { state } = useLocation();
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState();
   const [startDate, setStartDate] = useState();
   const [scheduleDay, setScheduleDay] = useState();
-  let type = state.type;
+  const [fees, setFees] = useState("followUp");
+
   const isWeekday = (date) => {
     const day = date.getDay(date);
     let weekDay = document.getElementById("day").value;
@@ -34,8 +33,15 @@ const CreateReserve = () => {
     setScheduleDay(0);
   };
   useEffect(() => {
-    GetDetails(state.id)
+    GetDetails(state.id);
   }, []);
+
+  const feesChange = (e) => {
+    let vtIndex = e.target.selectedIndex;
+    let vt = e.target.options[vtIndex].getAttribute("data");
+    setFees(vt);
+    //document.getElementById("fees").value=vt
+  };
 
   const submit = async () => {
     let formEl = document.forms.form;
@@ -45,10 +51,10 @@ const CreateReserve = () => {
       data[pair[0]] = pair[1];
     }
     data.time = JSON.parse(data.time);
-    data.type = type;
+    data.type = state.type;
     data.doctorId = userDetails._id;
     data.docName = userDetails.name;
-    data.anotherPerson=JSON.parse(data.anotherPerson)
+    data.anotherPerson = JSON.parse(data.anotherPerson);
     data.speciality = userDetails.speciality;
     if (data.email || data.phone) {
       let user = await users({ email: data.email, phone: data.phone });
@@ -58,13 +64,23 @@ const CreateReserve = () => {
       console.log(user);
     }
     let body = {
-      oper:"reserve",
-      data
-    }
+      oper: "reserve",
+      data,
+    };
     let reserveData = await reserve(body);
-    reserveData.err?alert(`ERROR: ${reserveData.err}`):alert(reserveData.message+`\nTurn : ${reserveData.add[0].turnNum}`)
+    reserveData.err
+      ? alert(`ERROR: ${reserveData.err}`)
+      : alert(reserveData.message + `\nTurn : ${reserveData.add[0].turnNum}`);
     console.log(reserveData);
   };
+
+  let time = ()=>{
+    let time= userDetails?.doctorInfo?.schedule[
+      scheduleDay
+    ].time
+    let timeCon = `${time.from} - ${time.to}`
+    return timeCon
+  }
 
   return (
     <React.Fragment>
@@ -75,7 +91,7 @@ const CreateReserve = () => {
           <div className="container-fluid">
             <div className="section patient-details-section">
               <div className="card ">
-                <h3>{type} Reserve</h3>
+                <h3>{state.type} Reserve</h3>
                 <div className="">
                   <div className="col ">
                     <div className="mini-card text-center">
@@ -135,10 +151,20 @@ const CreateReserve = () => {
                                 <select
                                   className="form-control form-select dropdown-toggle"
                                   name="visitType"
+                                  id="vt"
                                   required
+                                  onChange={(e) => {
+                                    feesChange(e);
+                                  }}
                                 >
-                                  <option value="follow up">Follow Up</option>
-                                  <option value="examination">
+                                  <option
+                                    selected
+                                    value="follow up"
+                                    data="followUp"
+                                  >
+                                    Follow Up
+                                  </option>
+                                  <option value="examination" data="examin">
                                     Examination
                                   </option>
                                 </select>
@@ -148,8 +174,9 @@ const CreateReserve = () => {
                               <div className="form-group">
                                 <label>fees</label>
                                 <input
-                                  defaultValue={userDetails.doctorInfo.fees}
+                                  value={userDetails?.doctorInfo?.fees[fees]}
                                   name="fees"
+                                  id="fees"
                                   className="form-control"
                                   required
                                 />
@@ -197,7 +224,14 @@ const CreateReserve = () => {
                             <div className="col-md-4">
                               <div className="form-group">
                                 <label>time</label>
-                                <select
+                                <input
+                                  name="phone"
+                                  className="form-control"
+                                  defaultValue={time()}
+                                  disabled
+                                  required
+                                />
+{/*                                 <select
                                   className="form-control form-select dropdown-toggle"
                                   name="time"
                                   required
@@ -215,7 +249,7 @@ const CreateReserve = () => {
                                       </option>
                                     );
                                   })}
-                                </select>
+                                </select> */}
                               </div>
                             </div>
                             <div className="col-md-4">

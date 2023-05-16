@@ -2,7 +2,9 @@ import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { updateUser, users, reserve, note } from "../adminAPI.js";
+import FilesCard from "../components/FilesCard.js";
 import LoadingSpinner from "../components/Loading.js";
+import NotesCard from "../components/NotesCard.js";
 import manImg from "../images/man.svg";
 import Notes from "./Notes.js";
 
@@ -475,74 +477,8 @@ const PatientDetails = () => {
                     </div>
                   </div>
                   <div className="col-md-4">
-                    <div className="card notes-card">
-                      <div className="card-header">
-                        <h5>
-                          notes
-                          <Link
-                            to="/home/notes"
-                            state={state._id}
-                            className="btn btn-dark-red-f btn-sm float-right"
-                          >
-                            see all
-                          </Link>
-                        </h5>
-                      </div>
-                      <div className="card-body">
-                        <textarea
-                          id="noteCon"
-                          className="form-control"
-                          placeholder="you can write patient notes over here"
-                          defaultValue=""
-                          rows={16}
-                        />
-                        <button
-                          className="btn btn-dark-red-f float-right btn-sm"
-                          onClick={() => {
-                            addNote();
-                          }}
-                        >
-                          <i className="las la-save" />
-                          save note
-                        </button>
-                      </div>
-                      <div className="card-footer">
-                        <div className="float-right">
-                          <p>{moment().format("DD, MMM, YYYY")}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="card files-card">
-                      <div className="card-header">
-                        <h5>
-                          files
-                          <button className="btn btn-dark-red-f btn-sm">
-                            <i className="las la-file-medical" />
-                            add file
-                          </button>
-                        </h5>
-                      </div>
-                      <div className="card-body">
-                        <div className="list-group list-group-flush">
-                          <a className="list-group-item">
-                            <i className="las la-file-excel" />
-                            check up results.csv
-                            <div className="float-right">
-                              <small className="text-muted">123kb</small>
-                              <div className="action-buttons no-display">
-                                <button className="btn btn-sm btn-dark-red-f">
-                                  <i className="las la-trash" />
-                                </button>
-                                <button className="btn btn-sm btn-dark-red-f">
-                                  <i className="las la-download" />
-                                </button>
-                              </div>
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
+                    <NotesCard id={state._id} />
+                    <FilesCard />
                   </div>
                 </div>
               </div>

@@ -1,16 +1,43 @@
 import moment from "moment-timezone";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { updateUser, users, reserve } from "../adminAPI.js";
+import { updateUser, users, reserve, getGeneral } from "../adminAPI.js";
+import FilesCard from "../components/FilesCard.js";
 import LoadingSpinner from "../components/Loading.js";
+import NotesCard from "../components/NotesCard.js";
+import Schedule from "../components/Schedule.js";
 import manImg from "../images/man.svg";
+import Calendar from "./Calender.js";
 
 const DoctorDetails = () => {
   const id = useLocation();
-  let status = "";
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
-  const [reserves, setreserves] = useState();
+  const [htmlData, setHtmlData] = useState([]);
+  const [specialities, setSpecialities] = useState();
+  const [calView, setCalView] = useState(false);
+
+  let createHtmlData = (state) => {
+    setHtmlData([
+      ["gender", state.gender, "gender"],
+      ["phone", state.phone, "phone number"],
+      ["room", state.doctorInfo.room, "room"],
+      ["examinFees", state.doctorInfo.fees.examin, "examination fees"],
+      ["followUpFees", state.doctorInfo.fees.followUp, "follow up fees"],
+      ["city", state.doctorInfo.city, "city"],
+      [
+        "bd",
+        moment(state.doctorInfo.birthDate).format("DD/MM/YYYY"),
+        "date of birth",
+      ],
+      ["sta", state.isLoggedIn ? "Online" : "Offline", "member status"],
+      [
+        "reg",
+        moment(state.createdAt).local().format("DD/MM/YYYY"),
+        "registered date",
+      ],
+    ]);
+  };
 
   const GetDetails = async () => {
     let body = {
@@ -18,64 +45,66 @@ const DoctorDetails = () => {
     };
     let user = await users(body);
     setState(user.users);
+    createHtmlData(user.users);
     setLoading(false);
   };
 
-  const GetReserves = async () => {
+  const GetSpecialities = async () => {
     let body = {
-      oper: "get",
-      data: {
-        filter: {
-          doctorId: id.state,
-        },
-        limit: 6,
-        sort: "date",
-      },
+      filter: "specialities",
     };
-    let reserves = await reserve(body);
-    setreserves(reserves.reservations);
+    let general = await getGeneral(body);
+    delete general.data[0].specialities[0];
+    setSpecialities(general.data[0].specialities);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setLoading(true);
     GetDetails();
-    //GetReserves();
+    GetSpecialities();
   }, []);
 
-  let age = moment().diff(state?.doctorInfo?.birthDate, "years");
-
-  const editPat = () => {
-    let elements = document
-      .getElementById("editDet")
-      .getElementsByTagName("input");
-    let iArr = Array.from(elements);
+  const editDoc = () => {
+    let elements = document.querySelectorAll("input,textArea,select");
     let x = false;
-    iArr.map((e) => {
-      if (e.readOnly == true) {
-        document.getElementById("name").removeAttribute("readOnly");
-        document.getElementById("reg").setAttribute("readonly", true);
-        document.getElementById("sta").setAttribute("readonly", true);
-        document.getElementById("bio").removeAttribute("readonly");
-        e.removeAttribute("readOnly");
-        document.getElementById("editPat").innerHTML = "submit";
-        return (x = false);
-      } else {
-        e.setAttribute("readonly", true);
-        document.getElementById("name").setAttribute("readonly", true);
-        document.getElementById("reg").setAttribute("readonly", true);
-        document.getElementById("bio").setAttribute("readonly", true);
-        document.getElementById("editPat").innerHTML = "Edit doctor";
-        return (x = true);
+    elements.forEach((e, i) => {
+      if (!["sta", "reg"].includes(e.name)) {
+        if (e.hasAttribute("disabled")) {
+          e.removeAttribute("disabled");
+          document.querySelector("#delSchBtn").removeAttribute("hidden");
+          document.getElementById("editDoc").innerHTML = "submit";
+          x = false;
+        } else {
+          x = true;
+        }
       }
     });
-    if (x) {
-      updatePat();
-    }
+    x && updateDoc();
   };
 
-  const updatePat = async () => {
+  const updateDoc = async () => {
     let formEl = document.forms.form;
     let formData = new FormData(formEl);
+    let schForm = document.forms.schForm;
+    let schFormData = new FormData(schForm);
+    let schedule = [];
+    let schObj = [];
+    console.log(formData);
+    schFormData.forEach((value, key) => {
+      let obj = {};
+      obj[key] = value;
+      schObj.push(obj);
+    });
+
+    for (let i = 0; i < schObj.length; i += 4) {
+      const three = [
+        schObj[i],
+        { time: { ...schObj[i + 1], ...schObj[i + 2] } },
+        schObj[i + 3],
+      ];
+      schedule.push(Object.assign({}, ...three));
+    }
+    console.log(schedule);
     let body = {
       details: {
         name: document.getElementById("name").value,
@@ -86,33 +115,28 @@ const DoctorDetails = () => {
           city: formData.get("city"),
           room: formData.get("room"),
           fees: {
-            examin:formData.get("examiFees"),
-            followUp:formData.get("followUpFees")
+            examin: formData.get("examinFees"),
+            followUp: formData.get("followUpFees"),
           },
-          bio:formData.get("bio"),
-          birthDate: moment(formData.get("bd"), "DDMMYYY")
-            .tz("GMT+2")
-            .format("MM-DD-YYYY"),
-          speciality:formData.get("speciality")
+          bio: formData.get("bio"),
+          birthDate: moment(formData.get("bd"), "DDMMYYYY").format(
+            "MM-DD-YYYY"
+          ),
+          speciality: formData.get("speciality"),
+          schedule: schedule,
         },
       },
       id: state._id,
     };
     console.log(body);
-    let update = await updateUser(body);
-    if (update.message == "update success") {
-      if (window.confirm("doctor Updated Successfully")) {
-        window.location.reload();
-      }
-    } else {
-      alert("Wrong Data");
-    }
-    console.log(body);
   };
+
   return (
     <React.Fragment>
       {loading ? (
         <LoadingSpinner />
+      ) : calView ? (
+        <Calendar filter={{doctorId:id.state}}/>
       ) : (
         <div className="main-content">
           {state ? (
@@ -137,10 +161,10 @@ const DoctorDetails = () => {
                 </div>
                 <div className="col-md-4">
                   <button
-                    id="editPat"
+                    id="editDoc"
                     className="btn btn-dark-red-f-gr"
                     onClick={() => {
-                      editPat();
+                      editDoc();
                     }}
                   >
                     <i className="las la-edit" />
@@ -166,10 +190,11 @@ const DoctorDetails = () => {
                                 </div>
                                 <div className="card-body">
                                   <input
+                                    name="name"
                                     id="name"
                                     className="form-control"
                                     defaultValue={state.name}
-                                    readOnly
+                                    disabled
                                     style={{ textAlign: "center" }}
                                   />
 
@@ -177,7 +202,12 @@ const DoctorDetails = () => {
                                     {state._id}
                                   </small>
                                   <h5>Age</h5>
-                                  <p>{age}</p>
+                                  <p>
+                                    {moment().diff(
+                                      state?.doctorInfo?.birthDate,
+                                      "years"
+                                    )}
+                                  </p>
                                 </div>
                               </div>
                             </div>
@@ -192,145 +222,43 @@ const DoctorDetails = () => {
                                     <div className="row">
                                       <div className="col-md-4">
                                         <div className="form-group">
-                                          <label>gender</label>
-                                          <input
-                                            name="gender"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={state.gender}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
                                           <label>speciality</label>
-                                          <input
+                                          <select
+                                            className="form-control form-select dropdown-toggle"
                                             name="speciality"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={
-                                              state.doctorInfo?.speciality
-                                            }
-                                          />
+                                            disabled
+                                          >
+                                            {specialities?.map((e) => {
+                                              return (
+                                                <option value={e}>{e}</option>
+                                              );
+                                            })}
+                                          </select>
                                         </div>
                                       </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>phone number</label>
-                                          <input
-                                            name="phone"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={state.phone}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>room</label>
-                                          <input
-                                            name="room"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={
-                                              state.doctorInfo?.room
-                                            }
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>examination fees</label>
-                                          <input
-                                            name="examinFees"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={
-                                              state.doctorInfo?.fees.examin
-                                            }
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>follow up fees</label>
-                                          <input
-                                            name="followUpFees"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={
-                                              state.doctorInfo?.fees.followUp
-                                            }
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>city</label>
-                                          <input
-                                            name="city"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={
-                                              state.doctorInfo?.city
-                                            }
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>date of birth</label>
-                                          <input
-                                            name="bd"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={
-                                              state.doctorInfo?.birthDate
-                                                ? moment(
-                                                    state.doctorInfo?.birthDate
-                                                  ).format("DD/MM/YYYY")
-                                                : ""
-                                            }
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>member status</label>
-                                          <input
-                                            id="sta"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={
-                                              state?.isLoggedIn
-                                                ? "Online"
-                                                : "Offline"
-                                            }
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>registered date</label>
-                                          <input
-                                            id="reg"
-                                            className="form-control"
-                                            readOnly="readonly"
-                                            defaultValue={moment(
-                                              new Date(
-                                                state.createdAt
-                                              ).toLocaleDateString()
-                                            ).format("DD/MM/YYYY")}
-                                          />
-                                        </div>
-                                      </div>
+                                      {htmlData.map((e) => {
+                                        return (
+                                          <div className="col-md-4">
+                                            <div className="form-group">
+                                              <label>{e[2]}</label>
+                                              <input
+                                                name={e[0]}
+                                                className="form-control"
+                                                disabled
+                                                defaultValue={e[1]}
+                                              />
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+
                                       <div className="col-md-12">
                                         <div className="form-group">
                                           <label>email</label>
                                           <input
                                             name="email"
                                             className="form-control"
-                                            readOnly="readonly"
+                                            disabled
                                             defaultValue={state.email}
                                           />
                                         </div>
@@ -339,13 +267,11 @@ const DoctorDetails = () => {
                                         <div className="form-group">
                                           <label>bioghraphy</label>
                                           <textarea
-                                            id="bio"
+                                            name="bio"
                                             className="form-control"
                                             rows={6}
-                                            readOnly="readonly"
-                                            defaultValue={
-                                              state.doctorInfo?.address
-                                            }
+                                            disabled
+                                            defaultValue={state.doctorInfo?.bio}
                                           />
                                         </div>
                                       </div>
@@ -357,66 +283,48 @@ const DoctorDetails = () => {
                           </div>
                         </div>
                       </div>
+                      <div className="col-sm-12">
+                        <div className="card">
+                          <form id="schForm" method="post">
+                            <div className="mini-card">
+                              <div className="card-body">
+                                <div className="row">
+                                  {state.doctorInfo?.schedule.map((e, i) => {
+                                    return (
+                                      <Schedule
+                                        docDetails={true}
+                                        key={i}
+                                        schDetails={e}
+                                        index={i}
+                                      />
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                      <div className="col-sm-12">
+                        <div className="card">
+                          <div className="mini-card">
+                            <div className="col-md-4">
+                              <button
+                                className="btn btn-dark-red-f-gr"
+                                onClick={()=>{setCalView(true)}}
+                              >
+                                <i className="las la-edit" />
+                                Calendar
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="col-md-4">
-                    <div className="card notes-card">
-                      <div className="card-header">
-                        <h5>
-                          notes
-                          <button className="btn btn-dark-red-f btn-sm">
-                            see all
-                          </button>
-                        </h5>
-                      </div>
-                      <div className="card-body">
-                        <textarea
-                          className="form-control"
-                          placeholder="you can write patient notes over here"
-                          rows={16}
-                          defaultValue={""}
-                        />
-                        <button className="btn btn-dark-red-f float-right btn-sm">
-                          <i className="las la-save" />
-                          save note
-                        </button>
-                      </div>
-                      <div className="card-footer">
-                        <div className="float-right">
-                          <p>{moment().format("DD, MMM, YYYY")}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="card files-card">
-                      <div className="card-header">
-                        <h5>
-                          files
-                          <button className="btn btn-dark-red-f btn-sm">
-                            <i className="las la-file-medical" />
-                            add file
-                          </button>
-                        </h5>
-                      </div>
-                      <div className="card-body">
-                        <div className="list-group list-group-flush">
-                          <a className="list-group-item">
-                            <i className="las la-file-excel" />
-                            check up results.csv
-                            <div className="float-right">
-                              <small className="text-muted">123kb</small>
-                              <div className="action-buttons no-display">
-                                <button className="btn btn-sm btn-dark-red-f">
-                                  <i className="las la-trash" />
-                                </button>
-                                <button className="btn btn-sm btn-dark-red-f">
-                                  <i className="las la-download" />
-                                </button>
-                              </div>
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
+                    <NotesCard id={state._id} />
+                    <FilesCard />
                   </div>
                 </div>
               </div>

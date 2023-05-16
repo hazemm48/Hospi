@@ -73,7 +73,17 @@ const SideNav = ()=> {
             title="Labs"
           >
             <i className="las la-vials la-lw" />
-            <span>Labs</span>
+            <span>Laboratory</span>
+          </NavLink>
+          <NavLink 
+            to="/home/general"
+            className="list-group-item"
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="general"
+          >
+            <i className="las la-globe la-lw" />
+            <span>General</span>
           </NavLink>
           <NavLink 
             to="/home/settings"

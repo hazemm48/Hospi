@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import setHours from "date-fns/setHours";
+import setMinutes from "date-fns/setMinutes";
 import { addUser, getGeneral } from "../adminAPI.js";
 import moment from "moment-timezone";
+import Schedule from "../components/Schedule.js";
 
 const AddDoctor = () => {
   const [specialities, setSpecialities] = useState();
+  const [scheduleNo, setScheduleNo] = useState(1);
 
   const data = async () => {
     let formEl = document.forms.form;
@@ -28,11 +33,10 @@ const AddDoctor = () => {
       schedule.push(Object.assign({}, ...three));
     }
     console.log(schedule);
-    let bd = moment(
-      formData.get("date"))
-      .format("MM-DD-YYYY");
+    let bd = moment(formData.get("date")).format("MM-DD-YYYY");
     let body = {
       details: {
+        name: formData.get("name"),
         email: formData.get("email"),
         gender: formData.get("gender"),
         phone: formData.get("phone"),
@@ -42,13 +46,12 @@ const AddDoctor = () => {
           speciality: formData.get("speciality"),
           bio: formData.get("bio"),
           fees: {
-            examin:formData.get("examinFees"),
-            followUp:formData.get("followUpFees")
+            examin: formData.get("examinFees"),
+            followUp: formData.get("followUpFees"),
           },
           room: formData.get("room"),
           schedule: schedule,
         },
-        name: formData.get("name"),
         password: formData.get("password"),
         role: "doctor",
       },
@@ -69,18 +72,12 @@ const AddDoctor = () => {
       filter: "specialities",
     };
     let general = await getGeneral(body);
-   delete general.data[0].specialities[0]
+    delete general.data[0].specialities[0];
     setSpecialities(general.data[0].specialities);
   };
   useEffect(() => {
     GetSpecialities();
   }, []);
-
-  let addSch = () => {
-    let schCard = document.getElementById("schedule").outerHTML;
-    let schBtn = document.getElementById("schBtn");
-    schBtn.insertAdjacentHTML("beforebegin", `${schCard}`);
-  };
   return (
     <div className="main-content">
       <div className="container-fluid">
@@ -121,12 +118,9 @@ const AddDoctor = () => {
                             className="form-control form-select dropdown-toggle"
                             name="speciality"
                           >
-                            {specialities?.map((e)=>{
-                              return(
-                                <option value={e}>{e}</option>
-                              )
+                            {specialities?.map((e) => {
+                              return <option value={e}>{e}</option>;
                             })}
-                            
                           </select>
                         </div>
                         <div className="form-group col-sm-8">
@@ -152,6 +146,8 @@ const AddDoctor = () => {
                               </span>
                             </div>
                           </div>
+                        </div>
+                        <div className="form-group col-sm-3 ">
                           <label>Follow Up Fees</label>
                           <div className="input-group">
                             <input
@@ -174,58 +170,20 @@ const AddDoctor = () => {
                           <div className="form-group col-sm-8 card">
                             <label>Schedule</label>
                             <form id="schForm" method="post">
-                              <div
-                                id="schedule"
-                                name="schedule"
-                                className="form-row"
-                              >
-                                <div className="form-group col-sm-5">
-                                  <label>day</label>
-                                  <select
-                                    className="form-control form-select dropdown-toggle"
-                                    name="day"
-                                  >
-                                    <option value="saturday">saturday</option>
-                                    <option value="sunday">sunday</option>
-                                    <option value="monday">monday</option>
-                                    <option value="tuesday">tuesday</option>
-                                    <option value="wednesday">wednesday</option>
-                                    <option value="thursday">thursday</option>
-                                    <option value="friday">friday</option>
-                                  </select>
-                                </div>
-                                <div className="form-group col-sm-3">
-                                  <label>From</label>
-                                  <input
-                                    type="time"
-                                    className="form-control"
-                                    name="from"
+                              {[...Array(scheduleNo)].map((e, i) => {
+                                return (
+                                  <Schedule
+                                    key={i}
                                   />
-                                </div>
-                                <div className="form-group col-sm-3">
-                                  <label>To</label>
-                                  <input
-                                    type="time"
-                                    className="form-control"
-                                    name="to"
-                                  />
-                                </div>
-                                <div className="form-group col-sm-3">
-                                  <label>Limit</label>
-                                  <input
-                                    type="number"
-                                    className="form-control"
-                                    placeholder="10"
-                                    name="limit"
-                                  />
-                                </div>
-                              </div>
+                                );
+                              })}
+
                               <button
                                 id="schBtn"
                                 className="btn btn-dark-f-gr mt-4"
                                 type="button"
                                 onClick={() => {
-                                  addSch();
+                                  setScheduleNo(scheduleNo + 1);
                                 }}
                               >
                                 <i className="las la-plus" />
