@@ -25,26 +25,18 @@ const Calendar = (props) => {
   useEffect(() => {
     if (props.type == "res") {
       setHeadLeft("prev,next today doctor,lab,rad");
-      setCusBtns({
-        doctor: {
-          text: "Doctor",
+      let arr = ["doctor", "lab", "rad"];
+      let obj = {};
+      arr.map((e) => {
+        console.log(e);
+        obj[e] = {
+          text: e,
           click: () => {
-            setType("doctor");
+            setType(e);
           },
-        },
-        lab: {
-          text: "Lab",
-          click: () => {
-            setType("lab");
-          },
-        },
-        rad: {
-          text: "Rad",
-          click: () => {
-            setType("rad");
-          },
-        },
+        };
       });
+      setCusBtns(obj);
     }
   }, []);
 

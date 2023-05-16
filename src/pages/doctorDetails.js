@@ -307,17 +307,13 @@ const DoctorDetails = () => {
                       </div>
                       <div className="col-sm-12">
                         <div className="card">
-                          <div className="mini-card">
-                            <div className="col-md-4">
                               <button
                                 className="btn btn-dark-red-f-gr"
                                 onClick={()=>{setCalView(true)}}
                               >
-                                <i className="las la-edit" />
-                                Calendar
+                                <i className="las la-calendar-day" />
+                               View Calendar
                               </button>
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>
