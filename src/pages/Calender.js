@@ -5,26 +5,60 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { reserve } from "../adminAPI.js";
 import moment from "moment";
-import { useLocation, useNavigate } from "react-router-dom";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import bootstrap5Plugin from "@fullcalendar/bootstrap5";
+import { useNavigate } from "react-router-dom";
 
 const Calendar = (props) => {
   const [reserves, setReserves] = useState();
   const [events, setEvents] = useState();
   const [month, setMonth] = useState(moment().get("month") + 1);
   const [year, setYear] = useState(moment().get("year"));
+  const [type, setType] = useState();
+  const [headLeft, setHeadLeft] = useState("prev,next today");
+  const [cusBtns, setCusBtns] = useState();
 
   let navigate = useNavigate();
 
   let calenderRef = React.createRef();
 
+  useEffect(() => {
+    if (props.type == "res") {
+      setHeadLeft("prev,next today doctor,lab,rad");
+      setCusBtns({
+        doctor: {
+          text: "Doctor",
+          click: () => {
+            setType("doctor");
+          },
+        },
+        lab: {
+          text: "Lab",
+          click: () => {
+            setType("lab");
+          },
+        },
+        rad: {
+          text: "Rad",
+          click: () => {
+            setType("rad");
+          },
+        },
+      });
+    }
+  }, []);
+
   const GetReserves = async () => {
     let data = { month: month, year: year };
-    if(props.filter){
-      data.filter=props.filter
+    if (props.filter) {
+      data.filter = props.filter;
+    }
+    if (type) {
+      data.filter = { ...data.filter, type: type };
     }
     let body = {
       oper: "get",
-      data: data
+      data: data,
     };
     let reserves = await reserve(body);
     let result = reserves.reservations;
@@ -36,15 +70,20 @@ const Calendar = (props) => {
     reserves.map((e) => {
       let start = `${moment(e.date).format("YYYY-MM-DD")} ${e.time.from}`;
       let end = `${moment(e.date).format("YYYY-MM-DD")} ${e.time.to}`;
-      console.log();
-      obj.push({ id: e._id, title: `${e.type} reserve`, start, end });
+      obj.push({
+        id: e._id,
+        title: `${e.type} reserve`,
+        start,
+        end,
+        display: "block",
+      });
     });
     setEvents(obj);
   };
 
   useEffect(() => {
     GetReserves();
-  }, [month]);
+  }, [month, type]);
 
   useEffect(() => {
     if (reserves) {
@@ -77,14 +116,21 @@ const Calendar = (props) => {
           <div className="App">
             <FullCalendar
               ref={calenderRef}
-              plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+              customButtons={cusBtns}
+              plugins={[
+                dayGridPlugin,
+                interactionPlugin,
+                timeGridPlugin,
+                bootstrap5Plugin,
+              ]}
               headerToolbar={{
-                left: "prev,next today",
+                left: headLeft,
                 center: "title",
                 right: "dayGridMonth,timeGridWeek,timeGridDay",
               }}
               initialDate={moment().toDate()}
               selectable={true}
+              themeSystem={"bootstrap5"}
               initialView={"dayGridMonth"}
               datesSet={handleDateChange}
               showNonCurrentDates={false}

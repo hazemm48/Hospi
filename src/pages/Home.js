@@ -64,7 +64,7 @@ const Home = () => {
           <Route exact path="/patientDetails" element={<PatientDetails />} />
           <Route exact path="/notes" element={<Notes />} />
           <Route exact path="/doctorDetails" element={<DoctorDetails />} />
-          <Route exact path="/reservations" element={<Calendar />} />
+          <Route exact path="/reservations" element={<Calendar type={"res"}/>} />
           <Route exact path="/reserveDetails" element={<ReserveDetails />} />
           <Route exact path="/categories" element={<Categories />} />
           <Route
