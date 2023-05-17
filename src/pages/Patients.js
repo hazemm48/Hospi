@@ -10,6 +10,7 @@ const Patients = () => {
   const [patients, setPatients] = useState();
   const [pageNo, setPageNo] = useState();
   const [length, setLength] = useState();
+  const [srchFilter, setSrchFilter] = useState();
   let resultLimit = 12;
 
   const GetDetails = async () => {
@@ -27,6 +28,7 @@ const Patients = () => {
       pageNo: currentPage,
       limit: resultLimit,
     };
+    srchFilter && (body.filter = srchFilter);
     let user = await users(body);
     setLength(user.length);
     setPatients(user.users);
@@ -35,7 +37,25 @@ const Patients = () => {
   useEffect(() => {
     setLoading(true);
     GetDetails();
-  }, []);
+  }, [srchFilter]);
+
+  let searchData = () => {
+    let formEl = document.forms.search;
+    let formData = new FormData(formEl);
+    let searchIn = formData.get("search");
+    let srchSlct = formData.get("srchSlct");
+    let data = {};
+    if (
+      !((srchSlct == "_id" && (searchIn.length < 24 || searchIn.length > 24))||srchSlct=="all")
+    ) {
+      data[srchSlct] = searchIn;
+      setSrchFilter(data);
+    }
+    if(srchSlct=="all"){
+      formEl.querySelector("input").value=""
+      setSrchFilter()
+    }
+  };
 
   let changeViewCard = () => {
     document.getElementById("cv").classList.remove("no-display");
@@ -79,78 +99,104 @@ const Patients = () => {
   };
 
   return (
-    <React.Fragment>
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <div className="main-content">
-          <div className="container-fluid">
-            <div className="section title-section">
-              <h5 className="page-title">Patients</h5>
+    <div className="main-content">
+      <div className="container-fluid">
+        <div className="section title-section">
+          <h5 className="page-title">Patients</h5>
+        </div>
+        <div className="section filters-section">
+          <div className="dropdowns-wrapper">
+            <div className="dropdown">
+              <select
+                id="sort"
+                className="form-select dropdown-toggle"
+                role="button"
+                onChange={() => {
+                  GetDetails();
+                }}
+              >
+                <option selected value="-createdAt">
+                  Newest
+                </option>
+                <option value="createdAt">Oldest</option>
+                <option value="name">Name ascending</option>
+                <option value="-name">Name descending</option>
+                <option value="-patientInfo.birthDate">New born</option>
+                <option value="patientInfo.birthDate">Old born</option>
+                <option value="-gender">Male</option>
+                <option value="gender">Female</option>
+              </select>
             </div>
-            <div className="section filters-section">
-              <div className="dropdowns-wrapper">
-                <div className="dropdown">
-                  <select
-                    id="sort"
-                    className="form-select dropdown-toggle"
-                    role="button"
-                    onChange={() => {
-                      GetDetails();
-                    }}
-                  >
-                    <option selected value="-createdAt">
-                      Newest
-                    </option>
-                    <option value="createdAt">Oldest</option>
-                    <option value="name">Name ascending</option>
-                    <option value="-name">Name descending</option>
-                    <option value="-patientInfo.birthDate">New born</option>
-                    <option value="patientInfo.birthDate">Old born</option>
-                    <option value="-gender">Male</option>
-                    <option value="gender">Female</option>
-                  </select>
+          </div>
+          <div className="switch-view-btns">
+            <div className="btn-group btn-group-toggle" data-toggle="buttons">
+              <label id="card" className="btn btn-darker-grey-o active">
+                <input
+                  id="card-view-btn"
+                  type="radio"
+                  name="options"
+                  defaultChecked
+                  onClick={() => {
+                    changeViewCard();
+                  }}
+                />
+                <i className="las la-th-large" />
+              </label>
+              <label id="tab" className="btn btn-darker-grey-o">
+                <input
+                  id="table-view-btn"
+                  type="radio"
+                  name="options"
+                  onClick={() => {
+                    changeViewRow();
+                  }}
+                />
+                <i className="las la-list-ul" />
+              </label>
+            </div>
+          </div>
+          <form id="search" method="post" className="ml-auto">
+            <div className="form">
+              <div className="form-group col-sm-12">
+                <div className="input-group ">
+                  <div class="input-group-append">
+                    <select class="input-group-text" name="srchSlct" required>
+                      <option value="all">All</option>
+                      <option value="_id">ID</option>
+                      <option value="name">Name</option>
+                      <option value="email">Email</option>
+                    </select>
+                  </div>
+                  <input name="search" className="form-control" />
+                  <div class="input-group-append">
+                    <button
+                      type="button"
+                      className="input-group-text"
+                      id="basic-addon2"
+                      onClick={() => {
+                        searchData();
+                      }}
+                    >
+                      <i className="las la-search" />
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div className="switch-view-btns">
-                <div
-                  className="btn-group btn-group-toggle"
-                  data-toggle="buttons"
-                >
-                  <label id="card" className="btn btn-darker-grey-o active">
-                    <input
-                      id="card-view-btn"
-                      type="radio"
-                      name="options"
-                      defaultChecked
-                      onClick={() => {
-                        changeViewCard();
-                      }}
-                    />
-                    <i className="las la-th-large" />
-                  </label>
-                  <label id="tab" className="btn btn-darker-grey-o">
-                    <input
-                      id="table-view-btn"
-                      type="radio"
-                      name="options"
-                      onClick={() => {
-                        changeViewRow();
-                      }}
-                    />
-                    <i className="las la-list-ul" />
-                  </label>
-                </div>
-              </div>
-              <div className="buttons-wrapper ml-auto">
-                <Link to="/home/addPatient">
-                  <button className="btn btn-dark-red-f-gr">
-                    <i className="las la-plus-circle" />
-                    add a new patient
-                  </button>
-                </Link>
-              </div>
             </div>
+          </form>
+          <div className="buttons-wrapper ml-auto">
+            <Link to="/home/addPatient">
+              <button className="btn btn-dark-red-f-gr">
+                <i className="las la-plus-circle" />
+                add a new patient
+              </button>
+            </Link>
+          </div>
+        </div>
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <>
             <div
               class="section "
               id="data-table6_info"
@@ -271,30 +317,30 @@ const Patients = () => {
                 </tbody>
               </table>
             </div>
-          </div>
-          <div aria-label="Page navigation example" className="section">
-            <ul class="pagination justify-content-start">
-              <li class="page-item disabled">
-                <a class="page-link" tabindex="-1">
-                  Pages
-                </a>
-              </li>
-              <li
-                class="page-item active"
-                onClick={(e) => {
-                  changePage(e);
-                }}
-              >
-                <button class="page-link" name="page" tabIndex="1">
-                  1
-                </button>
-              </li>
-              {pagination()}
-            </ul>
-          </div>
-        </div>
-      )}
-    </React.Fragment>
+          </>
+        )}
+      </div>
+      <div aria-label="Page navigation example" className="section">
+        <ul class="pagination justify-content-start">
+          <li class="page-item disabled">
+            <a class="page-link" tabindex="-1">
+              Pages
+            </a>
+          </li>
+          <li
+            class="page-item active"
+            onClick={(e) => {
+              changePage(e);
+            }}
+          >
+            <button class="page-link" name="page" tabIndex="1">
+              1
+            </button>
+          </li>
+          {pagination()}
+        </ul>
+      </div>
+    </div>
   );
 };
 

@@ -9,6 +9,19 @@ import Schedule from "../components/Schedule.js";
 const AddDoctor = () => {
   const [specialities, setSpecialities] = useState();
   const [scheduleNo, setScheduleNo] = useState(1);
+  let [htmlData, setHtmlData] = useState();
+
+  let createHtmlData = (state) => {
+    setHtmlData([
+      ["Name", "name", "text"],
+      ["Email", "email", "email"],
+      ["Password", "password", "password"],
+      ["City", "city", "text"],
+      ["Birthday", "date", "date"],
+      ["Phone Number", "phone", "number"],
+      ["Room", "room", "text"],
+    ]);
+  };
 
   const data = async () => {
     let formEl = document.forms.form;
@@ -32,7 +45,6 @@ const AddDoctor = () => {
       ];
       schedule.push(Object.assign({}, ...three));
     }
-    console.log(schedule);
     let bd = moment(formData.get("date")).format("MM-DD-YYYY");
     let body = {
       details: {
@@ -77,6 +89,7 @@ const AddDoctor = () => {
   };
   useEffect(() => {
     GetSpecialities();
+    createHtmlData();
   }, []);
   return (
     <div className="main-content">
@@ -92,31 +105,36 @@ const AddDoctor = () => {
                   <div className="user-password-form">
                     <form id="form" method="post">
                       <div className="form">
-                        <div className="form-group col-sm-8">
-                          <label>Name</label>
-                          <input className="form-control" name="name" />
-                        </div>
-                        <div className="form-group col-sm-8">
-                          <label>Email</label>
-                          <input className="form-control" name="email" />
-                        </div>
-                        <div className="form-group col-sm-8">
-                          <label>Password</label>
-                          <input
-                            className="form-control"
-                            type="password"
-                            name="password"
-                          />
-                        </div>
-                        <div className="form-group col-sm-8">
-                          <label>City</label>
-                          <input className="form-control" name="city" />
+                        {htmlData?.map((e) => {
+                          return (
+                            <div className="form-group col-sm-8">
+                              <label>{e[0]}</label>
+                              <input
+                                className="form-control"
+                                name={e[1]}
+                                type={e[2] ? e[2] : ""}
+                                required
+                              />
+                            </div>
+                          );
+                        })}
+                        <div className="form-group col-sm-2">
+                          <label>Gender</label>
+                          <select
+                            className="form-control form-select dropdown-toggle"
+                            name="gender"
+                            required
+                          >
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                          </select>
                         </div>
                         <div className="form-group col-sm-5">
                           <label>speciality</label>
                           <select
                             className="form-control form-select dropdown-toggle"
                             name="speciality"
+                            required
                           >
                             {specialities?.map((e) => {
                               return <option value={e}>{e}</option>;
@@ -130,58 +148,48 @@ const AddDoctor = () => {
                             rows="3"
                             maxlength="150"
                             name="bio"
+                            required
                           />
                         </div>
-                        <div className="form-group col-sm-3 ">
-                          <label>Examination Fees</label>
-                          <div className="input-group">
-                            <input
-                              type="number"
-                              class="form-control"
-                              name="examinFees"
-                            />
-                            <div class="input-group-append">
-                              <span class="input-group-text" id="basic-addon2">
-                                LE
-                              </span>
+                        {[
+                          ["Examination Fees", "examinFees"],
+                          ["Follow Up Fees", "followUpFees"],
+                        ].map((e) => {
+                          return (
+                            <div className="form-group col-sm-3 ">
+                              <label>{e[0]}</label>
+                              <div className="input-group">
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  name={e[1]}
+                                  required
+                                />
+                                <div class="input-group-append">
+                                  <span
+                                    class="input-group-text"
+                                    id="basic-addon2"
+                                  >
+                                    LE
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                        <div className="form-group col-sm-3 ">
-                          <label>Follow Up Fees</label>
-                          <div className="input-group">
-                            <input
-                              type="number"
-                              class="form-control"
-                              name="followUpFees"
-                            />
-                            <div class="input-group-append">
-                              <span class="input-group-text" id="basic-addon2">
-                                LE
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="form-group col-sm-2">
-                          <label>Room</label>
-                          <input className="form-control" name="room" />
-                        </div>
+                          );
+                        })}
                         <div className="form">
                           <div className="form-group col-sm-8 card">
                             <label>Schedule</label>
                             <form id="schForm" method="post">
                               {[...Array(scheduleNo)].map((e, i) => {
-                                return (
-                                  <Schedule
-                                    key={i}
-                                  />
-                                );
+                                return <Schedule key={i} />;
                               })}
 
                               <button
                                 id="schBtn"
                                 className="btn btn-dark-f-gr mt-4"
                                 type="button"
+                                required
                                 onClick={() => {
                                   setScheduleNo(scheduleNo + 1);
                                 }}
@@ -191,33 +199,6 @@ const AddDoctor = () => {
                               </button>
                             </form>
                           </div>
-                        </div>
-
-                        <div className="form-group col-sm-6">
-                          <label>Birthday</label>
-                          <div className="form-row">
-                            <div className="form-group col-sm-6">
-                              <input
-                                type="date"
-                                className="form-control"
-                                name="date"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="form-group col-sm-8">
-                          <label>Phone Number</label>
-                          <input className="form-control" name="phone" />
-                        </div>
-                        <div className="form-group col-sm-2">
-                          <label>Gender</label>
-                          <select
-                            className="form-control form-select dropdown-toggle"
-                            name="gender"
-                          >
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                          </select>
                         </div>
                       </div>
 

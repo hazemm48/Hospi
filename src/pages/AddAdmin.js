@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { addUser } from "../adminAPI.js";
 
 const AddAdmin = () => {
+  let [htmlData, setHtmlData] = useState();
+
+  let createHtmlData = (state) => {
+    setHtmlData([
+      ["Name", "name", "text"],
+      ["Email", "email", "email"],
+      ["Password", "password", "password"],
+    ]);
+  };
+
+  useEffect(() => {
+    createHtmlData();
+  }, []);
+
   const data = async () => {
     let formEl = document.forms.form;
     let formData = new FormData(formEl);
@@ -35,22 +49,29 @@ const AddAdmin = () => {
               <div className="sub-section col-sm-8 col-md-12 col-lg-8">
                 <div className="sub-section-body">
                   <div className="user-password-form">
-                    <form id="form" >
+                    <form id="form">
                       <div className="form-row">
-                        <div className="form-group col-sm-8">
-                          <label>Name</label>
-                          <input name="name" className="form-control" required/>
-                        </div>
-                        <div className="form-group col-sm-8">
-                          <label>Email</label>
-                          <input name="email" className="form-control" type="email" required/>
-                        </div>
-                        <div className="form-group col-sm-8">
-                          <label>Password</label>
-                          <input name="password" className="form-control" type="password" required />
-                        </div>
+                        {htmlData?.map((e) => {
+                          return (
+                            <div className="form-group col-sm-8">
+                              <label>{e[0]}</label>
+                              <input
+                                name={e[1]}
+                                className="form-control"
+                                type={e[2]}
+                                required
+                              />
+                            </div>
+                          );
+                        })}
                       </div>
-                      <button className="btn btn-dark-red-f-gr mt-4" type="button" onClick={()=>{data()}}>
+                      <button
+                        className="btn btn-dark-red-f-gr mt-4"
+                        type="button"
+                        onClick={() => {
+                          data();
+                        }}
+                      >
                         <i className="las la-save" />
                         submit
                       </button>

@@ -20,7 +20,6 @@ main .filters-section .switch-view-btns .btn-group .active {
   color: white;
 }
 main .filters-section .dropdowns-wrapper {
-  display: flex;
   margin-right: 1em;
 }
 main .filters-section .dropdowns-wrapper .dropdown:not(:first-of-type),
