@@ -98,6 +98,7 @@ const Schedule = (props) => {
         <DatePicker
           className="form-control"
           name="from"
+          required
           selected={fromTime}
           showTimeSelect
           showTimeSelectOnly
@@ -114,6 +115,7 @@ const Schedule = (props) => {
         <DatePicker
           className="form-control"
           name="to"
+          required
           selected={toTime}
           showTimeSelect
           showTimeSelectOnly
@@ -128,7 +130,7 @@ const Schedule = (props) => {
       </div>
       <div className="form-group col-sm-3">
         <label>Limit</label>
-        <input type="number" className="form-control" name="limit" />
+        <input type="number" className="form-control" name="limit" required/>
       </div>
       <div className="form-group col-sm-2">
         <button

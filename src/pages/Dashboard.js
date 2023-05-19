@@ -40,7 +40,7 @@ const Dashboard = (props) => {
         },
         sort: "date",
         limit: 5,
-        count:true
+        count: true,
       },
     };
     let reserves = await reserve(resBody);
@@ -95,12 +95,12 @@ const Dashboard = (props) => {
                         <div className="col-md-4">
                           <i className="las la-user-injured la-3x align-self-center" />
                           <p>total patients</p>
-                          <h4>{patients?.length?patients?.length:"0"}</h4>
+                          <h4>{patients?.length ? patients?.length : "0"}</h4>
                         </div>
                         <div className="col-md-4">
                           <i className="las la-stethoscope la-3x align-self-center" />
                           <p>total doctors</p>
-                          <h4>{doctors?.length?doctors.length:"0"}</h4>
+                          <h4>{doctors?.length ? doctors.length : "0"}</h4>
                         </div>
                         <div className="col-md-4">
                           <i className="las la-calendar-check la-3x align-self-center" />
@@ -276,7 +276,7 @@ const Dashboard = (props) => {
                       <table className="table table-borderless table-hover table-responsive-md">
                         <tbody>
                           {doctors
-                            ? doctors.map((doc) => {
+                            ? doctors.slice(0, 5).map((doc) => {
                                 return (
                                   <tr>
                                     <td>
@@ -299,9 +299,13 @@ const Dashboard = (props) => {
                                       <p>{doc.phone}</p>
                                     </td>
                                     <td className="text-right">
-                                      <button className="btn btn-dark-red-f btn-sm">
+                                      <Link
+                                        to="/home/addReserve"
+                                        state={{ id: doc._id, type: "doctor" }}
+                                        className="btn btn-dark-red-f btn-sm"
+                                      >
                                         reserve
-                                      </button>
+                                      </Link>
                                     </td>
                                     <td>
                                       <Link
@@ -362,11 +366,15 @@ const Dashboard = (props) => {
                                     </td>
                                     <td className="text-muted">
                                       <p>
-                                        {moment(reserve.time.from, "HH:mm").format(
-                                          "h:mm"
-                                        )}-{moment(reserve.time.to, "HH:mm").format(
-                                          "h:mm A"
-                                        )} 
+                                        {moment(
+                                          reserve.time.from,
+                                          "HH:mm"
+                                        ).format("h:mm")}
+                                        -
+                                        {moment(
+                                          reserve.time.to,
+                                          "HH:mm"
+                                        ).format("h:mm A")}
                                       </p>
                                     </td>
                                     <td>

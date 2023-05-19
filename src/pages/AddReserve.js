@@ -14,7 +14,7 @@ const CreateReserve = () => {
   const [userDetails, setUserDetails] = useState();
   const [startDate, setStartDate] = useState();
   const [scheduleDay, setScheduleDay] = useState();
-  const [fees, setFees] = useState("followUp");
+  const [fees, setFees] = useState("examin");
 
   const isWeekday = (date) => {
     const day = date.getDay(date);
@@ -40,7 +40,6 @@ const CreateReserve = () => {
     let vtIndex = e.target.selectedIndex;
     let vt = e.target.options[vtIndex].getAttribute("data");
     setFees(vt);
-    //document.getElementById("fees").value=vt
   };
 
   const submit = async () => {
@@ -50,18 +49,17 @@ const CreateReserve = () => {
     for (const pair of formData.entries()) {
       data[pair[0]] = pair[1];
     }
-    data.time = JSON.parse(data.time);
+    data.time = userDetails.doctorInfo?.schedule[scheduleDay].time;
     data.type = state.type;
     data.doctorId = userDetails._id;
     data.docName = userDetails.name;
     data.anotherPerson = JSON.parse(data.anotherPerson);
-    data.speciality = userDetails.speciality;
+    data.speciality = userDetails.doctorInfo?.speciality;
     if (data.email || data.phone) {
       let user = await users({ email: data.email, phone: data.phone });
       if (user.users.length > 0) {
         data.patientId = user.users[0]._id;
       }
-      console.log(user);
     }
     let body = {
       oper: "reserve",
@@ -74,13 +72,11 @@ const CreateReserve = () => {
     console.log(reserveData);
   };
 
-  let time = ()=>{
-    let time= userDetails?.doctorInfo?.schedule[
-      scheduleDay
-    ].time
-    let timeCon = `${time.from} - ${time.to}`
-    return timeCon
-  }
+  let time = () => {
+    let time = userDetails?.doctorInfo?.schedule[scheduleDay].time;
+    let timeCon = `${time.from} - ${time.to}`;
+    return timeCon;
+  };
 
   return (
     <React.Fragment>
@@ -149,23 +145,24 @@ const CreateReserve = () => {
                               <div className="form-group">
                                 <label>visit type</label>
                                 <select
-                                  className="form-control form-select dropdown-toggle"
+                                  className="selectpicker form-control form-select dropdown-toggle"
                                   name="visitType"
                                   id="vt"
                                   required
+                                  data-live-search="true"
                                   onChange={(e) => {
                                     feesChange(e);
                                   }}
                                 >
                                   <option
                                     selected
-                                    value="follow up"
-                                    data="followUp"
+                                    value="examination"
+                                    data="examin"
                                   >
-                                    Follow Up
-                                  </option>
-                                  <option value="examination" data="examin">
                                     Examination
+                                  </option>
+                                  <option value="follow up" data="followUp">
+                                    Follow Up
                                   </option>
                                 </select>
                               </div>
@@ -225,31 +222,11 @@ const CreateReserve = () => {
                               <div className="form-group">
                                 <label>time</label>
                                 <input
-                                  name="phone"
                                   className="form-control"
-                                  defaultValue={time()}
+                                  value={time()}
                                   disabled
                                   required
                                 />
-{/*                                 <select
-                                  className="form-control form-select dropdown-toggle"
-                                  name="time"
-                                  required
-                                >
-                                  {userDetails?.doctorInfo?.schedule[
-                                    scheduleDay
-                                  ].time.map((t, i) => {
-                                    return (
-                                      <option value={i}>
-                                        {`${moment(t.from, "HH:mm").format(
-                                          "h:mm A"
-                                        )} - ${moment(t.to, "HH:mm").format(
-                                          "h:mm A"
-                                        )}`}
-                                      </option>
-                                    );
-                                  })}
-                                </select> */}
                               </div>
                             </div>
                             <div className="col-md-4">

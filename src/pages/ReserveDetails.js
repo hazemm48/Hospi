@@ -149,7 +149,7 @@ const ReserveDetails = () => {
                         <div className="d-flex justify-content-end ">
                           <button
                             id="deleteRes"
-                            className="btn btn-dark-red-f-gr col-md-2"
+                            className="btn btn-red-f-gr col-md-2"
                             style={{
                               margin: "0.3em",
                             }}

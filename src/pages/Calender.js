@@ -24,8 +24,8 @@ const Calendar = (props) => {
 
   useEffect(() => {
     if (props.type == "res") {
-      setHeadLeft("prev,next today doctor,lab,rad");
-      let arr = ["doctor", "lab", "rad"];
+      setHeadLeft("prev,next today all,doctor,lab,rad");
+      let arr = ["all","doctor", "lab", "rad"];
       let obj = {};
       arr.map((e) => {
         console.log(e);
@@ -45,23 +45,25 @@ const Calendar = (props) => {
     if (props.filter) {
       data.filter = props.filter;
     }
-    if (type) {
+    if (type&&type!="all") {
       data.filter = { ...data.filter, type: type };
     }
     let body = {
       oper: "get",
       data: data,
     };
+    console.log(body);
     let reserves = await reserve(body);
     let result = reserves.reservations;
     setReserves(result);
+    console.log(reserves);
   };
 
   let addEvents = () => {
     let obj = [];
     reserves.map((e) => {
-      let start = `${moment(e.date).format("YYYY-MM-DD")} ${e.time.from}`;
-      let end = `${moment(e.date).format("YYYY-MM-DD")} ${e.time.to}`;
+      let start = `${moment(e.date).format("YYYY-MM-DD")} ${moment(e.time.from,"h:mm A").format("HH:mm")}`;
+      let end = `${moment(e.date).format("YYYY-MM-DD")} ${moment(e.time.to,"h:mm A").format("HH:mm")}`;
       obj.push({
         id: e._id,
         title: `${e.type} reserve`,

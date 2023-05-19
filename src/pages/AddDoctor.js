@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
-import { addUser, getGeneral } from "../adminAPI.js";
+import { addUser, getGeneral, rooms } from "../adminAPI.js";
 import moment from "moment-timezone";
 import Schedule from "../components/Schedule.js";
 
@@ -10,6 +10,7 @@ const AddDoctor = () => {
   const [specialities, setSpecialities] = useState();
   const [scheduleNo, setScheduleNo] = useState(1);
   let [htmlData, setHtmlData] = useState();
+  let [roomList, setRoomList] = useState();
 
   let createHtmlData = (state) => {
     setHtmlData([
@@ -19,7 +20,6 @@ const AddDoctor = () => {
       ["City", "city", "text"],
       ["Birthday", "date", "date"],
       ["Phone Number", "phone", "number"],
-      ["Room", "room", "text"],
     ]);
   };
 
@@ -33,6 +33,9 @@ const AddDoctor = () => {
 
     schFormData.forEach((value, key) => {
       let obj = {};
+      if (["from", "to"].includes(key)) {
+        value = moment(value, "h:mm A").format("HH:mm");
+      }
       obj[key] = value;
       schObj.push(obj);
     });
@@ -46,6 +49,7 @@ const AddDoctor = () => {
       schedule.push(Object.assign({}, ...three));
     }
     let bd = moment(formData.get("date")).format("MM-DD-YYYY");
+    let roomId = document.getElementById("room");
     let body = {
       details: {
         name: formData.get("name"),
@@ -62,14 +66,16 @@ const AddDoctor = () => {
             followUp: formData.get("followUpFees"),
           },
           room: formData.get("room"),
+          roomId: roomId.options[roomId.selectedIndex].getAttribute("roomId"),
           schedule: schedule,
         },
         password: formData.get("password"),
         role: "doctor",
       },
     };
+    console.log(body);
 
-    let add = await addUser(body);
+    /* let add = await addUser(body);
     console.log(add);
     if (add.message == "doctor added") {
       if (window.confirm("Doctor Added Successfully")) {
@@ -77,7 +83,7 @@ const AddDoctor = () => {
       }
     } else {
       alert("Wrong Data");
-    }
+    } */
   };
   const GetSpecialities = async () => {
     let body = {
@@ -87,8 +93,28 @@ const AddDoctor = () => {
     delete general.data[0].specialities[0];
     setSpecialities(general.data[0].specialities);
   };
+  const GetRoom = async () => {
+    let body = {
+      filter: {},
+      select: "name",
+    };
+    let room = await rooms(body, "POST", "get");
+    setRoomList(
+      room.room.sort((a, b) => {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      })
+    );
+  };
+
   useEffect(() => {
     GetSpecialities();
+    GetRoom();
     createHtmlData();
   }, []);
   return (
@@ -103,7 +129,7 @@ const AddDoctor = () => {
               <div className="sub-section col-sm-8 col-md-12 col-lg-8">
                 <div className="sub-section-body">
                   <div className="user-password-form">
-                    <form id="form" method="post">
+                    <form id="form" className="needs-validation">
                       <div className="form">
                         {htmlData?.map((e) => {
                           return (
@@ -118,6 +144,23 @@ const AddDoctor = () => {
                             </div>
                           );
                         })}
+                        <div className="form-group col-sm-5">
+                          <label>room</label>
+                          <select
+                            className="form-control form-select dropdown-toggle"
+                            name="room"
+                            id="room"
+                            required
+                          >
+                            {roomList?.map((e) => {
+                              return (
+                                <option value={e.name} roomId={e._id}>
+                                  {e.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
                         <div className="form-group col-sm-2">
                           <label>Gender</label>
                           <select
@@ -189,7 +232,6 @@ const AddDoctor = () => {
                                 id="schBtn"
                                 className="btn btn-dark-f-gr mt-4"
                                 type="button"
-                                required
                                 onClick={() => {
                                   setScheduleNo(scheduleNo + 1);
                                 }}

@@ -137,6 +137,17 @@
   border-color: #0466c8;
   color: #0466c8;
 }
+.btn-red-f-gr {
+  background: #c80404;
+  color: white;
+  border: 1.5px solid transparent;
+}
+.btn-red-f-gr:hover,
+.btn-red-f-gr:focus {
+  background: none;
+  border-color: #c80404;
+  color: #c80404;
+}
 
 .btn-dark-red-f {
   background-color: #0466c8;

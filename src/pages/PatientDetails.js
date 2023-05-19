@@ -1,11 +1,12 @@
 import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { updateUser, users, reserve, note } from "../adminAPI.js";
+import { updateUser, users, reserve, note, deleteUser } from "../adminAPI.js";
 import FilesCard from "../components/FilesCard.js";
 import LoadingSpinner from "../components/Loading.js";
 import NotesCard from "../components/NotesCard.js";
 import manImg from "../images/man.svg";
+import Calendar from "./Calender.js";
 import Notes from "./Notes.js";
 
 const PatientDetails = () => {
@@ -14,6 +15,7 @@ const PatientDetails = () => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
   const [reserves, setreserves] = useState();
+  const [calView, setCalView] = useState(false);
 
   const GetDetails = async () => {
     let body = {
@@ -22,6 +24,16 @@ const PatientDetails = () => {
     let user = await users(body);
     setState(user.users);
     setLoading(false);
+  };
+
+  const userDelete = async () => {
+    let body = {
+      id: id.state,
+    };
+    if (window.confirm("Are you sure you want to delete this user")) {
+      let deleted = await deleteUser(body);
+      console.log(deleted);
+    }
   };
 
   const GetReserves = async () => {
@@ -119,6 +131,8 @@ const PatientDetails = () => {
     <React.Fragment>
       {loading ? (
         <LoadingSpinner />
+      ) : calView ? (
+        <Calendar filter={{ patientId: id.state }} />
       ) : (
         <div className="main-content">
           {state && reserves ? (
@@ -312,6 +326,43 @@ const PatientDetails = () => {
                       </div>
                       <div className="col-sm-12">
                         <div className="card">
+                          <button
+                            className="btn btn-dark-red-f-gr"
+                            onClick={() => {
+                              setCalView(true);
+                            }}
+                          >
+                            <i className="las la-calendar-day" />
+                            view appointments
+                          </button>
+                        </div>
+                      </div>
+                      <div className="col-sm-12">
+                        <div className="card">
+                          <button
+                            className="btn btn-dark-red-f-gr"
+                            onClick={() => {}}
+                          >
+                            <i className="las la-notes-medical" />
+                            medical record
+                          </button>
+                        </div>
+                      </div>
+                      <div className="col-sm-12">
+                        <div className="card">
+                          <button
+                            className="btn btn-red-f-gr"
+                            onClick={() => {
+                              userDelete();
+                            }}
+                          >
+                            <i className="las la-trash" />
+                            delete user
+                          </button>
+                        </div>
+                      </div>
+                      {/* <div className="col-sm-12">
+                        <div className="card">
                           <div className="card-body">
                             <ul
                               className="nav nav-tabs"
@@ -473,7 +524,7 @@ const PatientDetails = () => {
                             ""
                           )}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="col-md-4">

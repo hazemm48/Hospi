@@ -1,7 +1,13 @@
 import moment from "moment-timezone";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { updateUser, users, reserve, getGeneral } from "../adminAPI.js";
+import {
+  updateUser,
+  users,
+  reserve,
+  getGeneral,
+  deleteUser,
+} from "../adminAPI.js";
 import FilesCard from "../components/FilesCard.js";
 import LoadingSpinner from "../components/Loading.js";
 import NotesCard from "../components/NotesCard.js";
@@ -16,6 +22,7 @@ const DoctorDetails = () => {
   const [htmlData, setHtmlData] = useState([]);
   const [specialities, setSpecialities] = useState();
   const [calView, setCalView] = useState(false);
+  const [scheduleNo, setScheduleNo] = useState(0);
 
   let createHtmlData = (state) => {
     setHtmlData([
@@ -58,6 +65,16 @@ const DoctorDetails = () => {
     setSpecialities(general.data[0].specialities);
   };
 
+  const userDelete = async () => {
+    let body = {
+      id: id.state,
+    };
+    if (window.confirm("Are you sure you want to delete this user")) {
+      let deleted = await deleteUser(body);
+      console.log(deleted);
+    }
+  };
+
   useLayoutEffect(() => {
     setLoading(true);
     GetDetails();
@@ -65,17 +82,28 @@ const DoctorDetails = () => {
   }, []);
 
   const editDoc = () => {
-    let elements = document.querySelectorAll("input,textArea,select");
+    let schDet = Array.from(
+      document.querySelector("#schDet").querySelectorAll("input,select")
+    );
+    let docDet = Array.from(
+      document
+        .querySelector("#docDet")
+        .querySelectorAll("input,textArea,select")
+    );
+    let elements = docDet.concat(schDet);
     let x = false;
     elements.forEach((e, i) => {
       if (!["sta", "reg"].includes(e.name)) {
         if (e.hasAttribute("disabled")) {
           e.removeAttribute("disabled");
-          document.querySelector("#delSchBtn").removeAttribute("hidden");
+          document.querySelectorAll("#delSchBtn").forEach((e) => {
+            e.removeAttribute("hidden");
+          });
+          document.querySelector("#schBtn").removeAttribute("hidden");
           document.getElementById("editDoc").innerHTML = "submit";
-          x = false;
+          return (x = false);
         } else {
-          x = true;
+          return (x = true);
         }
       }
     });
@@ -89,13 +117,16 @@ const DoctorDetails = () => {
     let schFormData = new FormData(schForm);
     let schedule = [];
     let schObj = [];
-    console.log(formData);
+
     schFormData.forEach((value, key) => {
       let obj = {};
+      if (["from", "to"].includes(key)) {
+        value = moment(value, "h:mm A").format("HH:mm");
+      }
       obj[key] = value;
       schObj.push(obj);
     });
-
+    console.log(schObj);
     for (let i = 0; i < schObj.length; i += 4) {
       const three = [
         schObj[i],
@@ -129,6 +160,14 @@ const DoctorDetails = () => {
       id: state._id,
     };
     console.log(body);
+    let update = await updateUser(body);
+    if (update.message == "update success") {
+      if (window.confirm("Doctor Updated Successfully")) {
+        window.location.reload();
+      }
+    } else {
+      alert("Wrong Data");
+    }
   };
 
   return (
@@ -136,7 +175,7 @@ const DoctorDetails = () => {
       {loading ? (
         <LoadingSpinner />
       ) : calView ? (
-        <Calendar filter={{doctorId:id.state}}/>
+        <Calendar filter={{ doctorId: id.state }} />
       ) : (
         <div className="main-content">
           {state ? (
@@ -176,7 +215,7 @@ const DoctorDetails = () => {
                 <div className="row">
                   <div className="col-md-8">
                     <div className="row">
-                      <div className="col-sm-12">
+                      <div id="docDet" className="col-sm-12">
                         <div className="card">
                           <div className="row">
                             <div className="col-md-4">
@@ -216,7 +255,7 @@ const DoctorDetails = () => {
                               id="editDet"
                               className="col-md-8 doctors-details-card-wrapper"
                             >
-                              <form id="form" method="post">
+                              <form id="form">
                                 <div className="mini-card">
                                   <div className="card-body">
                                     <div className="row">
@@ -227,11 +266,23 @@ const DoctorDetails = () => {
                                             className="form-control form-select dropdown-toggle"
                                             name="speciality"
                                             disabled
+                                            required
                                           >
                                             {specialities?.map((e) => {
-                                              return (
-                                                <option value={e}>{e}</option>
-                                              );
+                                              if (
+                                                e ==
+                                                state.doctorInfo?.speciality
+                                              ) {
+                                                return (
+                                                  <option value={e} selected>
+                                                    {e}
+                                                  </option>
+                                                );
+                                              } else {
+                                                return (
+                                                  <option value={e}>{e}</option>
+                                                );
+                                              }
                                             })}
                                           </select>
                                         </div>
@@ -245,6 +296,7 @@ const DoctorDetails = () => {
                                                 name={e[0]}
                                                 className="form-control"
                                                 disabled
+                                                required
                                                 defaultValue={e[1]}
                                               />
                                             </div>
@@ -259,6 +311,7 @@ const DoctorDetails = () => {
                                             name="email"
                                             className="form-control"
                                             disabled
+                                            required
                                             defaultValue={state.email}
                                           />
                                         </div>
@@ -271,6 +324,7 @@ const DoctorDetails = () => {
                                             className="form-control"
                                             rows={6}
                                             disabled
+                                            required
                                             defaultValue={state.doctorInfo?.bio}
                                           />
                                         </div>
@@ -283,9 +337,9 @@ const DoctorDetails = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="col-sm-12">
+                      <div id="schDet" className="col-sm-12">
                         <div className="card">
-                          <form id="schForm" method="post">
+                          <form id="schForm">
                             <div className="mini-card">
                               <div className="card-body">
                                 <div className="row">
@@ -299,21 +353,51 @@ const DoctorDetails = () => {
                                       />
                                     );
                                   })}
+                                  {[...Array(scheduleNo)].map((e, i) => {
+                                    return <Schedule key={i} />;
+                                  })}
                                 </div>
                               </div>
                             </div>
+                            <button
+                              id="schBtn"
+                              className="btn btn-dark-f-gr mt-4"
+                              type="button"
+                              hidden
+                              onClick={() => {
+                                setScheduleNo(scheduleNo + 1);
+                              }}
+                            >
+                              <i className="las la-plus" />
+                              Add
+                            </button>
                           </form>
                         </div>
                       </div>
                       <div className="col-sm-12">
                         <div className="card">
-                              <button
-                                className="btn btn-dark-red-f-gr"
-                                onClick={()=>{setCalView(true)}}
-                              >
-                                <i className="las la-calendar-day" />
-                               View Calendar
-                              </button>
+                          <button
+                            className="btn btn-dark-red-f-gr"
+                            onClick={() => {
+                              setCalView(true);
+                            }}
+                          >
+                            <i className="las la-calendar-day" />
+                            View Calendar
+                          </button>
+                        </div>
+                      </div>
+                      <div className="col-sm-12">
+                        <div className="card">
+                          <button
+                            className="btn btn-red-f-gr"
+                            onClick={() => {
+                              userDelete();
+                            }}
+                          >
+                            <i className="las la-trash" />
+                            delete user
+                          </button>
                         </div>
                       </div>
                     </div>
