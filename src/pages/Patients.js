@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { users } from "../../src/adminAPI";
+import { uploadFile, users } from "../../src/adminAPI";
 import manImg from "../images/man.svg";
 import moment from "moment";
 import LoadingSpinner from "../components/Loading.js";
@@ -34,6 +34,7 @@ const Patients = () => {
     setPatients(user.users);
     setLoading(false);
   };
+
   useEffect(() => {
     setLoading(true);
     GetDetails();
@@ -46,14 +47,17 @@ const Patients = () => {
     let srchSlct = formData.get("srchSlct");
     let data = {};
     if (
-      !((srchSlct == "_id" && (searchIn.length < 24 || searchIn.length > 24))||srchSlct=="all")
+      !(
+        (srchSlct == "_id" && (searchIn.length < 24 || searchIn.length > 24)) ||
+        srchSlct == "all"
+      )
     ) {
       data[srchSlct] = searchIn;
       setSrchFilter(data);
     }
-    if(srchSlct=="all"){
-      formEl.querySelector("input").value=""
-      setSrchFilter()
+    if (srchSlct == "all") {
+      formEl.querySelector("input").value = "";
+      setSrchFilter();
     }
   };
 

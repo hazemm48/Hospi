@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
-import { addUser, getGeneral, rooms } from "../adminAPI.js";
+import { addUser, getGeneral, rooms, uploadFile } from "../adminAPI.js";
 import moment from "moment-timezone";
 import Schedule from "../components/Schedule.js";
+import manImg from "../images/man.svg";
 
 const AddDoctor = () => {
   const [specialities, setSpecialities] = useState();
@@ -14,6 +15,7 @@ const AddDoctor = () => {
 
   let createHtmlData = (state) => {
     setHtmlData([
+      ["Profile Picture", "profile", "file"],
       ["Name", "name", "text"],
       ["Email", "email", "email"],
       ["Password", "password", "password"],
@@ -51,40 +53,51 @@ const AddDoctor = () => {
     let bd = moment(formData.get("date")).format("MM-DD-YYYY");
     let roomId = document.getElementById("room");
     let body = {
-      details: {
-        name: formData.get("name"),
-        email: formData.get("email"),
-        gender: formData.get("gender"),
-        phone: formData.get("phone"),
-        doctorInfo: {
-          city: formData.get("city"),
-          birthDate: bd,
-          speciality: formData.get("speciality"),
-          bio: formData.get("bio"),
-          fees: {
-            examin: formData.get("examinFees"),
-            followUp: formData.get("followUpFees"),
-          },
-          room: formData.get("room"),
-          roomId: roomId.options[roomId.selectedIndex].getAttribute("roomId"),
-          schedule: schedule,
+      name: formData.get("name"),
+      email: formData.get("email"),
+      gender: formData.get("gender"),
+      phone: formData.get("phone"),
+      doctorInfo: {
+        city: formData.get("city"),
+        birthDate: bd,
+        speciality: formData.get("speciality"),
+        bio: formData.get("bio"),
+        fees: {
+          examin: formData.get("examinFees"),
+          followUp: formData.get("followUpFees"),
         },
-        password: formData.get("password"),
-        role: "doctor",
+        room: formData.get("room"),
+        roomId: roomId.options[roomId.selectedIndex].getAttribute("roomId"),
+        schedule: schedule,
       },
+      password: formData.get("password"),
+      role: "doctor",
     };
+    let file = formData.get("profile")
     console.log(body);
 
-    /* let add = await addUser(body);
+    let add = await addUser(body);
     console.log(add);
     if (add.message == "doctor added") {
+      addProfilePic(file, add.added[0]._id);
       if (window.confirm("Doctor Added Successfully")) {
         window.location.reload();
       }
     } else {
       alert("Wrong Data");
-    } */
+    }
   };
+
+  let addProfilePic = async (file, id) => {
+    let formData = new FormData();
+    formData.append("fieldName", "profilePic");
+    formData.append("id", id);
+    formData.append("image", file);
+
+    let test = await uploadFile(formData);
+    console.log(test);
+  };
+
   const GetSpecialities = async () => {
     let body = {
       filter: "specialities",
@@ -125,6 +138,11 @@ const AddDoctor = () => {
         </div>
         <div className="section profile-section">
           <div className="card container">
+            <div className="col-md-3">
+              <div className="card-header">
+                <img className="rounded-circle" src={manImg} loading="lazy" />
+              </div>
+            </div>
             <div className="card-body">
               <div className="sub-section col-sm-8 col-md-12 col-lg-8">
                 <div className="sub-section-body">
