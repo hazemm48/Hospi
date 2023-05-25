@@ -30,6 +30,7 @@ const RoomDetails = () => {
 
   const id = useLocation();
   const navigate = useNavigate();
+  console.log(useLocation());
 
   const GetRoom = async () => {
     let body = {

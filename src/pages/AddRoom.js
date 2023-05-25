@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { addUser, rooms } from "../adminAPI.js";
 
 const AddRoom = () => {
   let [htmlData, setHtmlData] = useState([
-    ["Name", "name", "text",20],
-    ["Level", "level", "number",3],
+    ["Name", "name", "text", 20],
+    ["Level", "level", "number", 3],
   ]);
+
+  const navigate = useNavigate();
 
   const data = async () => {
     let formEl = document.forms.form;
@@ -15,14 +18,12 @@ const AddRoom = () => {
       level: formData.get("level"),
       type: formData.get("type"),
     };
-    let add = await rooms(body,"POST");
+    let add = await rooms(body, "POST");
     console.log(add);
+    alert(add.message);
+
     if (add.message == "room added") {
-      if (window.confirm("Room Added Successfully")) {
-        window.location.reload();
-      }
-    } else {
-      alert(add.message);
+      navigate("/home/roomDetails", { state: add.added[0]._id });
     }
   };
   return (
