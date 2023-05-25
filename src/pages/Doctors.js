@@ -108,6 +108,7 @@ const Doctors = () => {
       e.parentElement.classList.remove("active");
     });
     e.target.parentElement.classList.add("active");
+    setLoading(true)
     GetDetails();
   };
 
