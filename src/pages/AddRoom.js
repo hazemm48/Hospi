@@ -56,7 +56,7 @@ const AddRoom = () => {
                           <label>Type</label>
                           <select
                             className="form-control form-select dropdown-toggle"
-                            name="room"
+                            name="type"
                             id="room"
                             required
                           >
