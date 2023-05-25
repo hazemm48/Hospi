@@ -85,7 +85,6 @@ main .patients-card-view .card:focus {
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
   transform: scale(1.02, 1.02);
   transition: all ease-in-out 150ms;
-  cursor: pointer;
 }
 main .patients-table-view table thead tr,
 main .patients-table-view .table thead tr {
@@ -129,8 +128,6 @@ main .patients-table-view .table tbody tr:focus {
   -webkit-box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.05);
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  border: none;
 }
 
 /* Extra small devices (phones, 600px and down) */

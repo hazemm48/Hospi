@@ -6,7 +6,7 @@ import manImg from "../images/man.svg";
 const AddPatient = () => {
   let [htmlData, setHtmlData] = useState();
 
-  let createHtmlData = (state) => {
+  let createHtmlData = () => {
     setHtmlData([
       ["Profile Picture", "profile", "file"],
       ["Name", "name", "text"],
@@ -67,12 +67,12 @@ const AddPatient = () => {
 
   let addProfilePic = async (file, id) => {
     let formData = new FormData();
-    formData.append("fieldName", "profilePic");
+    formData.append("fieldName", "users");
     formData.append("id", id);
     formData.append("image", file);
 
-    let test = await uploadFile(formData);
-    console.log(test);
+    let add = await uploadFile(formData,"uploadProfilePic");
+    console.log(add);
   };
 
   return (

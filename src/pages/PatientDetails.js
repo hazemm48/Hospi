@@ -1,21 +1,27 @@
 import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { updateUser, users, reserve, note, deleteUser } from "../adminAPI.js";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  updateUser,
+  users,
+  deleteUser,
+  uploadFile,
+  removeFile,
+  resetPassword,
+} from "../adminAPI.js";
 import FilesCard from "../components/FilesCard.js";
 import LoadingSpinner from "../components/Loading.js";
 import NotesCard from "../components/NotesCard.js";
 import manImg from "../images/man.svg";
 import Calendar from "./Calender.js";
-import Notes from "./Notes.js";
 
 const PatientDetails = () => {
-  const id = useLocation();
-  let status = "";
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
-  const [reserves, setreserves] = useState();
   const [calView, setCalView] = useState(false);
+  
+  const id = useLocation();
+  const navigate = useNavigate()
 
   const GetDetails = async () => {
     let body = {
@@ -32,29 +38,16 @@ const PatientDetails = () => {
     };
     if (window.confirm("Are you sure you want to delete this user")) {
       let deleted = await deleteUser(body);
-      console.log(deleted);
+      alert(deleted.message);
+      if (deleted.message == "user deleted") {
+        navigate("/home/patients");
+      }
     }
-  };
-
-  const GetReserves = async () => {
-    let body = {
-      oper: "get",
-      data: {
-        filter: {
-          patientId: id.state,
-        },
-        limit: 6,
-        sort: "date",
-      },
-    };
-    let reserves = await reserve(body);
-    setreserves(reserves.reservations);
   };
 
   useEffect(() => {
     setLoading(true);
     GetDetails();
-    GetReserves();
   }, []);
 
   let age = moment().diff(state?.patientInfo?.birthDate, "years");
@@ -107,24 +100,49 @@ const PatientDetails = () => {
     };
     console.log(body);
     let update = await updateUser(body);
+    alert(update.message);
     if (update.message == "update success") {
-      if (window.confirm("Patient Updated Successfully")) {
-        window.location.reload();
-      }
-    } else {
-      alert("Wrong Data");
+      setLoading(true);
+      updatePat();
     }
-    console.log(body);
   };
 
-  const addNote = async () => {
-    let body = {
-      oper: "add",
-      content: document.getElementById("noteCon").value,
-      id: id.state,
-    };
-    let add = await note(body);
+  let addProfilePic = async (e) => {
+    console.log(e.target.files);
+    let formData = new FormData();
+    formData.append("fieldName", "users");
+    formData.append("id", state._id);
+    formData.append("image", e.target.files[0]);
+
+    let add = await uploadFile(formData, "uploadProfilePic");
+    if (add.message == "done") {
+      setLoading(true);
+      GetDetails();
+    }
     console.log(add);
+  };
+
+  const removeProfilePic = async () => {
+    let body = {
+      id: state._id,
+      path: state.image,
+    };
+    let deleted = await removeFile(body, "removeProfilePic");
+    if (deleted.message == "image deleted") {
+      setLoading(true);
+      GetDetails();
+    }
+  };
+
+  const resetPass = async () => {
+    if (window.confirm("Are you sure you want to reset user password")) {
+      let body = {
+        id: state._id,
+      };
+      let reset = await resetPassword(body);
+      alert(reset.message);
+      console.log(reset);
+    }
   };
 
   return (
@@ -135,7 +153,7 @@ const PatientDetails = () => {
         <Calendar filter={{ patientId: id.state }} />
       ) : (
         <div className="main-content">
-          {state && reserves ? (
+          {state ? (
             <div className="container-fluid">
               <div className="section row title-section">
                 <div className="col-md-8">
@@ -180,11 +198,44 @@ const PatientDetails = () => {
                                 <div className="card-header">
                                   <img
                                     className="rounded-circle"
-                                    src={manImg}
+                                    src={state.image ? state.image : manImg}
                                     loading="lazy"
                                   />
                                 </div>
                                 <div className="card-body">
+                                  <div className="">
+                                    <button
+                                      className="btn btn-red-f-gr btn-sm float-center"
+                                      style={{ margin: "1em" }}
+                                      onClick={() => {
+                                        removeProfilePic();
+                                      }}
+                                    >
+                                      <i className="las la-image" />
+                                      delete
+                                    </button>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      id="imgupload"
+                                      style={{ display: "none" }}
+                                      onChange={(e) => {
+                                        addProfilePic(e);
+                                      }}
+                                    />
+                                    <button
+                                      className="btn btn-dark-red-f btn-sm float-center"
+                                      style={{ margin: "1em" }}
+                                      onClick={() => {
+                                        document
+                                          .getElementById("imgupload")
+                                          .click();
+                                      }}
+                                    >
+                                      <i className="las la-image" />
+                                      change
+                                    </button>
+                                  </div>
                                   <input
                                     id="name"
                                     className="form-control"
@@ -353,6 +404,19 @@ const PatientDetails = () => {
                           <button
                             className="btn btn-red-f-gr"
                             onClick={() => {
+                              resetPass();
+                            }}
+                          >
+                            <i className="las la-lock" />
+                            reset password
+                          </button>
+                        </div>
+                      </div>
+                      <div className="col-sm-12">
+                        <div className="card">
+                          <button
+                            className="btn btn-red-f-gr"
+                            onClick={() => {
                               userDelete();
                             }}
                           >
@@ -361,6 +425,7 @@ const PatientDetails = () => {
                           </button>
                         </div>
                       </div>
+
                       {/* <div className="col-sm-12">
                         <div className="card">
                           <div className="card-body">
@@ -529,7 +594,7 @@ const PatientDetails = () => {
                   </div>
                   <div className="col-md-4">
                     <NotesCard id={state._id} />
-                    <FilesCard />
+                    <FilesCard files={state.files} id={state._id} />
                   </div>
                 </div>
               </div>

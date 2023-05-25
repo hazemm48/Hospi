@@ -5,6 +5,8 @@ import manImg from "../images/man.svg";
 import moment from "moment";
 import LoadingSpinner from "../components/Loading.js";
 import Categories from "../components/Categories.js";
+import CardView from "../components/CardView.js";
+import TableView from "../components/TableView.js";
 
 const Doctors = () => {
   const [loading, setLoading] = useState(false);
@@ -249,129 +251,15 @@ const Doctors = () => {
                   out of <span style={{ color: "#00b4d8" }}>{length} </span>
                   results
                 </div>
-                <div id="cv" className="section patients-card-view">
-                  <div className="row">
-                    {doctors
-                      ? doctors.map((doc) => {
-                          return (
-                            <div className="col-md-4">
-                              <div className="card">
-                                <div className="card-header">
-                                  <div className="card-img-top">
-                                    <img
-                                      className="rounded-circle"
-                                      src={manImg}
-                                      loading="lazy"
-                                    />
-                                    <Link
-                                      to="/home/doctorDetails"
-                                      state={doc._id}
-                                      className="view-more"
-                                    >
-                                      view profile
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="card-body">
-                                  <div className="card-subsection-title">
-                                    <h5>{doc.name}</h5>
-                                  </div>
-                                  <div className="card-subsection-body">
-                                    <label className="text-muted">
-                                      speciality
-                                    </label>
-                                    <p>{doc.doctorInfo?.speciality}</p>
-                                    <label className="text-muted">gender</label>
-                                    <p>{doc.gender}</p>
-                                    <label className="text-muted">
-                                      date of birth
-                                    </label>
-                                    <p>
-                                      {doc.doctorInfo?.birthDate
-                                        ? moment(
-                                            doc.doctorInfo?.birthDate
-                                          ).format("DD/MM/YYYY")
-                                        : ""}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="card-footer">
-                                  <div className="float-right">
-                                    <Link
-                                      to="/home/addReserve"
-                                      state={{ id: doc._id, type: "doctor" }}
-                                      className="btn btn-dark-red-f-gr"
-                                    >
-                                      Reserve
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="card-footer" />
-                              </div>
-                            </div>
-                          );
-                        })
-                      : ""}
-                  </div>
-                </div>
-                <div id="tv" className="section patients-table-view no-display">
-                  <table className="table table-hover table-responsive-lg">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Gender</th>
-                        <th>Specialization</th>
-                        <th>Date of birth</th>
-                        <th>phone no.</th>
-                        <th />
-                        <th />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {doctors
-                        ? doctors.map((doc) => {
-                            return (
-                              <tr>
-                                <td>
-                                  <img
-                                    className="rounded-circle"
-                                    src={manImg}
-                                    loading="lazy"
-                                  />
-                                  <span className="ml-2">{doc.name}</span>
-                                </td>
-                                <td>{doc.gender}</td>
-                                <td>{doc.doctorInfo?.speciality}</td>
-                                <td>
-                                  {doc.doctorInfo?.birthDate
-                                    ? moment(doc.doctorInfo?.birthDate).format(
-                                        "DD/MM/YYYY"
-                                      )
-                                    : ""}
-                                </td>
-                                <td>{doc.phone}</td>
-                                <td>
-                                  <Link
-                                    to="/home/doctorDetails"
-                                    state={doc._id}
-                                    className="view-more btn btn-sm btn-dark-red-f"
-                                  >
-                                    view profile
-                                  </Link>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        : ""}
-                    </tbody>
-                  </table>
-                </div>
+                <CardView type="doctor" data={doctors} />
+                <TableView type="doctor" data={doctors} display="no-display"  />
               </>
             )}
           </>
         ) : (
           <Categories
             type={"specialities"}
+            view={"doc"}
             filter={setFilter}
             pageView={setPageView}
           />

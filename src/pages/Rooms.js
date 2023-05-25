@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { uploadFile, users } from "../../src/adminAPI";
-import manImg from "../images/man.svg";
-import moment from "moment";
+import { Link, useNavigate } from "react-router-dom";
+import { rooms } from "../adminAPI.js";
 import LoadingSpinner from "../components/Loading.js";
-import CardView from "../components/CardView.js";
 import TableView from "../components/TableView.js";
 
-const Patients = () => {
+const Rooms = () => {
   const [loading, setLoading] = useState(false);
-  const [patients, setPatients] = useState();
   const [pageNo, setPageNo] = useState();
   const [length, setLength] = useState();
   const [srchFilter, setSrchFilter] = useState();
+  const [roomList, setRoomList] = useState();
+  const [table, setTable] = useState([
+    "name",
+    "level",
+    "type",
+    "current",
+    "history",
+    " ",
+  ]);
   let resultLimit = 12;
 
-  const GetDetails = async () => {
+  let navigate = useNavigate();
+
+  const GetRoom = async () => {
     let currentPage = "";
     document.getElementsByName("page").forEach((e) => {
       if (e.parentElement.classList.contains("active")) {
@@ -25,21 +32,23 @@ const Patients = () => {
     setPageNo(currentPage);
     let sort = document.getElementById("sort").value;
     let body = {
-      role: "patient",
+      filter: {},
       sort: sort,
       pageNo: currentPage,
       limit: resultLimit,
     };
     srchFilter && (body.filter = srchFilter);
-    let user = await users(body);
-    setLength(user.length);
-    setPatients(user.users);
+
+    let room = await rooms(body, "POST", "get");
+    console.log(room);
+    setRoomList(room.room);
+    setLength(room.length);
     setLoading(false);
   };
 
   useEffect(() => {
     setLoading(true);
-    GetDetails();
+    GetRoom();
   }, [srchFilter]);
 
   let searchData = () => {
@@ -54,6 +63,7 @@ const Patients = () => {
         srchSlct == "all"
       )
     ) {
+      if (srchSlct == "name") searchIn = searchIn.toLowerCase();
       data[srchSlct] = searchIn;
       setSrchFilter(data);
     }
@@ -61,19 +71,6 @@ const Patients = () => {
       formEl.querySelector("input").value = "";
       setSrchFilter();
     }
-  };
-
-  let changeViewCard = () => {
-    document.getElementById("cv").classList.remove("no-display");
-    document.getElementById("tv").classList.add("no-display");
-    document.getElementById("tab").classList.remove("active");
-    document.getElementById("card").classList.add("active");
-  };
-  let changeViewRow = () => {
-    document.getElementById("tv").classList.remove("no-display");
-    document.getElementById("cv").classList.add("no-display");
-    document.getElementById("tab").classList.add("active");
-    document.getElementById("card").classList.remove("active");
   };
 
   let pagination = () => {
@@ -101,14 +98,20 @@ const Patients = () => {
       e.parentElement.classList.remove("active");
     });
     e.target.parentElement.classList.add("active");
-    GetDetails();
+    GetRoom();
+  };
+
+  let GoToDoc = (e) => {
+    navigate("/home/DoctorDetails", {
+      state: e.target.value,
+    });
   };
 
   return (
     <div className="main-content">
       <div className="container-fluid">
         <div className="section title-section">
-          <h5 className="page-title">Patients</h5>
+          <h5 className="page-title">Rooms</h5>
         </div>
         <div className="section filters-section">
           <div className="dropdowns-wrapper">
@@ -118,50 +121,21 @@ const Patients = () => {
                 className="form-select dropdown-toggle"
                 role="button"
                 onChange={() => {
-                  GetDetails();
+                  GetRoom();
                 }}
               >
-                <option selected value="-createdAt">
-                  Newest
+                <option selected value="name">
+                  Name ascending
                 </option>
-                <option value="createdAt">Oldest</option>
-                <option value="name">Name ascending</option>
                 <option value="-name">Name descending</option>
-                <option value="-patientInfo.birthDate">New born</option>
-                <option value="patientInfo.birthDate">Old born</option>
-                <option value="-gender">Male</option>
-                <option value="gender">Female</option>
+                <option value="level">Level ascending</option>
+                <option value="-level">Level descending</option>
+                <option value="-createdAt">Newest</option>
+                <option value="createdAt">Oldest</option>
               </select>
             </div>
           </div>
-          <div className="switch-view-btns">
-            <div className="btn-group btn-group-toggle" data-toggle="buttons">
-              <label id="card" className="btn btn-darker-grey-o active">
-                <input
-                  id="card-view-btn"
-                  type="radio"
-                  name="options"
-                  defaultChecked
-                  onClick={() => {
-                    changeViewCard();
-                  }}
-                />
-                <i className="las la-th-large" />
-              </label>
-              <label id="tab" className="btn btn-darker-grey-o">
-                <input
-                  id="table-view-btn"
-                  type="radio"
-                  name="options"
-                  onClick={() => {
-                    changeViewRow();
-                  }}
-                />
-                <i className="las la-list-ul" />
-              </label>
-            </div>
-          </div>
-          <form id="search" method="post" className="ml-auto">
+          <form id="search" className="ml-auto">
             <div className="form">
               <div className="form-group col-sm-12">
                 <div className="input-group ">
@@ -170,7 +144,8 @@ const Patients = () => {
                       <option value="all">All</option>
                       <option value="_id">ID</option>
                       <option value="name">Name</option>
-                      <option value="email">Email</option>
+                      <option value="level">LEVEL</option>
+                      <option value="type">TYPE</option>
                     </select>
                   </div>
                   <input name="search" className="form-control" />
@@ -191,10 +166,10 @@ const Patients = () => {
             </div>
           </form>
           <div className="buttons-wrapper ml-auto">
-            <Link to="/home/addPatient">
+            <Link to="/home/addRoom">
               <button className="btn btn-dark-red-f-gr">
                 <i className="las la-plus-circle" />
-                add a new patient
+                add a new room
               </button>
             </Link>
           </div>
@@ -217,8 +192,64 @@ const Patients = () => {
               </span>{" "}
               out of <span style={{ color: "#00b4d8" }}>{length} </span>results
             </div>
-            <CardView type="patient" data={patients}  />
-            <TableView type="patient" data={patients} display="no-display" />
+            <div id="tv" className={`section patients-table-view`}>
+              <table className="table table-hover table-responsive-lg">
+                <thead>
+                  <tr>
+                    {table?.map((e) => {
+                      return <th>{e}</th>;
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {roomList &&
+                    roomList.map((r) => {
+                      return (
+                        <tr>
+                          <td>{r.name.toUpperCase()}</td>
+                          <td>{r.level}</td>
+                          <td>{r.type}</td>
+                          {["current", "history"].map((e) => {
+                            return (
+                              <td>
+                                <div className="dropdowns-wrapper">
+                                  <div className="dropdown">
+                                    <select
+                                      id={e}
+                                      className="form-select dropdown-toggle"
+                                      role="button"
+                                      onChange={(e) => {
+                                        GoToDoc(e);
+                                      }}
+                                    >
+                                      <option selected disabled>
+                                        -- room {e} --
+                                      </option>
+                                      {r[e].map((doc) => {
+                                        return (
+                                          <option value={doc}>{doc}</option>
+                                        );
+                                      })}
+                                    </select>
+                                  </div>
+                                </div>
+                              </td>
+                            );
+                          })}
+                          <td>
+                            <Link
+                              to={"/home/roomDetails"}
+                              state={r._id}
+                              className="view-more btn btn-sm btn-dark-red-f"
+                            > view room
+                            </Link>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
       </div>
@@ -246,4 +277,4 @@ const Patients = () => {
   );
 };
 
-export default Patients;
+export default Rooms;

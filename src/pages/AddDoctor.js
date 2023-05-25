@@ -73,7 +73,7 @@ const AddDoctor = () => {
       password: formData.get("password"),
       role: "doctor",
     };
-    let file = formData.get("profile")
+    let file = formData.get("profile");
     console.log(body);
 
     let add = await addUser(body);
@@ -90,11 +90,11 @@ const AddDoctor = () => {
 
   let addProfilePic = async (file, id) => {
     let formData = new FormData();
-    formData.append("fieldName", "profilePic");
+    formData.append("fieldName", "users");
     formData.append("id", id);
     formData.append("image", file);
 
-    let test = await uploadFile(formData);
+    let test = await uploadFile(formData, "uploadProfilePic");
     console.log(test);
   };
 
@@ -108,7 +108,7 @@ const AddDoctor = () => {
   };
   const GetRoom = async () => {
     let body = {
-      filter: {},
+      filter: { type: "consult" },
       select: "name",
     };
     let room = await rooms(body, "POST", "get");

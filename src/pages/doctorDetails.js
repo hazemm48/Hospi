@@ -1,12 +1,13 @@
 import moment from "moment-timezone";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   updateUser,
   users,
-  reserve,
   getGeneral,
   deleteUser,
+  removeFile,
+  uploadFile,
 } from "../adminAPI.js";
 import FilesCard from "../components/FilesCard.js";
 import LoadingSpinner from "../components/Loading.js";
@@ -16,13 +17,15 @@ import manImg from "../images/man.svg";
 import Calendar from "./Calender.js";
 
 const DoctorDetails = () => {
-  const id = useLocation();
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
   const [htmlData, setHtmlData] = useState([]);
   const [specialities, setSpecialities] = useState();
   const [calView, setCalView] = useState(false);
   const [scheduleNo, setScheduleNo] = useState(0);
+
+  const id = useLocation();
+  const navigate = useNavigate();
 
   let createHtmlData = (state) => {
     setHtmlData([
@@ -47,10 +50,12 @@ const DoctorDetails = () => {
   };
 
   const GetDetails = async () => {
+    console.log(id);
     let body = {
       id: id.state,
     };
     let user = await users(body);
+    console.log(user);
     setState(user.users);
     createHtmlData(user.users);
     setLoading(false);
@@ -71,7 +76,10 @@ const DoctorDetails = () => {
     };
     if (window.confirm("Are you sure you want to delete this user")) {
       let deleted = await deleteUser(body);
-      console.log(deleted);
+      alert(deleted.message);
+      if (deleted.message == "user deleted") {
+        navigate("/home/doctors");
+      }
     }
   };
 
@@ -170,6 +178,33 @@ const DoctorDetails = () => {
     }
   };
 
+  let addProfilePic = async (e) => {
+    console.log(e.target.files);
+    let formData = new FormData();
+    formData.append("fieldName", "users");
+    formData.append("id", state._id);
+    formData.append("image", e.target.files[0]);
+
+    let add = await uploadFile(formData, "uploadProfilePic");
+    if (add.message == "done") {
+      setLoading(true);
+      GetDetails();
+    }
+    console.log(add);
+  };
+
+  const removeProfilePic = async () => {
+    let body = {
+      id: state._id,
+      path: state.image,
+    };
+    let deleted = await removeFile(body, "removeProfilePic");
+    if (deleted.message == "image deleted") {
+      setLoading(true);
+      GetDetails();
+    }
+  };
+
   return (
     <React.Fragment>
       {loading ? (
@@ -223,11 +258,44 @@ const DoctorDetails = () => {
                                 <div className="card-header">
                                   <img
                                     className="rounded-circle"
-                                    src={manImg}
+                                    src={state.image ? state.image : manImg}
                                     loading="lazy"
                                   />
                                 </div>
                                 <div className="card-body">
+                                  <div className="">
+                                    <button
+                                      className="btn btn-red-f-gr btn-sm float-center"
+                                      style={{ margin: "1em" }}
+                                      onClick={() => {
+                                        removeProfilePic();
+                                      }}
+                                    >
+                                      <i className="las la-trash" />
+                                      delete
+                                    </button>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      id="imgupload"
+                                      style={{ display: "none" }}
+                                      onChange={(e) => {
+                                        addProfilePic(e);
+                                      }}
+                                    />
+                                    <button
+                                      className="btn btn-dark-red-f btn-sm float-center"
+                                      style={{ margin: "1em" }}
+                                      onClick={() => {
+                                        document
+                                          .getElementById("imgupload")
+                                          .click();
+                                      }}
+                                    >
+                                      <i className="las la-image" />
+                                      change
+                                    </button>
+                                  </div>
                                   <input
                                     name="name"
                                     id="name"
@@ -404,7 +472,7 @@ const DoctorDetails = () => {
                   </div>
                   <div className="col-md-4">
                     <NotesCard id={state._id} />
-                    <FilesCard />
+                    <FilesCard files={state.files} id={state._id} />
                   </div>
                 </div>
               </div>

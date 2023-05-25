@@ -1,8 +1,4 @@
-import {
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Dashboard from "../pages/Dashboard.js";
 import Header from "../components/Header.js";
@@ -21,6 +17,11 @@ import Notes from "./Notes.js";
 import AddReserve from "./AddReserve.js";
 import Categories from "../components/Categories.js";
 import Calendar from "./Calender.js";
+import General from "./General.js";
+import CardView from "../components/CardView.js";
+import Rooms from "./Rooms.js";
+import AddRoom from "./AddRoom.js";
+import RoomDetails from "./RoomDetails.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -30,24 +31,26 @@ const Home = () => {
   });
   let navigate = useNavigate();
 
+  const GetDetails = async () => {
+    let body = {};
+    let res = await users(body);
+    let user = res.users;
+    setUser({
+      name: user.name,
+      email: user.email,
+      id: user._id,
+    });
+    console.log(user);
+  };
+
   useEffect(() => {
-    const GetDetails = async () => {
-      let body = {};
-      let res = await users(body);
-      let user = res.users;
-      setUser({
-        name: user.name,
-        email: user.email,
-        id: user._id,
-      });
-    };
     if (!localStorage.token) {
       navigate("/");
     } else {
       GetDetails();
     }
   }, []);
-  console.log(userDet);
+
   return (
     <React.Fragment>
       <Header name={userDet.name} email={userDet.email} id={userDet.id} />
@@ -64,8 +67,16 @@ const Home = () => {
           <Route exact path="/patientDetails" element={<PatientDetails />} />
           <Route exact path="/notes" element={<Notes />} />
           <Route exact path="/doctorDetails" element={<DoctorDetails />} />
-          <Route exact path="/reservations" element={<Calendar type={"res"}/>} />
+          <Route exact path="/rooms" element={<Rooms/>} />
+          <Route exact path="/addRoom" element={<AddRoom/>} />
+          <Route exact path="/roomDetails" element={<RoomDetails/>} />
+          <Route
+            exact
+            path="/reservations"
+            element={<Calendar type={"res"} />}
+          />
           <Route exact path="/reserveDetails" element={<ReserveDetails />} />
+          <Route exact path="/general" element={<General />} />
           <Route exact path="/categories" element={<Categories />} />
           <Route
             exact

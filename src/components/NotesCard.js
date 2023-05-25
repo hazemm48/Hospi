@@ -1,8 +1,25 @@
 import moment from "moment-timezone";
 import React from "react";
 import { Link } from "react-router-dom";
+import { note } from "../adminAPI.js";
 
 const NotesCard = (props) => {
+
+  const addNote = async () => {
+    let noteCon =document.getElementById("noteCon")
+    let body = {
+      data: {
+        method: "POST",
+        body: JSON.stringify({
+          content: noteCon.value,
+          id: props.id,
+        }),
+      }
+    };
+    let add = await note(body);
+    alert(add.message)
+    noteCon.value=""
+  };
   return (
     <div className="card notes-card">
       <div className="card-header">
@@ -20,11 +37,12 @@ const NotesCard = (props) => {
       <div className="card-body">
         <textarea
           className="form-control"
+          id="noteCon"
           placeholder="you can write patient notes over here"
           rows={16}
           defaultValue={""}
         />
-        <button className="btn btn-dark-red-f float-right btn-sm">
+        <button className="btn btn-dark-red-f float-right btn-sm" onClick={()=>addNote()}>
           <i className="las la-save" />
           save note
         </button>

@@ -25,7 +25,7 @@ const Calendar = (props) => {
   useEffect(() => {
     if (props.type == "res") {
       setHeadLeft("prev,next today all,doctor,lab,rad");
-      let arr = ["all","doctor", "lab", "rad"];
+      let arr = ["all", "doctor", "lab", "rad"];
       let obj = {};
       arr.map((e) => {
         console.log(e);
@@ -45,7 +45,7 @@ const Calendar = (props) => {
     if (props.filter) {
       data.filter = props.filter;
     }
-    if (type&&type!="all") {
+    if (type && type != "all") {
       data.filter = { ...data.filter, type: type };
     }
     let body = {
@@ -62,8 +62,14 @@ const Calendar = (props) => {
   let addEvents = () => {
     let obj = [];
     reserves.map((e) => {
-      let start = `${moment(e.date).format("YYYY-MM-DD")} ${moment(e.time.from,"h:mm A").format("HH:mm")}`;
-      let end = `${moment(e.date).format("YYYY-MM-DD")} ${moment(e.time.to,"h:mm A").format("HH:mm")}`;
+      let start = `${moment(e.date).format("YYYY-MM-DD")} ${moment(
+        e.time.from,
+        "h:mm A"
+      ).format("HH:mm")}`;
+      let end = `${moment(e.date).format("YYYY-MM-DD")} ${moment(
+        e.time.to,
+        "h:mm A"
+      ).format("HH:mm")}`;
       obj.push({
         id: e._id,
         title: `${e.type} reserve`,
@@ -121,6 +127,9 @@ const Calendar = (props) => {
                 left: headLeft,
                 center: "title",
                 right: "dayGridMonth,timeGridWeek,timeGridDay",
+              }}
+              onScroll={(e) => {
+                console.log(calenderRef.current.getDate());
               }}
               initialDate={moment().toDate()}
               selectable={true}

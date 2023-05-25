@@ -1,10 +1,18 @@
 /* const api = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/admin";
 const loginApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/adminLogin"; */
-const api = "http://localhost:3000/api/v1/admin";
-const loginApi = "http://localhost:3000/api/v1/adminLogin";
+const api = "https://hospi-server.onrender.com/api/v1/admin";
+const baseApi = "https://hospi-server.onrender.com/api/v1"; 
+/* const baseApi = "http://localhost:3000/api/v1";
+const api = "http://localhost:3000/api/v1/admin"; */
+
+const headers = {
+  Accept: "application/json",
+  Authorization: `SIM ${localStorage.token}`,
+  "Content-Type": "application/json",
+};
 
 export const login = async (body) =>
-  await fetch(loginApi, {
+  await fetch(`${baseApi}/signIn`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
@@ -18,11 +26,7 @@ export const users = async (body) => {
   let data = await fetch(`${api}/getAllUsers`, {
     method: "POST",
     body: JSON.stringify(body),
-    headers: {
-      Accept: "application/json",
-      Authorization: `SIM ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
+    headers,
   })
     .then((res) => res.json())
     .then((data) => data);
@@ -33,11 +37,7 @@ export const changePass = async (body) => {
   let data = await fetch(`${api}/changePass`, {
     method: "PUT",
     body: JSON.stringify(body),
-    headers: {
-      Accept: "application/json",
-      Authorization: `SIM ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
+    headers,
   })
     .then((res) => res.json())
     .then((data) => data);
@@ -48,11 +48,7 @@ export const updateUser = async (body) => {
   let data = await fetch(`${api}/updateUser`, {
     method: "PUT",
     body: JSON.stringify(body),
-    headers: {
-      Accept: "application/json",
-      Authorization: `SIM ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
+    headers,
   })
     .then((res) => res.json())
     .then((data) => data);
@@ -62,11 +58,7 @@ export const deleteUser = async (body) => {
   let data = await fetch(`${api}/deleteUser`, {
     method: "Delete",
     body: JSON.stringify(body),
-    headers: {
-      Accept: "application/json",
-      Authorization: `SIM ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
+    headers,
   })
     .then((res) => res.json())
     .then((data) => data);
@@ -77,11 +69,7 @@ export const addUser = async (body) => {
   let data = await fetch(`${api}/addUser`, {
     method: "POST",
     body: JSON.stringify(body),
-    headers: {
-      Accept: "application/json",
-      Authorization: `SIM ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
+    headers,
   })
     .then((res) => res.json())
     .then((data) => data);
@@ -92,11 +80,7 @@ export const reserve = async (body) => {
   let data = await fetch(`${api}/reserve/${body.oper}`, {
     method: "POST",
     body: JSON.stringify(body.data),
-    headers: {
-      Accept: "application/json",
-      Authorization: `SIM ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
+    headers,
   })
     .then((res) => res.json())
     .then((data) => data);
@@ -104,14 +88,9 @@ export const reserve = async (body) => {
 };
 
 export const note = async (body) => {
-  let data = await fetch(`${api}/note`, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      Accept: "application/json",
-      Authorization: `SIM ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
+  let data = await fetch(`${api}/note?${body.query}`, {
+    ...body.data,
+    headers,
   })
     .then((res) => res.json())
     .then((data) => data);
@@ -122,11 +101,7 @@ export const getGeneral = async (body) => {
   let data = await fetch(`${api}/getGeneral`, {
     method: "POST",
     body: JSON.stringify(body),
-    headers: {
-      Accept: "application/json",
-      Authorization: `SIM ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
+    headers,
   })
     .then((res) => res.json())
     .then((data) => data);
@@ -134,13 +109,34 @@ export const getGeneral = async (body) => {
 };
 
 export const rooms = async (body, method, url) => {
-  let data = await fetch(`${api}/room/${url}`, {
+  let data = await fetch(`${api}/room/${url?url:""}`, {
     method: method,
     body: JSON.stringify(body),
+    headers,
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+
+export const resetPassword = async (body) => {
+  let data = await fetch(`${api}/resetPassword`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers,
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+
+export const uploadFile = async (body,url) => {
+  let data = await fetch(`${baseApi}/fileUpload/${url}`, {
+    method: "POST",
+    body: body,
     headers: {
       Accept: "application/json",
       Authorization: `SIM ${localStorage.token}`,
-      "Content-Type": "application/json",
     },
   })
     .then((res) => res.json())
@@ -148,14 +144,11 @@ export const rooms = async (body, method, url) => {
   return data;
 };
 
-export const uploadFile = async (body) => {
-  let data = await fetch(`${api}/uptest`, {
+export const removeFile = async (body,url) => {
+  let data = await fetch(`${baseApi}/fileUpload/${url}`, {
     method: "POST",
-    body: body,
-    headers: {
-      Accept: "application/json",
-      Authorization: `SIM ${localStorage.token}`,
-    },
+    body: JSON.stringify(body) ,
+    headers,
   })
     .then((res) => res.json())
     .then((data) => data);
