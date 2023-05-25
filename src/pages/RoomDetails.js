@@ -123,7 +123,7 @@ const RoomDetails = () => {
                         className="breadcrumb-item active"
                         aria-current="page"
                       >
-                        {roomList.name}
+                        {roomList._id}
                       </li>
                     </ol>
                   </div>
