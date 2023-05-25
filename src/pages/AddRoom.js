@@ -12,7 +12,7 @@ const AddRoom = () => {
     let formData = new FormData(formEl);
     let body = {
       name: formData.get("name").toLowerCase(),
-      level: formData.get("name"),
+      level: formData.get("level"),
       type: formData.get("type"),
     };
     let add = await rooms(body,"POST");
