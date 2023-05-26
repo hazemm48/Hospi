@@ -82,7 +82,7 @@ label {
 .title-section {
   vertical-align: center;
   padding: 0;
-  border-bottom: 1px solid #d8d8d8;
+  /* border-bottom: 1px solid #d8d8d8; */
 }
 .title-section > .col-md-8,
 .title-section > .col-md-4 {

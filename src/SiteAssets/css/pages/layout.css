@@ -385,8 +385,8 @@ nav .navbar-collapse .navbar-nav .notification-dropdown-menu .dropdown-body p,
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
 }
 .side-nav .list-group {
-  position: relative;
-  width: auto;
+  position: fixed;
+  width: inherit;
 }
 .side-nav .list-group .list-group-item {
   text-transform: capitalize;
@@ -395,7 +395,7 @@ nav .navbar-collapse .navbar-nav .notification-dropdown-menu .dropdown-body p,
   border: 1.5px solid transparent;
   font-weight: 500;
   border-radius: 0.15em;
-  width: 100%;
+  width: 101%;
   background-color:#0466c8;
   margin-bottom: 0.25em;
 }
@@ -545,7 +545,7 @@ main .side-nav {
   width: 15%;
 }
 main .main-content {
-  width: 100%;
+  width: 84%;
 }
 
 @media only screen and (min-width: 600px) {

@@ -1,20 +1,9 @@
-import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  updateUser,
-  users,
-  deleteUser,
-  uploadFile,
-  removeFile,
-  resetPassword,
   rooms,
-} from "../adminAPI.js";
-import FilesCard from "../components/FilesCard.js";
-import LoadingSpinner from "../components/Loading.js";
-import NotesCard from "../components/NotesCard.js";
-import manImg from "../images/man.svg";
-import Calendar from "./Calender.js";
+} from "../../adminAPI.js";
+import LoadingSpinner from "../../components/Loading.js";
 
 const RoomDetails = () => {
   const [loading, setLoading] = useState(true);

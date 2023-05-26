@@ -8,13 +8,13 @@ import {
   deleteUser,
   removeFile,
   uploadFile,
-} from "../adminAPI.js";
-import FilesCard from "../components/FilesCard.js";
-import LoadingSpinner from "../components/Loading.js";
-import NotesCard from "../components/NotesCard.js";
-import Schedule from "../components/Schedule.js";
-import manImg from "../images/man.svg";
-import Calendar from "./Calender.js";
+} from "../../adminAPI.js";
+import FilesCard from "../../components/FilesCard.js";
+import LoadingSpinner from "../../components/Loading.js";
+import NotesCard from "../../components/NotesCard.js";
+import Schedule from "../../components/Schedule.js";
+import manImg from "../../images/man.svg";
+import Calendar from "../Calender.js";
 
 const DoctorDetails = () => {
   const [loading, setLoading] = useState(true);

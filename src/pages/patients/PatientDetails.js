@@ -8,12 +8,12 @@ import {
   uploadFile,
   removeFile,
   resetPassword,
-} from "../adminAPI.js";
-import FilesCard from "../components/FilesCard.js";
-import LoadingSpinner from "../components/Loading.js";
-import NotesCard from "../components/NotesCard.js";
-import manImg from "../images/man.svg";
-import Calendar from "./Calender.js";
+} from "../../adminAPI.js";
+import FilesCard from "../../components/FilesCard.js";
+import LoadingSpinner from "../../components/Loading.js";
+import NotesCard from "../../components/NotesCard.js";
+import manImg from "../../images/man.svg";
+import Calendar from "../Calender.js";
 
 const PatientDetails = () => {
   const [loading, setLoading] = useState(true);
@@ -392,7 +392,9 @@ const PatientDetails = () => {
                         <div className="card">
                           <button
                             className="btn btn-dark-red-f-gr"
-                            onClick={() => {}}
+                            onClick={() => {
+                              navigate('/home/addMedicalRecord',{state:id.state})
+                            }}
                           >
                             <i className="las la-notes-medical" />
                             medical record

@@ -1,8 +1,8 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { reserve } from "../adminAPI.js";
-import LoadingSpinner from "../components/Loading.js";
+import { reserve } from "../../adminAPI.js";
+import LoadingSpinner from "../../components/Loading.js";
 
 const ReserveDetails = () => {
   let navigate = useNavigate();

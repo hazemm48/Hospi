@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { rooms } from "../adminAPI.js";
-import LoadingSpinner from "../components/Loading.js";
-import TableView from "../components/TableView.js";
+import { rooms } from "../../adminAPI.js";
+import LoadingSpinner from "../../components/Loading.js";
+import Search from "../../components/Search.js";
+import {
+  PagenationNavigate,
+  PagenationResult,
+} from "../../components/Pagenation.js";
 
 const Rooms = () => {
   const [loading, setLoading] = useState(false);
@@ -10,15 +14,17 @@ const Rooms = () => {
   const [length, setLength] = useState();
   const [srchFilter, setSrchFilter] = useState();
   const [roomList, setRoomList] = useState();
-  const [table, setTable] = useState([
-    "name",
-    "level",
-    "type",
-    "current",
-    "history",
-    " ",
-  ]);
+
   let resultLimit = 12;
+  let table = ["name", "level", "type", "current", "history", " "];
+  let sortValues = [
+    ["name", "Name ascending"],
+    ["-name", "Name descending"],
+    ["level", "Level ascending"],
+    ["-level", "Level descending"],
+    ["-createdAt", "Newest"],
+    ["createdAt", "Oldest"],
+  ];
 
   let navigate = useNavigate();
 
@@ -51,57 +57,6 @@ const Rooms = () => {
     GetRoom();
   }, [srchFilter]);
 
-  let searchData = () => {
-    let formEl = document.forms.search;
-    let formData = new FormData(formEl);
-    let searchIn = formData.get("search");
-    let srchSlct = formData.get("srchSlct");
-    let data = {};
-    if (
-      !(
-        (srchSlct == "_id" && (searchIn.length < 24 || searchIn.length > 24)) ||
-        srchSlct == "all"
-      )
-    ) {
-      if (srchSlct == "name") searchIn = searchIn.toLowerCase();
-      data[srchSlct] = searchIn;
-      setSrchFilter(data);
-    }
-    if (srchSlct == "all") {
-      formEl.querySelector("input").value = "";
-      setSrchFilter();
-    }
-  };
-
-  let pagination = () => {
-    let pages = [];
-    for (let i = 2; i <= Math.ceil(length / resultLimit); i++) {
-      pages.push(
-        <li
-          class="page-item"
-          onClick={(e) => {
-            changePage(e);
-          }}
-        >
-          <button class="page-link" name="page" tabIndex={i}>
-            {i}
-          </button>
-        </li>
-      );
-    }
-    return pages;
-  };
-
-  let changePage = (e) => {
-    let btn = document.getElementsByName("page");
-    Array.from(btn).map((e) => {
-      e.parentElement.classList.remove("active");
-    });
-    e.target.parentElement.classList.add("active");
-    setLoading(true)
-    GetRoom();
-  };
-
   let GoToDoc = (e) => {
     navigate("/home/DoctorDetails", {
       state: e.target.value,
@@ -122,50 +77,24 @@ const Rooms = () => {
                 className="form-select dropdown-toggle"
                 role="button"
                 onChange={() => {
+                  setLoading(true);
                   GetRoom();
                 }}
               >
-                <option selected value="name">
-                  Name ascending
-                </option>
-                <option value="-name">Name descending</option>
-                <option value="level">Level ascending</option>
-                <option value="-level">Level descending</option>
-                <option value="-createdAt">Newest</option>
-                <option value="createdAt">Oldest</option>
+                {sortValues.map((e) => {
+                  if (e[0] == "name") {
+                    return (
+                      <option selected value={e[0]}>
+                        {e[1]}
+                      </option>
+                    );
+                  }
+                  return <option value={e[0]}>{e[1]}</option>;
+                })}
               </select>
             </div>
           </div>
-          <form id="search" className="ml-auto">
-            <div className="form">
-              <div className="form-group col-sm-12">
-                <div className="input-group ">
-                  <div class="input-group-append">
-                    <select class="input-group-text" name="srchSlct" required>
-                      <option value="all">All</option>
-                      <option value="_id">ID</option>
-                      <option value="name">Name</option>
-                      <option value="level">LEVEL</option>
-                      <option value="type">TYPE</option>
-                    </select>
-                  </div>
-                  <input name="search" className="form-control" />
-                  <div class="input-group-append">
-                    <button
-                      type="button"
-                      className="input-group-text"
-                      id="basic-addon2"
-                      onClick={() => {
-                        searchData();
-                      }}
-                    >
-                      <i className="las la-search" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
+          <Search search={setSrchFilter} type={"room"} />
           <div className="buttons-wrapper ml-auto">
             <Link to="/home/addRoom">
               <button className="btn btn-dark-red-f-gr">
@@ -179,20 +108,11 @@ const Rooms = () => {
           <LoadingSpinner />
         ) : (
           <>
-            <div
-              class="section "
-              id="data-table6_info"
-              role="status"
-              aria-live="polite"
-            >
-              Showing{" "}
-              <span style={{ color: "#00b4d8" }}>
-                {pageNo < Math.ceil(length / resultLimit)
-                  ? (pageNo - 1) * resultLimit + resultLimit
-                  : length}
-              </span>{" "}
-              out of <span style={{ color: "#00b4d8" }}>{length} </span>results
-            </div>
+            <PagenationResult
+              pageNo={pageNo}
+              length={length}
+              resultLimit={resultLimit}
+            />
             <div id="tv" className={`section patients-table-view`}>
               <table className="table table-hover table-responsive-lg">
                 <thead>
@@ -242,7 +162,9 @@ const Rooms = () => {
                               to={"/home/roomDetails"}
                               state={r._id}
                               className="view-more btn btn-sm btn-dark-red-f"
-                            > view room
+                            >
+                              {" "}
+                              view room
                             </Link>
                           </td>
                         </tr>
@@ -254,26 +176,12 @@ const Rooms = () => {
           </>
         )}
       </div>
-      <div aria-label="Page navigation example" className="section">
-        <ul class="pagination justify-content-start">
-          <li class="page-item disabled">
-            <a class="page-link" tabindex="-1">
-              Pages
-            </a>
-          </li>
-          <li
-            class="page-item active"
-            onClick={(e) => {
-              changePage(e);
-            }}
-          >
-            <button class="page-link" name="page" tabIndex="1">
-              1
-            </button>
-          </li>
-          {pagination()}
-        </ul>
-      </div>
+      <PagenationNavigate
+        length={length}
+        resultLimit={resultLimit}
+        setLoading={setLoading}
+        GetDetails={GetRoom}
+      />
     </div>
   );
 };

@@ -3,25 +3,25 @@ import React, { useEffect, useState } from "react";
 import Dashboard from "../pages/Dashboard.js";
 import Header from "../components/Header.js";
 import SideNav from "../components/SideNav.js";
-import Doctors from "./Doctors.js";
-import PatientDetails from "./PatientDetails.js";
+import Doctors from "./doctors/Doctors.js";
+import PatientDetails from "./patients/PatientDetails.js";
 import Settings from "./Settings.js";
-import AddPatient from "./AddPatient.js";
-import AddDoctor from "./AddDoctor.js";
+import AddPatient from "./patients/AddPatient.js";
+import AddDoctor from "./doctors/AddDoctor.js";
 import AddAdmin from "./AddAdmin.js";
-import Patients from "./Patients.js";
+import Patients from "./patients/Patients.js";
 import { users } from "../../src/adminAPI";
-import ReserveDetails from "./ReserveDetails.js";
-import DoctorDetails from "./doctorDetails.js";
+import ReserveDetails from "./reserves/ReserveDetails.js";
+import DoctorDetails from "./doctors/doctorDetails.js";
 import Notes from "./Notes.js";
-import AddReserve from "./AddReserve.js";
+import AddReserve from "./reserves/AddReserve.js";
 import Categories from "../components/Categories.js";
 import Calendar from "./Calender.js";
 import General from "./General.js";
-import CardView from "../components/CardView.js";
-import Rooms from "./Rooms.js";
-import AddRoom from "./AddRoom.js";
-import RoomDetails from "./RoomDetails.js";
+import Rooms from "./rooms/Rooms.js";
+import AddRoom from "./rooms/AddRoom.js";
+import RoomDetails from "./rooms/RoomDetails.js";
+import AddMedicRecord from "./medicalRecord/AddMedicRecord.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -62,19 +62,15 @@ const Home = () => {
             path="/dashboard"
             element={<Dashboard name={userDet.name} email={userDet.email} />}
           />
-          <Route exact path="/patients" element={<Patients />} />
+          <Route exact path="/patients" element={<Patients />} /> 
           <Route exact path="/doctors" element={<Doctors />} />
           <Route exact path="/patientDetails" element={<PatientDetails />} />
           <Route exact path="/notes" element={<Notes />} />
           <Route exact path="/doctorDetails" element={<DoctorDetails />} />
-          <Route exact path="/rooms" element={<Rooms/>} />
-          <Route exact path="/addRoom" element={<AddRoom/>} />
-          <Route exact path="/roomDetails" element={<RoomDetails/>} />
-          <Route
-            exact
-            path="/reservations"
-            element={<Calendar type={"res"} />}
-          />
+          <Route exact path="/rooms" element={<Rooms />} />
+          <Route exact path="/addRoom" element={<AddRoom />} />
+          <Route exact path="/roomDetails" element={<RoomDetails />} />
+          <Route exact path="/addMedicalRecord" element={<AddMedicRecord />} />
           <Route exact path="/reserveDetails" element={<ReserveDetails />} />
           <Route exact path="/general" element={<General />} />
           <Route exact path="/categories" element={<Categories />} />
@@ -89,13 +85,16 @@ const Home = () => {
               />
             }
           />
-          <Route exact path="/addPatient" element={<AddPatient />} />
           <Route exact path="/addDoctor" element={<AddDoctor />} />
+          <Route
+            exact
+            path="/reservations"
+            element={<Calendar type={"res"} />}
+          />
+          <Route exact path="/addPatient" element={<AddPatient />} />
           <Route exact path="/addReserve" element={<AddReserve />} />
-          {userDet.email == "admin@hospi.com" ? (
+          {userDet.email == "admin@hospi.com" && (
             <Route exact path="/addAdmin" element={<AddAdmin />} />
-          ) : (
-            ""
           )}
         </Routes>
       </main>

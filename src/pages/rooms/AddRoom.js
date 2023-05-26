@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { addUser, rooms } from "../adminAPI.js";
+import { addUser, rooms } from "../../adminAPI.js";
 
 const AddRoom = () => {
   let [htmlData, setHtmlData] = useState([
