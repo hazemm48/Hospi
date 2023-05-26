@@ -109,7 +109,7 @@ export const getGeneral = async (body) => {
 };
 
 export const rooms = async (body, method, url) => {
-  let data = await fetch(`${api}/room/${url?url:""}`, {
+  let data = await fetch(`${api}/room/${url ? url : ""}`, {
     method: method,
     body: JSON.stringify(body),
     headers,
@@ -130,7 +130,7 @@ export const resetPassword = async (body) => {
   return data;
 };
 
-export const uploadFile = async (body,url) => {
+export const uploadFile = async (body, url) => {
   let data = await fetch(`${baseApi}/fileUpload/${url}`, {
     method: "POST",
     body: body,
@@ -144,10 +144,21 @@ export const uploadFile = async (body,url) => {
   return data;
 };
 
-export const removeFile = async (body,url) => {
+export const removeFile = async (body, url) => {
   let data = await fetch(`${baseApi}/fileUpload/${url}`, {
     method: "POST",
-    body: JSON.stringify(body) ,
+    body: JSON.stringify(body),
+    headers,
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+
+export const medicalRecord = async (body, url) => {
+  let data = await fetch(`${baseApi}/medicalRecord/${url ? url : ""}`, {
+    method: "POST",
+    body: JSON.stringify(body),
     headers,
   })
     .then((res) => res.json())
