@@ -22,6 +22,7 @@ import Rooms from "./rooms/Rooms.js";
 import AddRoom from "./rooms/AddRoom.js";
 import RoomDetails from "./rooms/RoomDetails.js";
 import AddMedicRecord from "./medicalRecord/AddMedicRecord.js";
+import MedicalRecord from "./medicalRecord/MedicalRecord.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -70,6 +71,7 @@ const Home = () => {
           <Route exact path="/rooms" element={<Rooms />} />
           <Route exact path="/addRoom" element={<AddRoom />} />
           <Route exact path="/roomDetails" element={<RoomDetails />} />
+          <Route exact path="/medicalRecord" element={<MedicalRecord />} />
           <Route exact path="/addMedicalRecord" element={<AddMedicRecord />} />
           <Route exact path="/reserveDetails" element={<ReserveDetails />} />
           <Route exact path="/general" element={<General />} />

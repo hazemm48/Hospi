@@ -393,7 +393,7 @@ const PatientDetails = () => {
                           <button
                             className="btn btn-dark-red-f-gr"
                             onClick={() => {
-                              navigate('/home/addMedicalRecord',{state:id.state})
+                              navigate('/home/medicalRecord',{state:id.state})
                             }}
                           >
                             <i className="las la-notes-medical" />

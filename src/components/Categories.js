@@ -13,18 +13,17 @@ const Categories = (props) => {
   console.log(props);
   useEffect(() => {
     if (props.view == "gen") {
-      let arr = ["rooms", "first aid", "doctor specialities"];
+      let arr = ["rooms", "first_aid", "doctor_specialities"];
       setImage(menu);
       setData(arr);
     } else if (props.view == "medic") {
-      let arr = [
-        "diagonse",
+      setData([
+        "diagnose",
         "medication_details",
         "radiation_result",
         "lab_result",
         "operation",
-      ];
-      setData(arr);
+      ]);
       setImage(record);
     }
   }, []);
@@ -58,7 +57,7 @@ const Categories = (props) => {
   }, []);
 
   return (
-    <React.Fragment>
+    <>
       <div className="section patients-card-view">
         <div className="row">
           {data?.map((e) => {
@@ -87,7 +86,7 @@ const Categories = (props) => {
           })}
         </div>
       </div>
-    </React.Fragment>
+    </>
   );
 };
 
