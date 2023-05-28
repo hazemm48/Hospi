@@ -19,9 +19,9 @@ const PatientDetails = () => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
   const [calView, setCalView] = useState(false);
-  
+
   const id = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const GetDetails = async () => {
     let body = {
@@ -393,7 +393,9 @@ const PatientDetails = () => {
                           <button
                             className="btn btn-dark-red-f-gr"
                             onClick={() => {
-                              navigate('/home/medicalRecord',{state:id.state})
+                              navigate("/home/medicalRecord", {
+                                state: id.state,
+                              });
                             }}
                           >
                             <i className="las la-notes-medical" />
@@ -596,7 +598,11 @@ const PatientDetails = () => {
                   </div>
                   <div className="col-md-4">
                     <NotesCard id={state._id} />
-                    <FilesCard files={state.files} id={state._id} />
+                    <FilesCard
+                      files={state.files}
+                      id={state._id}
+                      fieldName={"users"}
+                    />
                   </div>
                 </div>
               </div>

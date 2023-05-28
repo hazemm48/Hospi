@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { addUser } from "../adminAPI.js";
+import FeedBack from "../components/FeedBack.js";
 
 const AddAdmin = () => {
   let [htmlData, setHtmlData] = useState();

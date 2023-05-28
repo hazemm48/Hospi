@@ -56,7 +56,19 @@ const CardView = (props) => {
                       <p>{user.gender}</p>
                     </div>
                   </div>
-                  <div className="card-footer" />
+                  {props.type == "doctor" && (
+                    <div className="card-footer">
+                      <Link
+                        to="/home/addReserve"
+                        state={{id:user._id,type:"doctor"}}
+                        className="float-right"
+                      >
+                        <button className="btn btn-dark-red-f-gr">
+                          reserve
+                        </button>
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
             );

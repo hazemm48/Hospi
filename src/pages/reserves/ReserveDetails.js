@@ -1,7 +1,9 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { reserve } from "../../adminAPI.js";
+import { generatePresc, reserve } from "../../adminAPI.js";
+import FeedBack from "../../components/FeedBack.js";
+import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
 
 const ReserveDetails = () => {
@@ -9,6 +11,8 @@ const ReserveDetails = () => {
   const id = useLocation();
   const [reserves, setReserves] = useState();
   const [loading, setLoading] = useState(true);
+  const [display, setDisplay] = useState(false);
+  const [feedData, setFeedData] = useState();
   let anPer = "";
   let type = "";
 
@@ -44,7 +48,7 @@ const ReserveDetails = () => {
     let deleteReserve = await reserve(body);
     if (deleteReserve.message == "reservation cancelled") {
       if (window.confirm("Reserve Deleted Successfully")) {
-        navigate("/home/PatientDetails",{state:reserves[0].patientId})
+        navigate("/home/PatientDetails", { state: reserves[0].patientId });
       }
     } else {
       alert("Wrong Data");
@@ -104,12 +108,41 @@ const ReserveDetails = () => {
     console.log(body);
   };
 
+  const generatePrescription = async (e) => {
+    let oper = e.target.name;
+    if (oper == "pdf" && reserves[0].report.link) {
+      window.open(reserves[0].report.link, "_blank");
+    } else {
+      let body = {
+        oper: oper,
+        resId: id.state,
+      };
+      let generate = await generatePresc(body);
+      console.log(generate);
+      if (oper == "pdf") {
+        window.open(generate.pdf, "_blank");
+      } else if (oper == "qr") {
+        document
+          .querySelector(".content")
+          .insertAdjacentHTML("afterbegin", generate.qr);
+      }
+      setFeedData("Scan the qr code with your camera");
+    }
+  };
+
   return (
     <React.Fragment>
       {loading ? (
         <LoadingSpinner />
       ) : reserves ? (
         <div className="main-content">
+          {display && (
+            <FeedBack
+              display={display}
+              data={feedData}
+              setDisplay={setDisplay}
+            />
+          )}
           <div className="container-fluid">
             <div className="section patient-details-section">
               <div className="card ">
@@ -414,7 +447,7 @@ const ReserveDetails = () => {
                                 <i className="las la-user-injured" />
                                 View Patient
                               </Link>
-                              {type == "doctor" ? (
+                              {type == "doctor" && (
                                 <Link
                                   to="/home/doctorDetails"
                                   state={reserves[0].doctorId}
@@ -423,8 +456,6 @@ const ReserveDetails = () => {
                                   <i className="las la-stethoscope" />
                                   View Doctor
                                 </Link>
-                              ) : (
-                                ""
                               )}
                             </div>
                           </div>
@@ -434,84 +465,68 @@ const ReserveDetails = () => {
                   </div>
                 </div>
               </div>
-              {reserves[0].status ? (
+              {reserves[0].status && (
                 <div>
                   <h2 style={{ textAlign: "center" }}>Report</h2>
                   <div className="card">
                     <div>
-                      {type == "doctor" ? (
-                        <h3 style={{ color: "#0466c8" }}>Prescription</h3>
-                      ) : (
-                        ""
-                      )}
+                      <h3 style={{ color: "#0466c8" }}>
+                        Prescription
+                        <button
+                          name="qr"
+                          onClick={(e) => {
+                            setDisplay(true);
+                            generatePrescription(e);
+                          }}
+                          className="btn btn-dark-red-f float-right"
+                        >
+                          <i className="las la-qrcode" />
+                          generate QR code
+                        </button>
+                        <button
+                          name="pdf"
+                          onClick={(e) => {
+                            generatePrescription(e);
+                          }}
+                          className="btn btn-dark-red-f  float-right "
+                          style={{ marginRight: "0.5em" }}
+                        >
+                          <i className="las la-file-alt" />
+                          generate PDF
+                        </button>
+                      </h3>
 
                       <textarea
-                        name="preserves[0]c"
+                        name="prescription"
                         className="form-control"
                         style={{ height: "auto" }}
-                        defaultValue=""
+                        defaultValue={reserves[0].report.prescription}
                         readOnly
                         rows={12}
                       />
                     </div>
-                    {type == "doctor" ? (
-                      <div>
-                        <h3 style={{ color: "#0466c8" }}>Notes</h3>
-                        <textarea
-                          name="notes"
-                          className="form-control"
-                          style={{ height: "auto" }}
-                          defaultValue=""
-                          readOnly
-                          rows={12}
-                        />
-                      </div>
-                    ) : (
-                      ""
-                    )}
+                    <div>
+                      <h3 style={{ color: "#0466c8" }}>Notes</h3>
+                      <textarea
+                        name="note"
+                        className="form-control"
+                        style={{ height: "auto" }}
+                        defaultValue={reserves[0].report.note}
+                        readOnly
+                        rows={12}
+                      />
+                    </div>
 
                     <h3 style={{ color: "#0466c8" }}>Files</h3>
 
-                    <div className="card files-card">
-                      <div className="card-header">
-                        <div className="d-flex justify-content-end">
-                          <input
-                            type="file"
-                            multiple
-                            accept="image/*,.pdf"
-                            className="btn btn-dark-red-f btn-sm"
-                          />
-                        </div>
-                      </div>
-                      <div className="card-body">
-                        <div className="list-group list-group-flush">
-                          <a className="list-group-item">
-                            <i className="las la-file-excel" />
-                            check up reserves[0]ults.csv
-                            <div className="float-right">
-                              <div className="action-buttons no-display">
-                                <button className="btn btn-sm btn-dark-red-f">
-                                  <i className="las la-trash" />
-                                </button>
-                                <button className="btn btn-sm btn-dark-red-f">
-                                  <i className="las la-download" />
-                                </button>
-                              </div>
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-                      <div className="card-footer d-flex justify-content-end">
-                        <button className="btn btn-dark-red-f btn-sm">
-                          <i className="las la-file-medical" />
-                          add files
-                        </button>
-                      </div>
-                    </div>
+                    <FilesCard
+                      id={id.state}
+                      type={reserves[0].type}
+                      fieldName={"reserves"}
+                      files={reserves[0].report.files}
+                    />
                   </div>
                 </div>
-              ) : (
-                ""
               )}
             </div>
           </div>

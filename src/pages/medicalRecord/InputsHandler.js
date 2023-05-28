@@ -1,7 +1,9 @@
+import moment from "moment";
 import React from "react";
 
 const InputsHandler = (props) => {
-
+  let { data, disable, record } = props;
+  console.log(data);
   const viewStill = (e) => {
     let still = document.querySelector("#still");
     if (e.target.value == "true") {
@@ -23,71 +25,67 @@ const InputsHandler = (props) => {
   };
 
   return (
-    <form id="form">
-      <div className="form">
-        {props.data?.map((e) => {
-          if (e[0] == "input") {
-            return (
-              <div className="form-group col-sm-8" id={e[2]}>
-                <label>{e[1]}</label>
-                <input
-                  className="form-control"
-                  name={e[2]}
-                  type={e[3]}
-                  required
-                />
-              </div>
-            );
-          } else if (e[0] == "select") {
-            return (
-              <div className="form-group col-sm-3" id={e[2]}>
-                <label>{e[1]}</label>
-                <select
-                  className="form-control form-select dropdown-toggle"
-                  name={e[2]}
-                  required
-                  onChange={(d) => {
-                    console.log(d[2]);
-                    if (e[2] == "chronic") {
-                      return viewStill(d);
-                    } else {
-                      return viewEndDate(d);
-                    }
-                  }}
-                >
-                  <option value="false">no</option>
-                  <option value="true">yes</option>
-                </select>
-              </div>
-            );
-          } else if (e[0] == "textarea") {
-            return (
-              <div className="form-group col-sm-8">
-                <label>{e[1]}</label>
-                <textarea
-                  className="form-control "
-                  rows="3"
-                  maxlength="100"
-                  name={e[2]}
-                  required
-                />
-              </div>
-            );
+    <div className="form">
+      {data?.map((e) => {
+        if (e[0] == "input") {
+          if (e[3] == "date" && record) {
+            record[e[2]] = moment(record[e[2]]).format("YYYY-MM-DD");
           }
-        })}
-        <div className="form-group col-sm-8">
-          <label>upload files</label>
-          <input
-            className="form-control"
-            name="file"
-            type="file"
-            multiple
-            accept="image/*,application/pdf"
-            required
-          />
-        </div>
-      </div>
-    </form>
+          return (
+            <div className="form-group col-sm-8" id={e[2]}>
+              <label>{e[1]}</label>
+              <input
+                className="form-control"
+                name={e[2]}
+                type={e[3]}
+                disabled={disable}
+                required
+                defaultValue={record ? record[e[2]] : ""}
+              />
+            </div>
+          );
+        } else if (e[0] == "select") {
+          return (
+            <div className="form-group col-sm-3" id={e[2]}>
+              <label>{e[1]}</label>
+              <select
+                className="form-control form-select dropdown-toggle"
+                name={e[2]}
+                disabled={disable}
+                required
+                defaultValue={record ? record[e[2]] : ""}
+                onChange={(d) => {
+                  console.log(d[2]);
+                  if (e[2] == "chronic") {
+                    return viewStill(d);
+                  } else {
+                    return viewEndDate(d);
+                  }
+                }}
+              >
+                <option value="false">no</option>
+                <option value="true">yes</option>
+              </select>
+            </div>
+          );
+        } else if (e[0] == "textarea") {
+          return (
+            <div className="form-group col-sm-8">
+              <label>{e[1]}</label>
+              <textarea
+                className="form-control "
+                disabled={disable}
+                defaultValue={record ? record[e[2]] : ""}
+                rows="3"
+                maxlength="100"
+                name={e[2]}
+                required
+              />
+            </div>
+          );
+        }
+      })}
+    </div>
   );
 };
 

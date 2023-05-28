@@ -458,6 +458,22 @@ const DoctorDetails = () => {
                       <div className="col-sm-12">
                         <div className="card">
                           <button
+                            className="btn btn-dark-red-f-gr"
+                            onClick={() => {
+                              navigate("/home/addReserve", {
+                                state: { id: id.state, type: "doctor" },
+                              });
+                            }}
+                          >
+                            <i className="las la-clock" />
+                            Reserve Doctor
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="col-sm-12">
+                        <div className="card">
+                          <button
                             className="btn btn-red-f-gr"
                             onClick={() => {
                               userDelete();
@@ -472,7 +488,11 @@ const DoctorDetails = () => {
                   </div>
                   <div className="col-md-4">
                     <NotesCard id={state._id} />
-                    <FilesCard files={state.files} id={state._id} />
+                    <FilesCard
+                      files={state.files}
+                      id={state._id}
+                      fieldName={"users"}
+                    />
                   </div>
                 </div>
               </div>

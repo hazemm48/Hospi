@@ -5,18 +5,30 @@ import { removeFile, uploadFile } from "../adminAPI.js";
 
 const FilesCard = (props) => {
   const [files, setFiles] = useState(props.files);
+  console.log(props);
 
   const upload = async (e) => {
     console.log(e.target.files);
     let formData = new FormData();
+    if (props.fieldName == "medicRecord") {
+      formData.append("recId", props.recId);
+    } else if (props.fieldName == "reserves") {
+      formData.append("type", props.type);
+    }
     formData.append("id", props.id);
-    formData.append("fieldName", "users");
+    formData.append("fieldName", props.fieldName);
     for (let i = 0; i < e.target.files.length; i++) {
       formData.append(`files`, e.target.files[i]);
     }
     let uploaded = await uploadFile(formData, "uploadFiles");
     console.log(uploaded);
-    uploaded.message == "done" && setFiles(uploaded.files);
+    if (uploaded.message == "done") {
+      if (props.fieldName == "reserves") {
+        setFiles(uploaded.files);
+      } else {
+        setFiles(uploaded.files);
+      }
+    }
   };
 
   const deleteFiles = async (e) => {
@@ -25,6 +37,7 @@ const FilesCard = (props) => {
     let body = {
       id: props.id,
       path: e,
+      fieldName: props.fieldName,
     };
     console.log(body);
     let deleted = await removeFile(body, "removeFiles");

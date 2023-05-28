@@ -16,15 +16,15 @@ const AddMedicRecord = () => {
   let navigate = useNavigate();
 
   let createHtmlData = () => {
-    let data = medicList(type)
+    let data = medicList(type);
     console.log(data);
-    setHtmlData(data)
+    setHtmlData(data);
   };
 
   useEffect(() => {
-    if(pageView){
+    if (pageView) {
       console.log("asd");
-      createHtmlData()
+      createHtmlData();
     }
   }, [pageView]);
 
@@ -33,7 +33,7 @@ const AddMedicRecord = () => {
     let formData = new FormData(formEl);
 
     let body = {
-      type:htmlData.value,
+      type: htmlData.value,
       file: [],
     };
     for (const pair of formData.entries()) {
@@ -49,12 +49,12 @@ const AddMedicRecord = () => {
     let files = body.file;
     delete body.file;
 
-    let add = await medicalRecord(body,"POST");
+    let add = await medicalRecord(body, "POST");
     console.log(add);
     alert(add.message);
     if (add.message == "added") {
       if (addFiles(files, add.added[0]._id)) {
-        navigate("/home/patientDetails", { state:state });
+        navigate("/home/medicalRecord", { state: state });
       }
     } else {
       setLoading(false);
@@ -81,38 +81,52 @@ const AddMedicRecord = () => {
         <LoadingSpinner />
       ) : (
         <div className="container-fluid">
-          {pageView  ? (
+          {pageView ? (
             <>
-            <div className="section">
-            <h5 className="page-title">{type.replace("_", " ")}</h5>
-          </div>
-          <div className="section profile-section">
-            <div className="card container">
-              <div className="card-body">
-                <div className="sub-section col-sm-8 col-md-12 col-lg-8">
-                  <div className="sub-section-body">
-                    <div className="user-password-form">
-                      <InputsHandler data={htmlData.data}/>
-                      <button
-                        className="btn btn-dark-red-f-gr mt-4"
-                        type="button"
-                        onClick={() => {
-                          addRecord();
-                          setLoading(true);
-                        }}
-                      >
-                        <i className="las la-save" />
-                        submit
-                      </button>
+              <div className="section">
+                <h5 className="page-title">{type.replace("_", " ")}</h5>
+              </div>
+              <div className="section profile-section">
+                <div className="card container">
+                  <div className="card-body">
+                    <div className="sub-section col-sm-8 col-md-12 col-lg-8">
+                      <div className="sub-section-body">
+                        <div className="user-password-form">
+                          <form id="form">
+                            <InputsHandler data={htmlData.data} />
+                            <div className="form-group col-sm-8">
+                              <label>upload files</label>
+                              <input
+                                className="form-control"
+                                name="file"
+                                type="file"
+                                multiple
+                                accept="image/*,application/pdf"
+                                required
+                              />
+                            </div>
+                          </form>
+                          <button
+                            className="btn btn-dark-red-f-gr mt-4"
+                            type="button"
+                            onClick={() => {
+                              addRecord();
+                              setLoading(true);
+                            }}
+                          >
+                            <i className="las la-save" />
+                            submit
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
             </>
-          ):(<Categories pageView={setPageView} view={"medic"} type={setType} />)}
-          
+          ) : (
+            <Categories pageView={setPageView} view={"medic"} type={setType} />
+          )}
         </div>
       )}
     </div>
