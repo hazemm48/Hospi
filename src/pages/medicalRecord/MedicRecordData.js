@@ -1,7 +1,7 @@
 export const medicList = (type) => {
   let list = {
     diagnose: [
-      ["textarea", "diagone description", "name"],
+      ["textarea", "diagone description", "name",30],
       ["input", "diagnose date", "date", "date"],
       ["select", "is it chronic", "chronic"],
       ["select", "is still active", "still"],
@@ -13,7 +13,7 @@ export const medicList = (type) => {
       ["input", "medication start date", "date", "date"],
       ["select", "still taking", "still"],
       ["input", "medication end date", "endDate", "date"],
-      ["textarea", "dosage", "dosage"],
+      ["textarea", "dosage", "dosage",100],
       ["input", "doctor who prescribed it", "doctorName", "text"],
     ],
     rad: [

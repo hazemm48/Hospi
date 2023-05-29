@@ -2,9 +2,11 @@ import moment from "moment-timezone";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { removeFile, uploadFile } from "../adminAPI.js";
+import LoadingSpinner from "./Loading.js";
 
 const FilesCard = (props) => {
   const [files, setFiles] = useState(props.files);
+  const [loading, setLoading] = useState(false);
   console.log(props);
 
   const upload = async (e) => {
@@ -24,10 +26,11 @@ const FilesCard = (props) => {
     console.log(uploaded);
     if (uploaded.message == "done") {
       if (props.fieldName == "reserves") {
-        setFiles(uploaded.files);
+        setFiles(uploaded.report.files);
       } else {
         setFiles(uploaded.files);
       }
+      setLoading(false);
     }
   };
 
@@ -39,10 +42,14 @@ const FilesCard = (props) => {
       path: e,
       fieldName: props.fieldName,
     };
+    if (props.fieldName == "medicRecord") {
+      body.id = props.recId;
+    }
     console.log(body);
     let deleted = await removeFile(body, "removeFiles");
     console.log(deleted);
     deleted.message == "file deleted" && setFiles(deleted.files);
+    setLoading(false);
   };
 
   return (
@@ -57,6 +64,7 @@ const FilesCard = (props) => {
             id="fileupload"
             style={{ display: "none" }}
             onChange={(e) => {
+              setLoading(true);
               upload(e);
             }}
           />
@@ -71,32 +79,38 @@ const FilesCard = (props) => {
           </button>
         </h5>
       </div>
+
       <div className="card-body">
-        <div className="list-group list-group-flush">
-          {files?.map((e) => {
-            return (
-              <div className="list-group-item">
-                <i className="las la-file-alt" />
-                <a href={e.path} target="_blank">
-                  {e.name}
-                </a>
-                <div className="float-right">
-                  <div className="action-buttons no-display">
-                    <button
-                      className="btn btn-sm btn-dark-red-f"
-                      data-id={e.path}
-                      onClick={() => {
-                        deleteFiles(e.path);
-                      }}
-                    >
-                      <i className="las la-trash" />
-                    </button>
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="list-group list-group-flush">
+            {files?.map((e) => {
+              return (
+                <div className="list-group-item">
+                  <i className="las la-file-alt" />
+                  <a href={e.path} target="_blank">
+                    {e.name}
+                  </a>
+                  <div className="float-right">
+                    <div className="action-buttons no-display">
+                      <button
+                        className="btn btn-sm btn-dark-red-f"
+                        data-id={e.path}
+                        onClick={() => {
+                          setLoading(true);
+                          deleteFiles(e.path);
+                        }}
+                      >
+                        <i className="las la-trash" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -24,6 +24,9 @@ import RoomDetails from "./rooms/RoomDetails.js";
 import AddMedicRecord from "./medicalRecord/AddMedicRecord.js";
 import MedicalRecord from "./medicalRecord/MedicalRecord.js";
 import MedicRecordDetails from "./medicalRecord/MedicalRecordDetails.js";
+import AddFirstAid from "./firstAid/AddFirstAid.js";
+import FirstAidDetails from "./firstAid/FirstAidDetails.js";
+import FirstAid from "./firstAid/FirstAid.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -87,6 +90,9 @@ const Home = () => {
             element={<Calendar type={"res"} />}
           />
           <Route exact path="/reserveDetails" element={<ReserveDetails />} />
+          <Route exact path="/addFirstAid" element={<AddFirstAid />} />
+          <Route exact path="/firstAid" element={<FirstAid />} />
+          <Route exact path="/firstAidDetails" element={<FirstAidDetails />} />
           <Route exact path="/notes" element={<Notes />} />
           <Route exact path="/general" element={<General />} />
           <Route exact path="/categories" element={<Categories />} />

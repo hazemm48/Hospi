@@ -5,6 +5,8 @@ const Search = (props) => {
 
   if (props.type == "room") {
     options.push("level", "type");
+  } else if (props.type == "aid") {
+    options[options.indexOf("name")] = "title";
   } else {
     options.push("email");
   }
@@ -21,7 +23,7 @@ const Search = (props) => {
         srchSlct == "all"
       )
     ) {
-      data[srchSlct] = searchIn;
+      data[srchSlct] = searchIn.toLocaleLowerCase();
       props.search(data);
     }
     if (srchSlct == "all") {

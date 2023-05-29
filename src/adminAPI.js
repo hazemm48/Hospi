@@ -1,9 +1,7 @@
-/* const api = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/admin";
-const loginApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1/adminLogin"; */
-const api = "https://hospi-server.onrender.com/api/v1/admin";
-const baseApi = "https://hospi-server.onrender.com/api/v1"; 
-/* const baseApi = "http://localhost:3000/api/v1";
-const api = "http://localhost:3000/api/v1/admin"; */
+/* const baseApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1";*/
+const baseApi = "https://hospi-server.onrender.com/api/v1";
+//const baseApi = "http://localhost:3000/api/v1";
+const api = `${baseApi}/admin`;
 
 const headers = {
   Accept: "application/json",
@@ -155,7 +153,7 @@ export const removeFile = async (body, url) => {
   return data;
 };
 
-export const medicalRecord = async (body,method, url) => {
+export const medicalRecord = async (body, method, url) => {
   let data = await fetch(`${baseApi}/medicalRecord/${url ? url : ""}`, {
     method: method,
     body: JSON.stringify(body),
@@ -169,6 +167,17 @@ export const medicalRecord = async (body,method, url) => {
 export const generatePresc = async (body) => {
   let data = await fetch(`${api}/generatePresc`, {
     method: "POST",
+    body: JSON.stringify(body),
+    headers,
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+
+export const firstAids = async (body, method, url) => {
+  let data = await fetch(`${api}/firstAid/${url ? url : ""}`, {
+    method: method,
     body: JSON.stringify(body),
     headers,
   })

@@ -2,8 +2,8 @@ import moment from "moment";
 import React from "react";
 
 const InputsHandler = (props) => {
-  let { data, disable, record } = props;
-  console.log(data);
+  let { handler, disable, data } = props;
+console.log(data);
   const viewStill = (e) => {
     let still = document.querySelector("#still");
     if (e.target.value == "true") {
@@ -26,10 +26,10 @@ const InputsHandler = (props) => {
 
   return (
     <div className="form">
-      {data?.map((e) => {
+      {handler?.map((e) => {
         if (e[0] == "input") {
-          if (e[3] == "date" && record) {
-            record[e[2]] = moment(record[e[2]]).format("YYYY-MM-DD");
+          if (e[3] == "date" && data) {
+            data[e[2]] = moment(data[e[2]]).format("YYYY-MM-DD");
           }
           return (
             <div className="form-group col-sm-8" id={e[2]}>
@@ -40,7 +40,7 @@ const InputsHandler = (props) => {
                 type={e[3]}
                 disabled={disable}
                 required
-                defaultValue={record ? record[e[2]] : ""}
+                defaultValue={data ? data[e[2]] : ""}
               />
             </div>
           );
@@ -53,7 +53,7 @@ const InputsHandler = (props) => {
                 name={e[2]}
                 disabled={disable}
                 required
-                defaultValue={record ? record[e[2]] : ""}
+                defaultValue={data ? data[e[2]] : ""}
                 onChange={(d) => {
                   console.log(d[2]);
                   if (e[2] == "chronic") {
@@ -75,9 +75,9 @@ const InputsHandler = (props) => {
               <textarea
                 className="form-control "
                 disabled={disable}
-                defaultValue={record ? record[e[2]] : ""}
+                defaultValue={data ? data[e[2]] : ""}
                 rows="3"
-                maxlength="100"
+                maxlength={e[3]}
                 name={e[2]}
                 required
               />

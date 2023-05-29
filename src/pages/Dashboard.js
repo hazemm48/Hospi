@@ -44,12 +44,12 @@ const Dashboard = (props) => {
       },
     };
     let reserves = await reserve(resBody);
-    setLoading(false);
     setReserveUsers(reserves.reservations);
     setLength(reserves.length);
     setAdmins(admins);
     setPatients(pats);
     setDoctors(docs);
+    setLoading(false);
   };
 
   useEffect(() => {

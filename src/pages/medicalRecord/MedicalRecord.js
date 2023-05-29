@@ -12,7 +12,7 @@ const MedicalRecord = () => {
   const [data, setData] = useState([]);
   let { state } = useLocation();
 
-  let sortValues = [
+  let filterValues = [
     ["all", "All"],
     ["diagnose", "diagnose"],
     ["medication", "Medication"],
@@ -63,7 +63,7 @@ const MedicalRecord = () => {
                   getRecordsData();
                 }}
               >
-                {sortValues.map((e) => {
+                {filterValues.map((e) => {
                   if (e[0] == "all") {
                     return (
                       <option selected value={e[0]}>

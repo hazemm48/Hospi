@@ -52,7 +52,6 @@ const CreateReserve = () => {
     for (const pair of formData.entries()) {
       data[pair[0]] = pair[1];
     }
-    data.time = userDetails.doctorInfo?.schedule[scheduleDay].time;
     data.type = state.type;
     data.doctorId = userDetails._id;
     data.docName = userDetails.name;
@@ -69,9 +68,12 @@ const CreateReserve = () => {
       data,
     };
     let reserveData = await reserve(body);
-    reserveData.err
-      ? alert(`ERROR: ${reserveData.err}`)
-      : alert(reserveData.message + `\nTurn : ${reserveData.add[0].turnNum}`);
+
+    if (reserveData.message == "booked") {
+      alert(reserveData.message + `\nTurn : ${reserveData.add[0].turnNum}`);
+    } else {
+      alert(reserveData.message);
+    }
     console.log(reserveData);
   };
 

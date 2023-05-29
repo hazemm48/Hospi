@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Categories from "../../components/Categories.js";
 import { medicList } from "./MedicRecordData.js";
 import { medicalRecord, uploadFile } from "../../adminAPI.js";
-import InputsHandler from "./InputsHandler.js";
+import InputsHandler from "../../components/InputsHandler.js";
 
 const AddMedicRecord = () => {
   const [htmlData, setHtmlData] = useState([]);
@@ -93,7 +93,7 @@ const AddMedicRecord = () => {
                       <div className="sub-section-body">
                         <div className="user-password-form">
                           <form id="form">
-                            <InputsHandler data={htmlData.data} />
+                            <InputsHandler handler={htmlData.data} />
                             <div className="form-group col-sm-8">
                               <label>upload files</label>
                               <input
