@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { login, mainAPi } from "../SymptomCheckerApi.js";
+import { apiMedicLogin,  mainAPi } from "../SymptomCheckerApi.js";
 import { BodyComponent } from "reactjs-human-body";
 import Select from "react-select";
 
@@ -12,7 +12,7 @@ const Test = () => {
   const [disableSymptoms, setDisableSymptoms] = useState(false);
 
   let apiLogin = async () => {
-    let d = await login();
+    let d = await apiMedicLogin();
     console.log(d);
   };
 
@@ -64,7 +64,7 @@ const Test = () => {
   };
 
   let body = (e) => {
-    console.log(e);
+    console.log(e.split("_").pop());
     const svgs = document.getElementsByTagName("svg");
     for (let i = 0; i < svgs.length; i++) {
       let _svg = svgs[i];

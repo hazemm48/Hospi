@@ -25,6 +25,10 @@ const Categories = (props) => {
     } else if (props.view == "aid") {
       navigate("/home/firstAidDetails", { state: value });
     }
+    else if (props.view == "symp") {
+      props.type(value);
+      props.pageView(true);
+    }
   };
 
   return (

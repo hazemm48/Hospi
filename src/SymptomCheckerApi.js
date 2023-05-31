@@ -20,7 +20,7 @@ const headers = {
   "Access-Control-Allow-Headers": " Origin, Content-Type, X-Auth-Token",
 };
 
-export const login = async () => {
+export const apiMedicLogin = async () => {
   let data = await fetch(BASE_URL, {
     method: "POST",
     headers: {

@@ -30,6 +30,7 @@ import FirstAid from "./firstAid/FirstAid.js";
 import Rad from "./radiation/Rad.js";
 import Lab from "./laboratory/Lab.js";
 import Test from "./test.js";
+import SymptomChecker from "./symptomChecker/SymptomChecker.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -102,6 +103,7 @@ const Home = () => {
           <Route exact path="/general" element={<General />} />
           <Route exact path="/categories" element={<Categories />} />
           <Route exact path="/test" element={<Test />} />
+          <Route exact path="/symptomChecker" element={<SymptomChecker />} />
           <Route
             exact
             path="/settings"

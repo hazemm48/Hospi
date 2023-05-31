@@ -75,6 +75,16 @@ const SideNav = ()=> {
             <i className="las la-vials la-lw" />
             <span>Laboratory</span>
           </NavLink>
+          <NavLink
+            to="/home/symptomChecker"
+            className="list-group-item"
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="symp"
+          >
+            <i className="las la-heartbeat la-lw" />
+            <span>Symptom checker</span>
+          </NavLink>
           <NavLink 
             to="/home/general"
             className="list-group-item"
