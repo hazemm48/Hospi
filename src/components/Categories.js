@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getGeneral } from "../../src/adminAPI";
-import stetho from "../images/stetho.png";
-import menu from "../images/menu.png";
-import record from "../images/patient.png";
-import aid from "../images/firstAid.png";
 
 const Categories = (props) => {
   const [data, setData] = useState();
@@ -13,43 +8,9 @@ const Categories = (props) => {
 
   console.log(props);
   useEffect(() => {
-    if (props.view == "gen") {
-      let arr = [
-        ["rooms", "rooms"],
-        ["firstAid", "first aid"],
-        ["doctor_specialities", "doctor specialities"],
-      ];
-      setImage(menu);
-      setData(arr);
-    } else if (props.view == "medic") {
-      setData([
-        ["diagnose", "diagnose"],
-        ["medication_details", "medication details"],
-        ["radiation_result", "radiation result"],
-        ["lab_result", "lab result"],
-        ["operation", "operation"],
-      ]);
-      setImage(record);
-    } else if (props.view == "aid") {
+      setImage(props.image);
       setData(props.data);
-      setImage(aid);
-    }
   }, []);
-
-  const GetDetails = async () => {
-    let body = {
-      filter: props.type,
-    };
-    let general = await getGeneral(body);
-    let data = general.data[0].specialities
-    let dataArr = []
-    data.map((e)=>{
-      let arr = [e,e]
-      dataArr.push(arr)
-    })
-    setData(dataArr);
-    setImage(stetho);
-  };
 
   const categoryValue = (e) => {
     let value = e.target.getAttribute("name");
@@ -59,18 +20,12 @@ const Categories = (props) => {
       props.filter(value);
       props.pageView(true);
     } else if (props.view == "medic") {
-      console.log(value);
       props.type(value);
       props.pageView(true);
     } else if (props.view == "aid") {
       navigate("/home/firstAidDetails", { state: value });
     }
   };
-  useEffect(() => {
-    if (props.view == "doc") {
-      GetDetails();
-    }
-  }, []);
 
   return (
     <>

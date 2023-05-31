@@ -27,6 +27,9 @@ import MedicRecordDetails from "./medicalRecord/MedicalRecordDetails.js";
 import AddFirstAid from "./firstAid/AddFirstAid.js";
 import FirstAidDetails from "./firstAid/FirstAidDetails.js";
 import FirstAid from "./firstAid/FirstAid.js";
+import Rad from "./radiation/Rad.js";
+import Lab from "./laboratory/Lab.js";
+import Test from "./test.js";
 
 const Home = () => {
   const [userDet, setUser] = useState({
@@ -93,9 +96,12 @@ const Home = () => {
           <Route exact path="/addFirstAid" element={<AddFirstAid />} />
           <Route exact path="/firstAid" element={<FirstAid />} />
           <Route exact path="/firstAidDetails" element={<FirstAidDetails />} />
+          <Route exact path="/laboratory" element={<Lab />} />
+          <Route exact path="/radiation" element={<Rad />} />
           <Route exact path="/notes" element={<Notes />} />
           <Route exact path="/general" element={<General />} />
           <Route exact path="/categories" element={<Categories />} />
+          <Route exact path="/test" element={<Test />} />
           <Route
             exact
             path="/settings"

@@ -1,22 +1,17 @@
-import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React from "react";
 import Categories from "../components/Categories.js";
-import LoadingSpinner from "../components/Loading.js";
+import menu from "../images/menu.png";
 
 const General = () => {
-  let { state } = useLocation();
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {}, []);
-
+  let data = [
+    ["rooms", "rooms"],
+    ["firstAid", "first aid"],
+    ["doctor_specialities", "doctor specialities"],
+  ];
   return (
     <div className="main-content">
       <div className="container-fluid">
-        <Categories
-          view={"gen"}
-        />
+        <Categories data={data} view={"gen"} image={menu}/>
       </div>
     </div>
   );

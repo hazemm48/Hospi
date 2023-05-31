@@ -5,6 +5,8 @@ import Categories from "../../components/Categories.js";
 import { medicList } from "./MedicRecordData.js";
 import { medicalRecord, uploadFile } from "../../adminAPI.js";
 import InputsHandler from "../../components/InputsHandler.js";
+import record from "../../images/patient.png";
+
 
 const AddMedicRecord = () => {
   const [htmlData, setHtmlData] = useState([]);
@@ -15,16 +17,17 @@ const AddMedicRecord = () => {
   let { state } = useLocation();
   let navigate = useNavigate();
 
-  let createHtmlData = () => {
-    let data = medicList(type);
-    console.log(data);
-    setHtmlData(data);
-  };
+  let data = [
+    ["diagnose", "diagnose"],
+    ["medication_details", "medication details"],
+    ["radiation_result", "radiation result"],
+    ["lab_result", "lab result"],
+    ["operation", "operation"],
+  ];
 
   useEffect(() => {
     if (pageView) {
-      console.log("asd");
-      createHtmlData();
+      setHtmlData(medicList(type));
     }
   }, [pageView]);
 
@@ -125,7 +128,13 @@ const AddMedicRecord = () => {
               </div>
             </>
           ) : (
-            <Categories pageView={setPageView} view={"medic"} type={setType} />
+            <Categories
+              pageView={setPageView}
+              view={"medic"}
+              type={setType}
+              data={data}
+              image={record}
+            />
           )}
         </div>
       )}

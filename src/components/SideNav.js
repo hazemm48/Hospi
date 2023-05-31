@@ -56,7 +56,7 @@ const SideNav = ()=> {
             <span>Reservations</span>
           </NavLink>
           <NavLink
-            to="/home/rad"
+            to="/home/radiation"
             className="list-group-item"
             data-toggle="tooltip"
             data-placement="bottom"
@@ -66,7 +66,7 @@ const SideNav = ()=> {
             <span>Radiations</span>
           </NavLink>
           <NavLink
-            to="/home/lab"
+            to="/home/laboratory"
             className="list-group-item"
             data-toggle="tooltip"
             data-placement="bottom"

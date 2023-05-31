@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { users } from "../../adminAPI";
+import { getGeneral, users } from "../../adminAPI";
 import LoadingSpinner from "../../components/Loading.js";
 import Categories from "../../components/Categories.js";
 import CardView from "../../components/CardView.js";
 import TableView from "../../components/TableView.js";
 import SwitchView from "../../components/SwitchView.js";
 import Search from "../../components/Search.js";
+import stetho from "../../images/stetho.png";
+
 import {
   PagenationNavigate,
   PagenationResult,
@@ -20,6 +22,7 @@ const Doctors = () => {
   const [length, setLength] = useState();
   const [pageView, setPageView] = useState(false);
   const [srchFilter, setSrchFilter] = useState();
+  const [spec, setSpec] = useState();
 
   let resultLimit = 12;
   let sortValues = [
@@ -56,10 +59,27 @@ const Doctors = () => {
     setDoctors(user.users);
     setLoading(false);
   };
+
+  const GetSpecialities = async () => {
+    let body = {
+      filter: "specialities",
+    };
+    let general = await getGeneral(body);
+    let data = general.data[0].specialities;
+    let dataArr = [];
+    data.map((e) => {
+      let arr = [e, e];
+      dataArr.push(arr);
+    });
+    setSpec(dataArr);
+  };
+
   useEffect(() => {
     if (pageView) {
       setLoading(true);
       GetDetails();
+    } else {
+      GetSpecialities();
     }
   }, [filter, srchFilter]);
 
@@ -137,12 +157,15 @@ const Doctors = () => {
             )}
           </>
         ) : (
-          <Categories
-            type={"specialities"}
-            view={"doc"}
-            filter={setFilter}
-            pageView={setPageView}
-          />
+          spec && (
+            <Categories
+              image={stetho}
+              data={spec}
+              view={"doc"}
+              filter={setFilter}
+              pageView={setPageView}
+            />
+          )
         )}
       </div>
       {pageView && (

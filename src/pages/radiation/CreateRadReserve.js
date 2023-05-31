@@ -7,7 +7,7 @@ import { reserve, users } from "../../adminAPI.js";
 import LoadingSpinner from "../../components/Loading.js";
 import manImg from "../../images/man.svg";
 
-const CreateReserve = () => {
+const CreateRadReserve = () => {
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState();
   const [startDate, setStartDate] = useState();
@@ -303,4 +303,4 @@ const CreateReserve = () => {
   );
 };
 
-export default CreateReserve;
+export default CreateRadReserve;

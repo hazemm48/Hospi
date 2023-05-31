@@ -16,6 +16,7 @@
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.5",
+    "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
     "jquery": "^3.6.4",
     "jquery-ui-bundle": "^1.12.1-migrate",
@@ -28,6 +29,9 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0",
     "react-scripts": "^5.0.1",
+    "react-select": "^5.7.3",
+    "reactjs-human-body": "0.0.3",
+    "styled-components": "^5.3.11",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

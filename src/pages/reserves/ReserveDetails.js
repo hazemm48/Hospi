@@ -41,17 +41,16 @@ const ReserveDetails = () => {
   const Delete = async () => {
     let body = {
       oper: "cancel",
-      body: {
+      data: {
         resId: id.state,
       },
     };
+    console.log(body);
     let deleteReserve = await reserve(body);
+    console.log(deleteReserve.message);
+    alert(deleteReserve.message);
     if (deleteReserve.message == "reservation cancelled") {
-      if (window.confirm("Reserve Deleted Successfully")) {
-        navigate("/home/PatientDetails", { state: reserves[0].patientId });
-      }
-    } else {
-      alert("Wrong Data");
+      navigate(-1);
     }
   };
 
@@ -191,7 +190,9 @@ const ReserveDetails = () => {
                             }}
                           >
                             <i className="las la-trash" />
-                            delete reserve
+                            {reserves[0].status
+                              ? "delete reserve"
+                              : "cancel reserve"}
                           </button>
                           <button
                             id="editRes"
@@ -292,15 +293,9 @@ const ReserveDetails = () => {
                                     className="form-control"
                                     readOnly="readonly"
                                     defaultValue={
-                                      moment(
-                                        reserves[0].time.from,
-                                        "HH:mm"
-                                      ).format("h:mm") +
-                                      "-" +
-                                      moment(
-                                        reserves[0].time.to,
-                                        "HH:mm"
-                                      ).format("h:mm A")
+                                      reserves[0].time.from +
+                                      " - " +
+                                      reserves[0].time.to
                                     }
                                   />
                                 </div>

@@ -5,6 +5,7 @@ import Categories from "../../components/Categories.js";
 import LoadingSpinner from "../../components/Loading.js";
 import { PagenationResult } from "../../components/Pagenation.js";
 import Search from "../../components/Search.js";
+import aid from "../../images/firstAid.png";
 
 const FirstAid = () => {
   const [loading, setLoading] = useState(false);
@@ -63,7 +64,7 @@ const FirstAid = () => {
         ) : (
           <>
             <PagenationResult pageNo={0} length={length} />
-            <Categories view={"aid"} data={data} />
+            <Categories view={"aid"} data={data} image={aid} />
           </>
         )}
       </div>
