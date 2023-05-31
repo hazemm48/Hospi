@@ -9,8 +9,8 @@ const BodyLocationChecker = () => {
   const [allData, setAllData] = useState([]);
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [selectedBodyLoc, setSelectedBodyLoc] = useState();
-  const [selectedSubBodyLoc, setSelectedSubBodyLoc] = useState([]);
-  const [selectedGender, setSelectedGender] = useState({ vale: "man" });
+  const [selectedSubBodyLoc, setSelectedSubBodyLoc] = useState();
+  const [selectedGender, setSelectedGender] = useState({ value: "man" });
   const [issueInfo, setIssueInfo] = useState();
   const [result, setResult] = useState();
   const [birthYear, setBirthYear] = useState(new Date());
@@ -39,10 +39,7 @@ const BodyLocationChecker = () => {
       });
     };
     let bodyLocations = await mainAPi("body/locations");
-    //let subBodyLocations = await mainAPi("body/locations/6");
     bodyLocations = keyRename(bodyLocations);
-    //subBodyLocations = keyRename(subBodyLocations);
-    setAllData([])
     setAllData([
       [
         "gender & age",
@@ -77,6 +74,7 @@ const BodyLocationChecker = () => {
     if (!e) {
       e = selectedSubBodyLoc.value;
     }
+    console.log(selectedGender);
     let allSymptoms = await mainAPi(`symptoms/${e}/${selectedGender.value}`);
     allSymptoms = allSymptoms.map((e) => {
       return {
@@ -98,6 +96,9 @@ const BodyLocationChecker = () => {
       ["symptoms", allSymptoms, true, setSelectedSymptoms],
     ]);
     setSymView(true);
+    setSelectedBodyLoc()
+    setSelectedSubBodyLoc()
+    setSelectedGender()
   };
 
   let body = (e) => {
