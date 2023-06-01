@@ -17,6 +17,7 @@ const Schedule = (props) => {
   };
 
   const seeTime = (time) => {
+    console.log("1");
     setFromTime(time);
     setToTime();
     let momentTime = (t, con) => {
@@ -60,6 +61,8 @@ const Schedule = (props) => {
     }
     let momentTime = (t, con) => {
       let mom = moment(t, "HH:mm A");
+
+      
       return con == "h" ? mom.format("H") : con == "m" ? mom.format("m") : "";
     };
     let fromTimeLocal = setTime(

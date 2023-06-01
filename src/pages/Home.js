@@ -102,7 +102,7 @@ const Home = () => {
           <Route exact path="/notes" element={<Notes />} />
           <Route exact path="/general" element={<General />} />
           <Route exact path="/categories" element={<Categories />} />
-          <Route exact path="/test" element={<Test />} />
+          {/* <Route exact path="/test" element={<Test />} /> */}
           <Route exact path="/symptomChecker" element={<SymptomChecker />} />
           <Route
             exact
