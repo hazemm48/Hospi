@@ -13,6 +13,7 @@ import {
   PagenationNavigate,
   PagenationResult,
 } from "../../components/Pagenation.js";
+import SortDropdown from "../../components/SortDropdown.js";
 
 const Doctors = () => {
   const [loading, setLoading] = useState(false);
@@ -112,30 +113,12 @@ const Doctors = () => {
                   all specialities
                 </button>
               </div>
-              <div className="dropdowns-wrapper">
-                <div className="dropdown">
-                  <select
-                    id="sort"
-                    className="form-select dropdown-toggle"
-                    role="button"
-                    onChange={() => {
-                      setLoading(true);
-                      GetDetails();
-                    }}
-                  >
-                    {sortValues.map((e) => {
-                      if (e[0] == "-createdAt") {
-                        return (
-                          <option selected value={e[0]}>
-                            {e[1]}
-                          </option>
-                        );
-                      }
-                      return <option value={e[0]}>{e[1]}</option>;
-                    })}
-                  </select>
-                </div>
-              </div>
+              <SortDropdown
+                sortValues={sortValues}
+                setLoading={setLoading}
+                GetDetails={GetDetails}
+                selOpt={"-createdAt"}
+              />
               <SwitchView />
               {filter == "all" && (
                 <Search search={setSrchFilter} type={"user"} />

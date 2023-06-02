@@ -1,28 +1,32 @@
 import moment from "moment-timezone";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {useLocation, useNavigate } from "react-router-dom";
 import {
   updateUser,
   users,
   getGeneral,
   deleteUser,
-  removeFile,
-  uploadFile,
+  rooms,
+  resetPassword,
 } from "../../adminAPI.js";
+import DetailsBottom from "../../components/DetailsBottom.js";
+import DetailsHeader from "../../components/DetailsHeader.js";
+import DetailsLeftSection from "../../components/DetailsLeftSection.js";
 import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
 import NotesCard from "../../components/NotesCard.js";
 import Schedule from "../../components/Schedule.js";
-import manImg from "../../images/man.svg";
 import Calendar from "../Calender.js";
 
 const DoctorDetails = () => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
   const [htmlData, setHtmlData] = useState([]);
+  const [bottomBtns, setBottomBtns] = useState([]);
   const [specialities, setSpecialities] = useState();
   const [calView, setCalView] = useState(false);
   const [scheduleNo, setScheduleNo] = useState(0);
+  const [roomList, setRoomList] = useState([]);
 
   const id = useLocation();
   const navigate = useNavigate();
@@ -31,13 +35,12 @@ const DoctorDetails = () => {
     setHtmlData([
       ["gender", state.gender, "gender"],
       ["phone", state.phone, "phone number"],
-      ["room", state.doctorInfo.room, "room"],
-      ["examinFees", state.doctorInfo.fees.examin, "examination fees"],
-      ["followUpFees", state.doctorInfo.fees.followUp, "follow up fees"],
+      ["examin", state.doctorInfo.fees.examin, "examination fees"],
+      ["followUp", state.doctorInfo.fees.followUp, "follow up fees"],
       ["city", state.doctorInfo.city, "city"],
       [
-        "bd",
-        moment(state.doctorInfo.birthDate).format("DD/MM/YYYY"),
+        "birthDate",
+        moment(state.doctorInfo.birthDate).format("DD-MM-YYYY"),
         "date of birth",
       ],
       ["sta", state.isLoggedIn ? "Online" : "Offline", "member status"],
@@ -45,6 +48,43 @@ const DoctorDetails = () => {
         "reg",
         moment(state.createdAt).local().format("DD/MM/YYYY"),
         "registered date",
+      ],
+    ]);
+
+    setBottomBtns([
+      [
+        "-dark",
+        () => {
+          setCalView(true);
+        },
+        "view calendar",
+        "la-calendar-day"
+      ],
+      [
+        "-dark",
+        () => {
+          navigate("/home/addReserve", {
+            state: { id: state._id, type: "doctor" },
+          });
+        },
+        "Reserve Doctor",
+        "la-stethoscope"
+      ],
+      [
+        "",
+        () => {
+          resetPass();
+        },
+        "reset password",
+        "la-lock"
+      ],
+      [
+        "",
+        () => {
+          userDelete();
+        },
+        "delete user",
+        "la-trash"
       ],
     ]);
   };
@@ -70,6 +110,25 @@ const DoctorDetails = () => {
     setSpecialities(general.data[0].specialities);
   };
 
+  const GetRooms = async () => {
+    let body = {
+      filter: { type: "consult" },
+      select: "name",
+    };
+    let room = await rooms(body, "POST", "get");
+    setRoomList(
+      room.room.sort((a, b) => {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      })
+    );
+  };
+
   const userDelete = async () => {
     let body = {
       id: id.state,
@@ -83,42 +142,25 @@ const DoctorDetails = () => {
     }
   };
 
-  useLayoutEffect(() => {
+  const resetPass = async () => {
+    if (window.confirm("Are you sure you want to reset user password")) {
+      let body = {
+        id: state._id,
+      };
+      let reset = await resetPassword(body);
+      alert(reset.message);
+      console.log(reset);
+    }
+  };
+
+  useEffect(() => {
     setLoading(true);
     GetDetails();
     GetSpecialities();
+    GetRooms();
   }, []);
 
-  const editDoc = () => {
-    let schDet = Array.from(
-      document.querySelector("#schDet").querySelectorAll("input,select")
-    );
-    let docDet = Array.from(
-      document
-        .querySelector("#docDet")
-        .querySelectorAll("input,textArea,select")
-    );
-    let elements = docDet.concat(schDet);
-    let x = false;
-    elements.forEach((e, i) => {
-      if (!["sta", "reg"].includes(e.name)) {
-        if (e.hasAttribute("disabled")) {
-          e.removeAttribute("disabled");
-          document.querySelectorAll("#delSchBtn").forEach((e) => {
-            e.removeAttribute("hidden");
-          });
-          document.querySelector("#schBtn").removeAttribute("hidden");
-          document.getElementById("editDoc").innerHTML = "submit";
-          return (x = false);
-        } else {
-          return (x = true);
-        }
-      }
-    });
-    x && updateDoc();
-  };
-
-  const updateDoc = async () => {
+  const updateUserDetails = async () => {
     let formEl = document.forms.form;
     let formData = new FormData(formEl);
     let schForm = document.forms.schForm;
@@ -143,65 +185,50 @@ const DoctorDetails = () => {
       ];
       schedule.push(Object.assign({}, ...three));
     }
-    console.log(schedule);
-    let body = {
-      details: {
-        name: document.getElementById("name").value,
-        email: formData.get("email"),
-        gender: formData.get("gender"),
-        phone: formData.get("phone"),
-        doctorInfo: {
-          city: formData.get("city"),
-          room: formData.get("room"),
-          fees: {
-            examin: formData.get("examinFees"),
-            followUp: formData.get("followUpFees"),
-          },
-          bio: formData.get("bio"),
-          birthDate: moment(formData.get("bd"), "DDMMYYYY").format(
-            "MM-DD-YYYY"
-          ),
-          speciality: formData.get("speciality"),
-          schedule: schedule,
-        },
+
+    let details = {
+      doctorInfo: {
+        fees: {},
       },
-      id: state._id,
     };
-    console.log(body);
-    let update = await updateUser(body);
-    if (update.message == "update success") {
-      if (window.confirm("Doctor Updated Successfully")) {
-        window.location.reload();
+    for (const pair of formData.entries()) {
+      if (!["email", "gender", "phone"].includes(pair[0])) {
+        if (["examin", "followUp"].includes(pair[0])) {
+          details.doctorInfo.fees[pair[0]] = pair[1];
+        } else {
+          details.doctorInfo[pair[0]] = pair[1];
+        }
+      } else {
+        details[pair[0]] = pair[1];
       }
-    } else {
-      alert("Wrong Data");
     }
-  };
-
-  let addProfilePic = async (e) => {
-    console.log(e.target.files);
-    let formData = new FormData();
-    formData.append("fieldName", "users");
-    formData.append("id", state._id);
-    formData.append("image", e.target.files[0]);
-
-    let add = await uploadFile(formData, "uploadProfilePic");
-    if (add.message == "done") {
-      setLoading(true);
-      GetDetails();
-    }
-    console.log(add);
-  };
-
-  const removeProfilePic = async () => {
+    details.name = document.getElementById("name").value;
+    details.doctorInfo.schedule = schedule;
+    details.doctorInfo.birthDate = moment(details.doctorInfo.birthDate).format(
+      "MM-DD-YYYY"
+    );
     let body = {
+      details,
       id: state._id,
-      path: state.image,
     };
-    let deleted = await removeFile(body, "removeProfilePic");
-    if (deleted.message == "image deleted") {
-      setLoading(true);
-      GetDetails();
+    let currentRoom = document.getElementById("room");
+    if (
+      !(
+        currentRoom.options[currentRoom.selectedIndex].innerHTML ==
+        state.doctorInfo.room
+      )
+    ) {
+      for (let i = 0; i < currentRoom.length; i++) {
+        if (currentRoom.options[i].innerHTML == state.doctorInfo.room) {
+          body.oldRoom = currentRoom.options[i].value;
+          body.roomId = currentRoom.options[currentRoom.selectedIndex].value;
+        }
+      }
+    }
+    let update = await updateUser(body);
+    alert(update.message);
+    if (update.message == "update success") {
+      window.location.reload();
     }
   };
 
@@ -213,111 +240,26 @@ const DoctorDetails = () => {
         <Calendar filter={{ doctorId: id.state }} />
       ) : (
         <div className="main-content">
-          {state ? (
+          {state && (
             <div className="container-fluid">
-              <div className="section row title-section">
-                <div className="col-md-8">
-                  <div aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                      <li className="breadcrumb-item">
-                        <Link to="/home/doctors">
-                          <a>doctors</a>
-                        </Link>
-                      </li>
-                      <li
-                        className="breadcrumb-item active"
-                        aria-current="page"
-                      >
-                        {state.name}
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <button
-                    id="editDoc"
-                    className="btn btn-dark-red-f-gr"
-                    onClick={() => {
-                      editDoc();
-                    }}
-                  >
-                    <i className="las la-edit" />
-                    edit doctor
-                  </button>
-                </div>
-              </div>
+              <DetailsHeader
+                name={state.name}
+                type={"doctor"}
+                updateUserDetails={updateUserDetails}
+              />
               <div className="section patient-details-section">
                 <div className="row">
                   <div className="col-md-8">
                     <div className="row">
-                      <div id="docDet" className="col-sm-12">
+                      <div id="userDet" className="col-sm-12">
                         <div className="card">
                           <div className="row">
-                            <div className="col-md-4">
-                              <div className="mini-card text-center">
-                                <div className="card-header">
-                                  <img
-                                    className="rounded-circle"
-                                    src={state.image ? state.image : manImg}
-                                    loading="lazy"
-                                  />
-                                </div>
-                                <div className="card-body">
-                                  <div className="">
-                                    <button
-                                      className="btn btn-red-f-gr btn-sm float-center"
-                                      style={{ margin: "1em" }}
-                                      onClick={() => {
-                                        removeProfilePic();
-                                      }}
-                                    >
-                                      <i className="las la-trash" />
-                                      delete
-                                    </button>
-                                    <input
-                                      type="file"
-                                      accept="image/*"
-                                      id="imgupload"
-                                      style={{ display: "none" }}
-                                      onChange={(e) => {
-                                        addProfilePic(e);
-                                      }}
-                                    />
-                                    <button
-                                      className="btn btn-dark-red-f btn-sm float-center"
-                                      style={{ margin: "1em" }}
-                                      onClick={() => {
-                                        document
-                                          .getElementById("imgupload")
-                                          .click();
-                                      }}
-                                    >
-                                      <i className="las la-image" />
-                                      change
-                                    </button>
-                                  </div>
-                                  <input
-                                    name="name"
-                                    id="name"
-                                    className="form-control"
-                                    defaultValue={state.name}
-                                    disabled
-                                    style={{ textAlign: "center" }}
-                                  />
-
-                                  <small className="text-muted">
-                                    {state._id}
-                                  </small>
-                                  <h5>Age</h5>
-                                  <p>
-                                    {moment().diff(
-                                      state?.doctorInfo?.birthDate,
-                                      "years"
-                                    )}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
+                            <DetailsLeftSection
+                              data={state}
+                              type={"doctor"}
+                              GetDetails={GetDetails}
+                              setLoading={setLoading}
+                            />
 
                             <div
                               id="editDet"
@@ -327,34 +269,51 @@ const DoctorDetails = () => {
                                 <div className="mini-card">
                                   <div className="card-body">
                                     <div className="row">
-                                      <div className="col-md-4">
-                                        <div className="form-group">
-                                          <label>speciality</label>
-                                          <select
-                                            className="form-control form-select dropdown-toggle"
-                                            name="speciality"
-                                            disabled
-                                            required
-                                          >
-                                            {specialities?.map((e) => {
-                                              if (
-                                                e ==
-                                                state.doctorInfo?.speciality
-                                              ) {
-                                                return (
-                                                  <option value={e} selected>
-                                                    {e}
-                                                  </option>
-                                                );
-                                              } else {
-                                                return (
-                                                  <option value={e}>{e}</option>
-                                                );
-                                              }
-                                            })}
-                                          </select>
-                                        </div>
-                                      </div>
+                                      {[
+                                        ["speciality", specialities],
+                                        ["room", roomList],
+                                      ].map((e) => {
+                                        return (
+                                          <div className="col-md-4">
+                                            <div className="form-group">
+                                              <label>{e[0]}</label>
+                                              <select
+                                                className="form-control form-select dropdown-toggle"
+                                                name={e[0]}
+                                                id={e[0]}
+                                                disabled
+                                                required
+                                              >
+                                                {e[1]?.map((o) => {
+                                                  let d = o;
+                                                  if (e[0] == "room") {
+                                                    o = o.name;
+                                                    d = o._id;
+                                                  }
+                                                  if (
+                                                    o == state.doctorInfo[e[0]]
+                                                  ) {
+                                                    return (
+                                                      <option
+                                                        value={d}
+                                                        selected
+                                                      >
+                                                        {o}
+                                                      </option>
+                                                    );
+                                                  } else {
+                                                    return (
+                                                      <option value={d}>
+                                                        {o}
+                                                      </option>
+                                                    );
+                                                  }
+                                                })}
+                                              </select>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
                                       {htmlData.map((e) => {
                                         return (
                                           <div className="col-md-4">
@@ -442,48 +401,7 @@ const DoctorDetails = () => {
                           </form>
                         </div>
                       </div>
-                      <div className="col-sm-12">
-                        <div className="card">
-                          <button
-                            className="btn btn-dark-red-f-gr"
-                            onClick={() => {
-                              setCalView(true);
-                            }}
-                          >
-                            <i className="las la-calendar-day" />
-                            View Calendar
-                          </button>
-                        </div>
-                      </div>
-                      <div className="col-sm-12">
-                        <div className="card">
-                          <button
-                            className="btn btn-dark-red-f-gr"
-                            onClick={() => {
-                              navigate("/home/addReserve", {
-                                state: { id: id.state, type: "doctor" },
-                              });
-                            }}
-                          >
-                            <i className="las la-clock" />
-                            Reserve Doctor
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="col-sm-12">
-                        <div className="card">
-                          <button
-                            className="btn btn-red-f-gr"
-                            onClick={() => {
-                              userDelete();
-                            }}
-                          >
-                            <i className="las la-trash" />
-                            delete user
-                          </button>
-                        </div>
-                      </div>
+                      <DetailsBottom arr={bottomBtns} />
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -497,8 +415,6 @@ const DoctorDetails = () => {
                 </div>
               </div>
             </div>
-          ) : (
-            ""
           )}
         </div>
       )}

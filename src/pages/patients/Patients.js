@@ -10,6 +10,7 @@ import {
   PagenationNavigate,
   PagenationResult,
 } from "../../components/Pagenation.js";
+import SortDropdown from "../../components/SortDropdown.js";
 
 const Patients = () => {
   const [loading, setLoading] = useState(false);
@@ -31,7 +32,6 @@ const Patients = () => {
   ];
 
   const GetDetails = async () => {
-    console.log("sad");
     let currentPage = "";
     document.getElementsByName("page").forEach((e) => {
       if (e.parentElement.classList.contains("active")) {
@@ -65,30 +65,12 @@ const Patients = () => {
           <h5 className="page-title">Patients</h5>
         </div>
         <div className="section filters-section">
-          <div className="dropdowns-wrapper">
-            <div className="dropdown">
-              <select
-                id="sort"
-                className="form-select dropdown-toggle"
-                role="button"
-                onChange={() => {
-                  setLoading(true);
-                  GetDetails();
-                }}
-              >
-                {sortValues.map((e) => {
-                  if (e[0] == "-createdAt") {
-                    return (
-                      <option selected value={e[0]}>
-                        {e[1]}
-                      </option>
-                    );
-                  }
-                  return <option value={e[0]}>{e[1]}</option>;
-                })}
-              </select>
-            </div>
-          </div>
+          <SortDropdown
+            sortValues={sortValues}
+            setLoading={setLoading}
+            GetDetails={GetDetails}
+            selOpt={"-createdAt"}
+          />
           <SwitchView />
           <Search search={setSrchFilter} type={"user"} />
           <div className="buttons-wrapper ml-auto">

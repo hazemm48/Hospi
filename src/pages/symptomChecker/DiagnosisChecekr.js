@@ -235,7 +235,6 @@ const DiagnosisChecker = (props) => {
                     <tbody>
                       {result &&
                         result.map((e) => {
-                          console.log("ad");
                           return (
                             <tr>
                               <td>{e.Issue.Name}</td>

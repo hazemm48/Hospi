@@ -68,11 +68,11 @@ const AddDoctor = () => {
           followUp: formData.get("followUpFees"),
         },
         room: formData.get("room"),
-        roomId: roomId.options[roomId.selectedIndex].getAttribute("roomId"),
         schedule: schedule,
       },
       password: formData.get("password"),
       role: "doctor",
+      roomId: roomId.options[roomId.selectedIndex].getAttribute("roomId"),
     };
     let file = formData.get("profile");
     console.log(body);

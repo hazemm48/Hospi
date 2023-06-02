@@ -1,6 +1,6 @@
 /* const baseApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1";*/
-const baseApi = "https://hospi-server.onrender.com/api/v1";
-//const baseApi = "http://localhost:3000/api/v1";
+//const baseApi = "https://hospi-server.onrender.com/api/v1";
+const baseApi = "http://localhost:3000/api/v1";
 const api = `${baseApi}/admin`;
 
 const headers = {

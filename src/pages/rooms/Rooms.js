@@ -7,6 +7,7 @@ import {
   PagenationNavigate,
   PagenationResult,
 } from "../../components/Pagenation.js";
+import SortDropdown from "../../components/SortDropdown.js";
 
 const Rooms = () => {
   const [loading, setLoading] = useState(false);
@@ -46,7 +47,6 @@ const Rooms = () => {
     srchFilter && (body.filter = srchFilter);
 
     let room = await rooms(body, "POST", "get");
-    console.log(room);
     setRoomList(room.room);
     setLength(room.length);
     setLoading(false);
@@ -70,30 +70,12 @@ const Rooms = () => {
           <h5 className="page-title">Rooms</h5>
         </div>
         <div className="section filters-section">
-          <div className="dropdowns-wrapper">
-            <div className="dropdown">
-              <select
-                id="sort"
-                className="form-select dropdown-toggle"
-                role="button"
-                onChange={() => {
-                  setLoading(true);
-                  GetRoom();
-                }}
-              >
-                {sortValues.map((e) => {
-                  if (e[0] == "name") {
-                    return (
-                      <option selected value={e[0]}>
-                        {e[1]}
-                      </option>
-                    );
-                  }
-                  return <option value={e[0]}>{e[1]}</option>;
-                })}
-              </select>
-            </div>
-          </div>
+          <SortDropdown
+            sortValues={sortValues}
+            setLoading={setLoading}
+            GetDetails={GetRoom}
+            selOpt={"name"}
+          />
           <Search search={setSrchFilter} type={"room"} />
           <div className="buttons-wrapper ml-auto">
             <Link to="/home/addRoom">
