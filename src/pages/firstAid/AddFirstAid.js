@@ -19,7 +19,7 @@ const AddFirstAid = () => {
     let formEl = document.forms.form;
     let formData = new FormData(formEl);
     let body = {
-      file:[]
+      file: [],
     };
     for (const pair of formData.entries()) {
       if (pair[0] == "file") {
@@ -28,12 +28,11 @@ const AddFirstAid = () => {
         body[pair[0]] = pair[1];
       }
     }
-    body.title= body.title.toLowerCase()
+    body.title = body.title.toLowerCase();
     let files = body.file;
     delete body.file;
 
     let add = await firstAids(body, "POST");
-    console.log(add);
     alert(add.message);
 
     if (add.message == "added") {
@@ -47,7 +46,6 @@ const AddFirstAid = () => {
   };
 
   let addFiles = async (files, id) => {
-    console.log(files);
     let formData = new FormData();
     formData.append("fieldName", "firstAid");
     formData.append("id", id);
@@ -55,7 +53,6 @@ const AddFirstAid = () => {
       formData.append("files", files[i]);
     }
     let add = await uploadFile(formData, "uploadFiles");
-    console.log(add);
     return true;
   };
 

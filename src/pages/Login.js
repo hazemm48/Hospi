@@ -8,13 +8,14 @@ import LoadingSpinner from "../components/Loading.js";
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   useEffect(() => {
     if (localStorage.token) {
       navigate("/home/dashboard");
     }
-  });
+  },[]);
+
   const validate = async () => {
-    setLoading(true)
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
     let body = {
@@ -23,10 +24,9 @@ const Login = () => {
     };
     let data = await login(body);
     console.log(data);
-    if (data.message == "ok") {
+    if (data.message == "welcome") {
       localStorage.token = data.token;
-      setLoading(false)
-      return navigate("/home/dashboard");
+      navigate("/home/dashboard");
     }
   };
 
@@ -64,6 +64,7 @@ const Login = () => {
             className="btn btn-lg btn-primary btn-block"
             type="button"
             onClick={() => {
+              setLoading(true)
               validate();
             }}
           >

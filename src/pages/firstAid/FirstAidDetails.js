@@ -19,7 +19,6 @@ const FirstAidDetails = () => {
   ];
 
   let getFirstAidData = async () => {
-    console.log(state);
     let body = {
       filter: {
         _id: state,
@@ -27,7 +26,6 @@ const FirstAidDetails = () => {
     };
     let { aids } = await firstAids(body, "POST", "get");
     setData(aids[0]);
-    console.log(aids);
     setLoading(false);
   };
 
@@ -84,9 +82,7 @@ const FirstAidDetails = () => {
       id: state,
       data: obj,
     };
-    console.log(body);
     let update = await firstAids(body, "PUT");
-    console.log(update);
     alert(update.message);
     if (update.message == "updated") {
       window.location.reload();

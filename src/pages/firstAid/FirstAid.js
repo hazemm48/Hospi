@@ -20,7 +20,6 @@ const FirstAid = () => {
       filter: {},
     };
     srchFilter && (body.filter = srchFilter);
-    console.log(srchFilter);
     let { aids, message } = await firstAids(body, "POST", "get");
     let dataArr = [];
     if (message == "found") {
@@ -28,12 +27,9 @@ const FirstAid = () => {
         let arr = [e._id, e.title];
         dataArr.push(arr);
       });
-
     }
     setData(dataArr);
     setLength(dataArr.length);
-    console.log(aids);
-    console.log(dataArr);
     setLoading(false);
   };
 

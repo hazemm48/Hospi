@@ -58,12 +58,12 @@ const Dashboard = (props) => {
   }, []);
 
   return (
-    <React.Fragment>
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <div className="main-content">
-          <div className="container-fluid">
+    <div className="main-content">
+      <div className="container-fluid">
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <>
             <div className="section">
               <div className="row">
                 <div className="col-md-6">
@@ -403,10 +403,10 @@ const Dashboard = (props) => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-    </React.Fragment>
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 
