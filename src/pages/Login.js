@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import { login, navDetails } from "../../src/adminAPI";
 import logo from "../images/hospi.png";
@@ -11,9 +11,10 @@ const Login = () => {
 
   useEffect(() => {
     if (localStorage.token) {
+      console.log("dsad");
       navigate("/home/dashboard");
     }
-  },[]);
+  }, []);
 
   const validate = async () => {
     let email = document.getElementById("email").value;
@@ -23,10 +24,13 @@ const Login = () => {
       password: password,
     };
     let data = await login(body);
-    console.log(data);
     if (data.message == "welcome") {
-      localStorage.token = data.token;
-      navigate("/home/dashboard");
+      localStorage.setItem("token", data.token);
+      setTimeout(() => {
+        navigate("/home/dashboard");
+      }, 1000);
+    } else {
+      alert(data.message);
     }
   };
 
@@ -64,7 +68,7 @@ const Login = () => {
             className="btn btn-lg btn-primary btn-block"
             type="button"
             onClick={() => {
-              setLoading(true)
+              setLoading(true);
               validate();
             }}
           >
