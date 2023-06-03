@@ -1,10 +1,11 @@
 import React from "react";
 import Categories from "../../components/Categories.js";
-import lab from "../../images/beaker.png";
+import lab from "../../images/lab-technician.png";
 
 const Lab= () => {
   let data = [
-    ["add", "add Category"],
+    ["category", "Categories"],
+    ["product", "Products"],
     ["reserve", "reserve"],
   ];
   return (

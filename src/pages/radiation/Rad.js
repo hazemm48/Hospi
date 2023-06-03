@@ -4,7 +4,8 @@ import rad from "../../images/radiation.png";
 
 const Rad = () => {
   let data = [
-    ["add", "add Category"],
+    ["category", "Categories"],
+    ["product", "Products"],
     ["reserve", "reserve"],
   ];
   return (

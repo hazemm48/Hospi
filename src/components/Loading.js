@@ -31,6 +31,18 @@ let LoadingSpinner = () => {
           <div className="dot dot9">
             <i></i>
           </div>
+          <div className="dot dot10">
+            <i></i>
+          </div>
+          <div className="dot dot11">
+            <i></i>
+          </div>
+          <div className="dot dot12">
+            <i></i>
+          </div>
+          <div className="dot dot13">
+            <i></i>
+          </div>
         </div>
         
       </div>

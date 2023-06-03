@@ -42,12 +42,12 @@
 	background: #0466c8;
 	border-radius: 50%;
 	box-shadow: 1px 1px 4px rgba(0,0,0,.15);
-	animation: helix 1.25s ease-in-out infinite;
+	animation: helix 1s ease-in-out infinite;
 }
 
 .dot::after {
 	bottom: 100%;
-	animation: helix-reversed 1.25s ease-in-out infinite;
+	animation: helix-reversed 1s ease-in-out infinite;
 }
 
 .dot i {
@@ -57,7 +57,7 @@
 	width: 0.2em;
 	height: 10px;
 	background:  #0466c87c;
-	animation: helix-bar 1.25s ease-in-out infinite;
+	animation: helix-bar 1s ease-in-out infinite;
 }
 
 .dot2::before, .dot2::after, .dot2 i
@@ -83,6 +83,14 @@
 
 .dot9::before, .dot9::after, .dot9 i
 { animation-delay: 0.40s }
+.dot10::before, .dot10::after, .dot10 i
+{ animation-delay: 0.45s }
+.dot11::before, .dot11::after, .dot11 i
+{ animation-delay: 0.50s }
+.dot12::before, .dot12::after, .dot12 i
+{ animation-delay: 0.55s }
+.dot13::before, .dot13::after, .dot13 i
+{ animation-delay: 0.60s }
 
 @keyframes helix {
 	  0% { width: 1em; height: 1em; bottom: -5px; z-index: 10 }
