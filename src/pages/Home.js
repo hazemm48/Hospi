@@ -43,6 +43,8 @@ const Home = () => {
     let res = await users(body);
 
     let user = res.users;
+    console.log(user);
+
     setUser({
       name: user.name,
       email: user.email,

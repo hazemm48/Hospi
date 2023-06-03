@@ -1,6 +1,6 @@
 import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
-import {useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   updateUser,
   users,
@@ -22,18 +22,19 @@ const PatientDetails = () => {
   const [htmlData, setHtmlData] = useState([]);
   const [bottomBtns, setBottomBtns] = useState([]);
 
-
   const id = useLocation();
   const navigate = useNavigate();
 
   let createHtmlData = (state) => {
     setHtmlData([
-      ["gender", state.gender, "gender"],
-      ["phone", state.phone, "phone number"],
-      ["city", state.patientInfo.city, "city"],
+      ["gender", state.gender ? state.gender : "", "gender"],
+      ["phone", state.phone ? state.phone : "", "phone number"],
+      ["city", state.patientInfo?.city ? state.patientInfo.city : "", "city"],
       [
         "birthDate",
-        moment(state.patientInfo.birthDate).format("DD-MM-YYYY"),
+        state.patientInfo?.birthDate
+          ? moment(state.patientInfo.birthDate).format("DD-MM-YYYY")
+          : "",
         "date of birth",
       ],
       ["sta", state.isLoggedIn ? "Online" : "Offline", "member status"],
@@ -42,7 +43,7 @@ const PatientDetails = () => {
         moment(state.createdAt).local().format("DD/MM/YYYY"),
         "registered date",
       ],
-    ])
+    ]);
     setBottomBtns([
       [
         "-dark",
@@ -50,7 +51,7 @@ const PatientDetails = () => {
           setCalView(true);
         },
         "view appointments",
-        "la-calendar-day"
+        "la-calendar-day",
       ],
       [
         "-dark",
@@ -68,7 +69,7 @@ const PatientDetails = () => {
           resetPass();
         },
         "reset password",
-        "la-lock"
+        "la-lock",
       ],
       [
         "",
@@ -76,19 +77,23 @@ const PatientDetails = () => {
           userDelete();
         },
         "delete user",
-        "la-trash"
+        "la-trash",
       ],
     ]);
-  
-  }
+  };
 
   const GetDetails = async () => {
     let body = {
       id: id.state,
     };
     let user = await users(body);
+    console.log(user);
+    if(!user.users){
+      alert("patient not found")
+      navigate(-1)
+    }
     setState(user.users);
-    createHtmlData(user.users)
+    createHtmlData(user.users);
     setLoading(false);
   };
 
@@ -123,10 +128,10 @@ const PatientDetails = () => {
         details[pair[0]] = pair[1];
       }
     }
-    details.name=document.getElementById("name").value
-    details.patientInfo.birthDate = moment(details.patientInfo.birthDate).format(
-      "MM-DD-YYYY"
-    );
+    details.name = document.getElementById("name").value;
+    details.patientInfo.birthDate = moment(
+      details.patientInfo.birthDate
+    ).format("MM-DD-YYYY");
     let body = {
       details,
       id: state._id,
@@ -152,103 +157,107 @@ const PatientDetails = () => {
 
   return (
     <>
-      {loading ? (
-        <LoadingSpinner />
-      ) : calView ? (
+      {calView ? (
         <Calendar filter={{ patientId: id.state }} />
       ) : (
         <div className="main-content">
-          {state && (
-            <div className="container-fluid">
-              <DetailsHeader
-                name={state.name}
-                type={"patient"}
-                updateUserDetails={updateUserDetails}
-              />
-              <div className="section patient-details-section">
-                <div className="row">
-                  <div className="col-md-8">
+          <div className="container-fluid">
+            {loading ? (
+              <LoadingSpinner />
+            ) : (
+              state && (
+                <>
+                  <DetailsHeader
+                    name={state.name}
+                    type={"patient"}
+                    updateUserDetails={updateUserDetails}
+                  />
+                  <div className="section patient-details-section">
                     <div className="row">
-                      <div id="userDet" className="col-sm-12">
-                        <div className="card">
-                          <div className="row">
-                            <DetailsLeftSection
-                              data={state}
-                              type={"patient"}
-                              GetDetails={GetDetails}
-                              setLoading={setLoading}
-                            />
-                            <div
-                              id="editDet"
-                              className="col-md-8 patients-details-card-wrapper"
-                            >
-                              <form id="form">
-                                <div className="mini-card">
-                                  <div className="card-body">
-                                    <div className="row">
-                                    {htmlData.map((e) => {
-                                        return (
-                                          <div className="col-md-4">
+                      <div className="col-md-8">
+                        <div className="row">
+                          <div id="userDet" className="col-sm-12">
+                            <div className="card">
+                              <div className="row">
+                                <DetailsLeftSection
+                                  data={state}
+                                  type={"patient"}
+                                  GetDetails={GetDetails}
+                                  setLoading={setLoading}
+                                />
+                                <div
+                                  id="editDet"
+                                  className="col-md-8 patients-details-card-wrapper"
+                                >
+                                  <form id="form">
+                                    <div className="mini-card">
+                                      <div className="card-body">
+                                        <div className="row">
+                                          {htmlData.map((e) => {
+                                            return (
+                                              <div className="col-md-4">
+                                                <div className="form-group">
+                                                  <label>{e[2]}</label>
+                                                  <input
+                                                    name={e[0]}
+                                                    className="form-control"
+                                                    disabled
+                                                    required
+                                                    defaultValue={e[1]}
+                                                  />
+                                                </div>
+                                              </div>
+                                            );
+                                          })}
+                                          <div className="col-md-12">
                                             <div className="form-group">
-                                              <label>{e[2]}</label>
+                                              <label>email</label>
                                               <input
-                                                name={e[0]}
+                                                name="email"
                                                 className="form-control"
                                                 disabled
-                                                required
-                                                defaultValue={e[1]}
+                                                defaultValue={state.email}
                                               />
                                             </div>
                                           </div>
-                                        );
-                                      })}
-                                      <div className="col-md-12">
-                                        <div className="form-group">
-                                          <label>email</label>
-                                          <input
-                                            name="email"
-                                            className="form-control"
-                                            disabled
-                                            defaultValue={state.email}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="col-md-12">
-                                        <div className="form-group">
-                                          <label>address</label>
-                                          <input
-                                            name="address"
-                                            className="form-control"
-                                            disabled
-                                            defaultValue={
-                                              state.patientInfo?.address
-                                            }
-                                          />
+                                          <div className="col-md-12">
+                                            <div className="form-group">
+                                              <label>address</label>
+                                              <input
+                                                name="address"
+                                                className="form-control"
+                                                disabled
+                                                defaultValue={
+                                                  state.patientInfo?.address
+                                                }
+                                              />
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  </form>
                                 </div>
-                              </form>
+                              </div>
                             </div>
                           </div>
+                          <DetailsBottom arr={bottomBtns} />
                         </div>
                       </div>
-                      <DetailsBottom arr={bottomBtns} />
+                      <div className="col-md-4">
+                        <NotesCard id={state._id} />
+                        <FilesCard
+                          files={state.files}
+                          id={state._id}
+                          fieldName={"users"}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <NotesCard id={state._id} />
-                    <FilesCard
-                      files={state.files}
-                      id={state._id}
-                      fieldName={"users"}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+                </>
+              )
+            )}
+          </div>
         </div>
       )}
     </>
