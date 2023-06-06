@@ -24,7 +24,7 @@ const Categories = (props) => {
       props.type(value);
       props.pageView(true);
     } else if (props.view == "aid") {
-      navigate(`/admin/firstAidDetails`, { state: value });
+      navigate(`/${props.role}/firstAidDetails`, { state: value });
     }
     else if (props.view == "symp") {
       props.type(value);
