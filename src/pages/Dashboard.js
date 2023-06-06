@@ -27,13 +27,13 @@ const Dashboard = ({ user }) => {
       return e.role == "patient";
     });
     let docs = user.filter((e) => {
-      return e.role == "patient";
+      return e.role == "doctor";
     });
     let docObj ={
       count: docs.length,
       today:[]
     }
-    user.map((e) => {
+    docs.map((e) => {
       let today = moment()
       .format("dddd")
       .toLocaleLowerCase();;
