@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import heart from '../images/heart.png'
 
 const Categories = (props) => {
   const [data, setData] = useState();
@@ -15,7 +16,7 @@ const Categories = (props) => {
   const categoryValue = (e) => {
     let value = e.target.getAttribute("name");
     if (props.view == "gen") {
-      navigate(`/home/${value}`);
+      navigate(`/admin/${value}`);
     } else if (props.view == "doc") {
       props.filter(value);
       props.pageView(true);
@@ -23,7 +24,7 @@ const Categories = (props) => {
       props.type(value);
       props.pageView(true);
     } else if (props.view == "aid") {
-      navigate("/home/firstAidDetails", { state: value });
+      navigate(`/admin/firstAidDetails`, { state: value });
     }
     else if (props.view == "symp") {
       props.type(value);
@@ -47,7 +48,7 @@ const Categories = (props) => {
                 >
                   <div className="card-header" name={e[0]}>
                     <div className="card-img-top" name={e[0]}>
-                      <img src={image} loading="lazy" name={e[0]} />
+                      <img src={e[0]=="fav"?heart: image} loading="lazy" name={e[0]} />
                     </div>
                   </div>
                   <div className="card-body" name={e[0]}>

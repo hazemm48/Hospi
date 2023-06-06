@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const DetailsHeader = ({ name, type, updateUserDetails }) => {
+const DetailsHeader = ({ name, type, updateUserDetails, role }) => {
   console.log(name, type);
 
   const editDetails = () => {
@@ -46,7 +46,7 @@ const DetailsHeader = ({ name, type, updateUserDetails }) => {
         <div aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
-              <Link to={`/home/${type}s`}>
+              <Link to={`/${role}/${type}s`}>
                 <a>{type}</a>
               </Link>
             </li>

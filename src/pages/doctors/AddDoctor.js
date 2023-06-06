@@ -82,7 +82,7 @@ const AddDoctor = () => {
     alert(add.message);
     if (add.message == "doctor added") {
       await addProfilePic(file, add.added[0]._id);
-      navigate("/home/doctorDetails", { state: add.added._id });
+      navigate("/admin/doctorDetails", { state: add.added._id });
     } else {
       setLoading(false);
     }

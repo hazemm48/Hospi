@@ -1,12 +1,20 @@
-/* const baseApi = "https://graceful-jay-cowboy-hat.cyclic.app/api/v1";*/
-const baseApi = "https://hospi-server.onrender.com/api/v1";
-//const baseApi = "http://localhost:3000/api/v1";
-const api = `${baseApi}/admin`;
+/* const baseApi = "https://graceful-jay-cowboy-hat.cyclic.app/api()/v1";*/
+//const baseApi = "https://hospi-server.onrender.com/api()/v1";
+const baseApi = "http://localhost:3000/api/v1";
+let api = () => {
+  return `${baseApi}/${localStorage.getItem("role")}`;
+};
 
 let headers = () => {
+  let key = "";
+  if (localStorage.getItem("role") == "admin") {
+    key = "SIM";
+  } else if (["doctor", "patient"].includes(localStorage.getItem("role"))) {
+    key = "Bearer";
+  }
   return {
     Accept: "application/json",
-    Authorization: `SIM ${localStorage.getItem("token")}`,
+    Authorization: `${key} ${localStorage.getItem("token")}`,
     "Content-Type": "application/json",
   };
 };
@@ -25,7 +33,7 @@ export const login = async (body) => {
 };
 
 export const users = async (body) => {
-  let data = await fetch(`${api}/getAllUsers`, {
+  let data = await fetch(`${api()}/getAllUsers`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: headers(),
@@ -36,7 +44,7 @@ export const users = async (body) => {
 };
 
 export const changePass = async (body) => {
-  let data = await fetch(`${api}/changePass`, {
+  let data = await fetch(`${api()}/changePass`, {
     method: "PUT",
     body: JSON.stringify(body),
     headers: headers(),
@@ -47,7 +55,7 @@ export const changePass = async (body) => {
 };
 
 export const updateUser = async (body) => {
-  let data = await fetch(`${api}/updateUser`, {
+  let data = await fetch(`${api()}/updateUser`, {
     method: "PUT",
     body: JSON.stringify(body),
     headers: headers(),
@@ -57,7 +65,7 @@ export const updateUser = async (body) => {
   return data;
 };
 export const deleteUser = async (body) => {
-  let data = await fetch(`${api}/deleteUser`, {
+  let data = await fetch(`${api()}/deleteUser`, {
     method: "Delete",
     body: JSON.stringify(body),
     headers: headers(),
@@ -68,7 +76,7 @@ export const deleteUser = async (body) => {
 };
 
 export const addUser = async (body) => {
-  let data = await fetch(`${api}/addUser`, {
+  let data = await fetch(`${api()}/addUser`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: headers(),
@@ -79,7 +87,7 @@ export const addUser = async (body) => {
 };
 
 export const reserve = async (body) => {
-  let data = await fetch(`${api}/reserve/${body.oper}`, {
+  let data = await fetch(`${api()}/reserve/${body.oper}`, {
     method: "POST",
     body: JSON.stringify(body.data),
     headers: headers(),
@@ -90,7 +98,7 @@ export const reserve = async (body) => {
 };
 
 export const note = async (body) => {
-  let data = await fetch(`${api}/note?${body.query}`, {
+  let data = await fetch(`${api()}/note?${body.query}`, {
     ...body.data,
     headers: headers(),
   })
@@ -100,7 +108,7 @@ export const note = async (body) => {
 };
 
 export const getGeneral = async (body) => {
-  let data = await fetch(`${api}/getGeneral`, {
+  let data = await fetch(`${baseApi}/getGeneral`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: headers(),
@@ -111,7 +119,7 @@ export const getGeneral = async (body) => {
 };
 
 export const rooms = async (body, method, url) => {
-  let data = await fetch(`${api}/room/${url ? url : ""}`, {
+  let data = await fetch(`${api()}/room/${url ? url : ""}`, {
     method: method,
     body: JSON.stringify(body),
     headers: headers(),
@@ -122,7 +130,7 @@ export const rooms = async (body, method, url) => {
 };
 
 export const resetPassword = async (body) => {
-  let data = await fetch(`${api}/resetPassword`, {
+  let data = await fetch(`${api()}/resetPassword`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: headers(),
@@ -169,7 +177,7 @@ export const medicalRecord = async (body, method, url) => {
 };
 
 export const generatePresc = async (body) => {
-  let data = await fetch(`${api}/generatePresc`, {
+  let data = await fetch(`${api()}/generatePresc`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: headers(),
@@ -179,9 +187,29 @@ export const generatePresc = async (body) => {
   return data;
 };
 
-export const firstAids = async (body, method, url) => {
-  let data = await fetch(`${api}/firstAid/${url ? url : ""}`, {
+export const firstAids = async (body, method) => {
+  let data = await fetch(`${api()}/firstAid`, {
     method: method,
+    body: JSON.stringify(body),
+    headers: headers(),
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+export const getFirstAids = async (body) => {
+  let data = await fetch(`${baseApi}/getFirstAid`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: headers(),
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+export const favoraiteDoc = async (body,url) => {
+  let data = await fetch(`${api()}/favDoctors/${url ? url : ""}`, {
+    method: "POST",
     body: JSON.stringify(body),
     headers: headers(),
   })

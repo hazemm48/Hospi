@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { medicalRecord, rooms } from "../../adminAPI.js";
+import { medicalRecord } from "../../adminAPI.js";
 import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
 import InputsHandler from "../../components/InputsHandler.js";
 import { medicList } from "./MedicRecordData.js";
 
-const MedicRecordDetails = () => {
+const MedicRecordDetails = ({ role }) => {
   const [loading, setLoading] = useState(true);
   const [htmlData, setHtmlData] = useState();
   const [data, setData] = useState();
@@ -73,7 +73,7 @@ const MedicRecordDetails = () => {
       let deleted = await medicalRecord(body, "DELETE");
       alert(deleted.message);
       if (deleted.message == "deleted") {
-        navigate("/home/medicalRecord", { state: data.patientId });
+        navigate(-1);
       }
     }
   };
@@ -115,7 +115,7 @@ const MedicRecordDetails = () => {
                   <div aria-label="breadcrumb">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item">
-                        <Link to="/home/medicalRecord" state={state}>
+                        <Link to={`/${role}/medicalRecord`} state={state}>
                           <a>medical records</a>
                         </Link>
                       </li>
@@ -175,6 +175,7 @@ const MedicRecordDetails = () => {
                   </div>
                   <div className="col-sm-4">
                     <FilesCard
+                      role={role}
                       files={data.files}
                       fieldName={"medicRecord"}
                       id={data.patientId}

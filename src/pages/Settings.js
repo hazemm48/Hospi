@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { changePass } from "../adminAPI.js";
 import manImg from '../images/man.svg'
 
-const Settings = (props) => {
+const Settings = ({user}) => {
 
   const changePassword = async (body) => {
     console.log(body);
@@ -73,7 +73,7 @@ const Settings = (props) => {
                     <div className="col-lg-2 col-md-4">
                       <img
                         className="rounded-circle"
-                        src={manImg}
+                        src={user.image?user.image: manImg}
                       />
                     </div>
                   </div>
@@ -87,7 +87,7 @@ const Settings = (props) => {
                         <label>Name</label>
                         <input
                           className="form-control"
-                          defaultValue={props.name}
+                          defaultValue={user.name}
                           disabled
                         />
                       </div>
@@ -95,7 +95,7 @@ const Settings = (props) => {
                         <label>email address</label>
                         <input
                           className="form-control"
-                          defaultValue={props.email}
+                          defaultValue={user.email}
                           disabled
                         />
                       </div>

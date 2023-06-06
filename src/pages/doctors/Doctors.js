@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getGeneral, users } from "../../adminAPI";
+import { favoraiteDoc, getGeneral, users } from "../../adminAPI";
 import LoadingSpinner from "../../components/Loading.js";
 import Categories from "../../components/Categories.js";
 import CardView from "../../components/CardView.js";
@@ -14,27 +14,30 @@ import {
   PagenationResult,
 } from "../../components/Pagenation.js";
 import SortDropdown from "../../components/SortDropdown.js";
+import moment from "moment";
 
-const Doctors = () => {
+const Doctors = ({ role, id, favDocs }) => {
   const [loading, setLoading] = useState(false);
-  const [doctors, setDoctors] = useState();
+  const [doctors, setDoctors] = useState([]);
   const [filter, setFilter] = useState();
   const [pageNo, setPageNo] = useState();
-  const [length, setLength] = useState();
+  const [length, setLength] = useState(0);
+  const [day, setDay] = useState(false);
   const [pageView, setPageView] = useState(false);
   const [srchFilter, setSrchFilter] = useState();
   const [spec, setSpec] = useState();
+  const [favDoc, setFavDoc] = useState(favDocs);
 
   let resultLimit = 12;
   let sortValues = [
-    ["-createdAt", "Newest"],
-    ["createdAt", "Oldest"],
-    ["name", "Name ascending"],
-    ["-name", "Name descending"],
-    ["-doctorInfo.birthDate", "New born"],
-    ["doctorInfo.birthDate", "Old born"],
-    ["-gender", "Male"],
-    ["gender", "Female"],
+    ["createdAt:-1", "Newest"],
+    ["createdAt:1", "Oldest"],
+    ["name:1", "Name ascending"],
+    ["name:-1", "Name descending"],
+    ["doctorInfo.birthDate:-1", "New born"],
+    ["doctorInfo.birthDate:1", "Old born"],
+    ["gender:-1", "Male"],
+    ["gender:1", "Female"],
   ];
 
   const GetDetails = async () => {
@@ -45,18 +48,44 @@ const Doctors = () => {
       }
     });
     setPageNo(currentPage);
-    let sort = document.getElementById("sort").value;
-    let body = {
-      speciality: filter,
-      role: "doctor",
-      sort: sort,
-      pageNo: currentPage,
-      limit: resultLimit,
-    };
-    filter == "all" && delete body.speciality;
-    srchFilter && (body.filter = srchFilter);
-    let user = await users(body);
-    setLength(user.length);
+    let user = [];
+    if (filter != "fav") {
+      let sort = document.getElementById("sort").value;
+      let body = {
+        filter: {
+          "doctorInfo.speciality": filter,
+          role: "doctor",
+        },
+        sort: sort,
+        pageNo: currentPage,
+        limit: resultLimit,
+      };
+      if (day) {
+        body.filter["doctorInfo.schedule.day"] = moment()
+          .format("dddd")
+          .toLocaleLowerCase();
+      }
+      filter == "all" && delete body.filter["doctorInfo.speciality"];
+      srchFilter && (body.filter = { ...body.filter, ...srchFilter });
+      user = await users(body);
+    } else {
+      user = await favoraiteDoc({}, "get");
+      let docs = user.users.map((e)=>{
+        return e._id
+      })
+      setFavDoc(docs)
+    }
+    user.users.map((e) => {
+      let arr = [];
+      e.doctorInfo.schedule.map((o) => {
+        if (!arr.includes(o.day)) {
+          arr.push(o.day);
+        }
+      });
+      e.scheduleDays = arr;
+    });
+
+    setLength(user.count);
     setDoctors(user.users);
     setLoading(false);
   };
@@ -67,12 +96,24 @@ const Doctors = () => {
     };
     let general = await getGeneral(body);
     let data = general.data[0].specialities;
-    let dataArr = [];
+    let dataArr = [["all", "all"]];
     data.map((e) => {
       let arr = [e, e];
       dataArr.push(arr);
     });
+    if (role == "patient") {
+      dataArr.unshift(["fav", "favourites"]);
+    }
     setSpec(dataArr);
+  };
+
+  const addDocToFav = async ({ id }) => {
+    let body = {
+      docId: id,
+    };
+    let add = await favoraiteDoc(body);
+    setFavDoc(add.users)
+    console.log(add);
   };
 
   useEffect(() => {
@@ -82,21 +123,24 @@ const Doctors = () => {
     } else {
       GetSpecialities();
     }
-  }, [filter, srchFilter]);
+  }, [filter, srchFilter, day]);
 
   return (
     <div className="main-content">
       <div className="container-fluid">
-        <div className="section ">
-          <div className="buttons-wrapper float-right">
-            <Link to="/home/addDoctor">
-              <button className="btn btn-dark-red-f-gr">
-                <i className="las la-plus-circle" />
-                add a new doctor
-              </button>
-            </Link>
+        {role == "admin" && (
+          <div className="section ">
+            <div className="buttons-wrapper float-right">
+              <Link to="/admin/addDoctor">
+                <button className="btn btn-dark-red-f-gr">
+                  <i className="las la-plus-circle" />
+                  add a new doctor
+                </button>
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
+
         <div className="section title-section">
           <h5 className="page-title">doctors</h5>
         </div>
@@ -113,30 +157,61 @@ const Doctors = () => {
                   all specialities
                 </button>
               </div>
-              <SortDropdown
-                sortValues={sortValues}
-                setLoading={setLoading}
-                GetDetails={GetDetails}
-                selOpt={"-createdAt"}
-              />
+              {filter != "fav" && (
+                <SortDropdown
+                  sortValues={sortValues}
+                  setLoading={setLoading}
+                  GetDetails={GetDetails}
+                  selOpt={"createdAt:-1"}
+                />
+              )}
               <SwitchView />
               {filter == "all" && (
                 <Search search={setSrchFilter} type={"user"} />
+              )}
+              {filter != "fav" && (
+                <div className="form-check ml-auto">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    value={true}
+                    onChange={(e) => {
+                      setDay(e.target.checked);
+                    }}
+                    id="todayDoc"
+                  />
+                  <label className="form-check-label" for="todayDoc">
+                    today's doctors
+                  </label>
+                </div>
               )}
             </div>
 
             {loading ? (
               <LoadingSpinner />
             ) : (
-              <>
-                <PagenationResult
-                  pageNo={pageNo}
-                  length={length}
-                  resultLimit={resultLimit}
-                />
-                <CardView type="doctor" data={doctors} />
-                <TableView type="doctor" data={doctors} display="no-display" />
-              </>
+              doctors.length > 0 && (
+                <>
+                  <PagenationResult
+                    pageNo={pageNo}
+                    length={length}
+                    resultLimit={resultLimit}
+                  />
+                  <CardView
+                    type="doctor"
+                    data={doctors}
+                    role={role}
+                    favDocs={favDoc && favDoc}
+                    addDocFavFun={addDocToFav}
+                  />
+                  <TableView
+                    type="doctor"
+                    data={doctors}
+                    role={role}
+                    display="no-display"
+                  />
+                </>
+              )
             )}
           </>
         ) : (

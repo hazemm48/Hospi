@@ -4,7 +4,6 @@ import { addUser, uploadFile } from "../../adminAPI.js";
 import manImg from "../../images/man.svg";
 import LoadingSpinner from "../../components/Loading.js";
 import { useNavigate } from "react-router-dom";
-import Alert from "../../components/Alert.js";
 
 const AddPatient = () => {
   const [htmlData, setHtmlData] = useState();

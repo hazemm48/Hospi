@@ -9,6 +9,7 @@ const TableView = (props) => {
   const [users, setUsers] = useState(props.data);
   const [table, setTable] = useState();
 
+  let role = localStorage.role;
   let docTable = [
     "name",
     "gender",
@@ -25,10 +26,7 @@ const TableView = (props) => {
   }, []);
 
   return (
-    <div
-      id="tv"
-      className={`section patients-table-view ${props.display}`}
-    >
+    <div id="tv" className={`section patients-table-view ${props.display}`}>
       <table className="table table-hover table-responsive-lg">
         <thead>
           <tr>
@@ -66,13 +64,15 @@ const TableView = (props) => {
                   </td>
                   <td>{props.type == "doctor" ? user.phone : user.email}</td>
                   <td>
-                    <Link
-                      to={`/home/${props.type}Details`}
-                      state={user._id}
-                      className="view-more btn btn-sm btn-dark-red-f"
-                    >
-                      view profile
-                    </Link>
+                    {role == "admin" && (
+                      <Link
+                        to={`/home/${props.type}Details`}
+                        state={user._id}
+                        className="view-more btn btn-sm btn-dark-red-f"
+                      >
+                        view profile
+                      </Link>
+                    )}
                   </td>
                 </tr>
               );

@@ -24,14 +24,27 @@ const Login = () => {
       password: password,
     };
     let data = await login(body);
+    console.log(data);
     if (data.message == "welcome") {
-      localStorage.setItem("token", data.token);
-      setTimeout(() => {
-        navigate("/home/dashboard");
-      }, 1000);
+      if (data.role == "admin") {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+        navigate("/admin/dashboard");
+      } else if (data.role == "patient") {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+        navigate("/patient/home");
+      } else if (data.role == "doctor") {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+        navigate("/doctor/home");
+      } else {
+        alert("not authorized");
+      }
     } else {
       alert(data.message);
     }
+    setLoading(false);
   };
 
   return (

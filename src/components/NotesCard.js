@@ -26,7 +26,7 @@ const NotesCard = (props) => {
         <h5>
           notes
           <Link
-            to="/home/notes"
+            to="/admin/notes"
             state={props.id}
             className="btn btn-dark-red-f btn-sm float-right"
           >

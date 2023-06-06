@@ -1,6 +1,6 @@
 import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
-import {useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   updateUser,
   users,
@@ -18,7 +18,7 @@ import NotesCard from "../../components/NotesCard.js";
 import Schedule from "../../components/Schedule.js";
 import Calendar from "../Calender.js";
 
-const DoctorDetails = () => {
+const DoctorDetails = ({ role }) => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
   const [htmlData, setHtmlData] = useState([]);
@@ -58,17 +58,17 @@ const DoctorDetails = () => {
           setCalView(true);
         },
         "view calendar",
-        "la-calendar-day"
+        "la-calendar-day",
       ],
       [
         "-dark",
         () => {
-          navigate("/home/addReserve", {
+          navigate("/admin/addReserve", {
             state: { id: state._id, type: "doctor" },
           });
         },
         "Reserve Doctor",
-        "la-stethoscope"
+        "la-stethoscope",
       ],
       [
         "",
@@ -76,7 +76,7 @@ const DoctorDetails = () => {
           resetPass();
         },
         "reset password",
-        "la-lock"
+        "la-lock",
       ],
       [
         "",
@@ -84,7 +84,7 @@ const DoctorDetails = () => {
           userDelete();
         },
         "delete user",
-        "la-trash"
+        "la-trash",
       ],
     ]);
   };
@@ -92,12 +92,14 @@ const DoctorDetails = () => {
   const GetDetails = async () => {
     console.log(id);
     let body = {
-      id: id.state,
+      filter: {
+        _id: id.state,
+      },
     };
     let user = await users(body);
     console.log(user);
-    setState(user.users);
-    createHtmlData(user.users);
+    setState(user.users[0]);
+    createHtmlData(user.users[0]);
     setLoading(false);
   };
 
@@ -233,16 +235,17 @@ const DoctorDetails = () => {
   };
 
   return (
-    <React.Fragment>
-      {loading ? (
-        <LoadingSpinner />
-      ) : calView ? (
-        <Calendar filter={{ doctorId: id.state }} />
-      ) : (
-        <div className="main-content">
-          {state && (
-            <div className="container-fluid">
+    <div className="main-content">
+      <div className="container-fluid">
+        {loading ? (
+          <LoadingSpinner />
+        ) : calView ? (
+          <Calendar filter={{ doctorId: id.state }} />
+        ) : (
+          state && (
+            <>
               <DetailsHeader
+                role={role}
                 name={state.name}
                 type={"doctor"}
                 updateUserDetails={updateUserDetails}
@@ -407,6 +410,7 @@ const DoctorDetails = () => {
                   <div className="col-md-4">
                     <NotesCard id={state._id} />
                     <FilesCard
+                      role={role}
                       files={state.files}
                       id={state._id}
                       fieldName={"users"}
@@ -414,11 +418,11 @@ const DoctorDetails = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
-    </React.Fragment>
+            </>
+          )
+        )}
+      </div>
+    </div>
   );
 };
 

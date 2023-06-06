@@ -55,8 +55,8 @@
 	z-index: 25;
 	align-self: center;
 	width: 0.2em;
-	height: 10px;
-	background:  #0466c87c;
+	height: 4.5em;
+	background:  #0466c861;
 	animation: helix-bar 1s ease-in-out infinite;
 }
 
@@ -109,9 +109,9 @@
 }
 
 @keyframes helix-bar {
-	  0% { height: 3.5em }
-	 25% { height:  1.4em }
-	 50% { height: 3.5em }
-	 75% { height:  1.4em }
-	100% { height: 3.5em }
+	  0% { height: 4.5em }
+	 25% { height:  0.8em }
+	 50% { height: 4.5em }
+	 75% { height:  0.8em }
+	100% { height: 4.5em }
 }

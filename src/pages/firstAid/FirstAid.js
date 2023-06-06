@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { firstAids } from "../../adminAPI.js";
+import { getFirstAids } from "../../adminAPI.js";
 import Categories from "../../components/Categories.js";
 import LoadingSpinner from "../../components/Loading.js";
 import { PagenationResult } from "../../components/Pagenation.js";
 import Search from "../../components/Search.js";
 import aid from "../../images/firstAid.png";
 
-const FirstAid = () => {
+const FirstAid = ({ role }) => {
   const [loading, setLoading] = useState(false);
   const [length, setLength] = useState();
   const [data, setData] = useState([]);
   const [srchFilter, setSrchFilter] = useState();
   let { state } = useLocation();
-
   let getFirstAidData = async () => {
     console.log(state);
     let body = {
       filter: {},
     };
     srchFilter && (body.filter = srchFilter);
-    let { aids, message } = await firstAids(body, "POST", "get");
+    let { aids, message } = await getFirstAids(body);
     let dataArr = [];
     if (message == "found") {
       aids.map((e) => {
@@ -46,21 +45,23 @@ const FirstAid = () => {
         </div>
         <div className="section filters-section">
           <Search search={setSrchFilter} type={"aid"} />
-          <div className="buttons-wrapper ml-auto">
-            <Link to="/home/addFirstAid">
-              <button className="btn btn-dark-red-f-gr">
-                <i className="las la-plus-circle" />
-                add a new first aid
-              </button>
-            </Link>
-          </div>
+          {role == "admin" && (
+            <div className="buttons-wrapper ml-auto">
+              <Link to={`/${role}/addFirstAid`}>
+                <button className="btn btn-dark-red-f-gr">
+                  <i className="las la-plus-circle" />
+                  add a new first aid
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
         {loading ? (
           <LoadingSpinner />
         ) : (
           <>
             <PagenationResult pageNo={0} length={length} />
-            <Categories view={"aid"} data={data} image={aid} />
+            <Categories view={"aid"} data={data} image={aid} role={role} />
           </>
         )}
       </div>

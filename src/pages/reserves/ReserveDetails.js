@@ -5,16 +5,18 @@ import { generatePresc, reserve } from "../../adminAPI.js";
 import FeedBack from "../../components/FeedBack.js";
 import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
+import { resDetList } from "./ReserveDetailsData.js";
 
-const ReserveDetails = () => {
+const ReserveDetails = ({ role }) => {
   let navigate = useNavigate();
   const id = useLocation();
   const [reserves, setReserves] = useState();
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState(false);
   const [feedData, setFeedData] = useState();
-  let anPer = "";
-  let type = "";
+  const [htmlData, setHtmlData] = useState([]);
+  const [headBtns, setHeadBtns] = useState([]);
+  const [type, setType] = useState();
 
   const Data = async () => {
     let body = {
@@ -26,17 +28,13 @@ const ReserveDetails = () => {
       },
     };
     let reserveData = await reserve(body);
-    setReserves(reserveData.reservations);
+    let data = reserveData.reservations[0];
+    setHtmlData(resDetList(data.type, data, role));
+    setHeadBtns(headBtn(data));
+    setReserves(data);
+    setType(data.type);
     setLoading(false);
   };
-  if (reserves) {
-    if (reserves[0].anotherPerson == true) {
-      anPer = "yes";
-    } else {
-      anPer = "no";
-    }
-    type = reserves[0].type;
-  }
 
   const Delete = async () => {
     let body = {
@@ -60,7 +58,6 @@ const ReserveDetails = () => {
   }, []);
 
   const Edit = (e) => {
-    console.log();
     let formEl = document.forms.form;
     let editBtn = e.target;
     if (editBtn.hasAttribute("data-edit")) {
@@ -86,7 +83,7 @@ const ReserveDetails = () => {
     let formData = new FormData(formEl);
     let body = {
       oper: "edit",
-      body: {
+      data: {
         details: {
           patName: formData.get("patName"),
           fees: formData.get("fees"),
@@ -97,6 +94,7 @@ const ReserveDetails = () => {
       },
     };
     let update = await reserve(body);
+    console.log(update);
     if (update.message == "updated") {
       if (window.confirm("Reserve Updated Successfully")) {
         window.location.reload();
@@ -109,8 +107,8 @@ const ReserveDetails = () => {
 
   const generatePrescription = async (e) => {
     let oper = e.target.name;
-    if (oper == "pdf" && reserves[0].report.link) {
-      window.open(reserves[0].report.link, "_blank");
+    if (oper == "pdf" && reserves.report.link) {
+      window.open(reserves.report.link, "_blank");
     } else {
       let body = {
         oper: oper,
@@ -127,6 +125,45 @@ const ReserveDetails = () => {
       }
       setFeedData("Scan the qr code with your camera");
     }
+  };
+
+  let headBtn = (reserves) => {
+    let arr = [];
+    if (role == "admin") {
+      arr.push(
+        [
+          "deleteRes",
+          "",
+          () => {
+            Delete();
+          },
+          "la-trash",
+          reserves.status ? "delete reserve" : "cancel reserve",
+        ],
+        [
+          "editRes",
+          "-dark",
+          (e) => {
+            Edit(e);
+          },
+          "la-edit",
+          "edit reserve",
+        ]
+      );
+    } else if (role == "patient") {
+      !reserves.status &&
+        arr.push([
+          "deleteRes",
+          "",
+          () => {
+            Delete();
+          },
+          "la-trash",
+          "cancel reserve",
+        ]);
+    }
+    console.log(arr);
+    return arr;
   };
 
   return (
@@ -150,10 +187,8 @@ const ReserveDetails = () => {
                           style={{ justifyContent: "center" }}
                         >
                           <h3>{type} reserve</h3>
-                          <small className="text-muted">
-                            {reserves[0]._id}
-                          </small>
-                          {reserves[0].status ? (
+                          <small className="text-muted">{reserves._id}</small>
+                          {reserves.status ? (
                             <label
                               className="label-green"
                               style={{
@@ -178,35 +213,23 @@ const ReserveDetails = () => {
                           )}
 
                           <div className="d-flex justify-content-end ">
-                            <button
-                              id="deleteRes"
-                              className="btn btn-red-f-gr col-md-2"
-                              style={{
-                                margin: "0.3em",
-                              }}
-                              onClick={() => {
-                                Delete();
-                              }}
-                            >
-                              <i className="las la-trash" />
-                              {reserves[0].status
-                                ? "delete reserve"
-                                : "cancel reserve"}
-                            </button>
-                            <button
-                              id="editRes"
-                              className="btn btn-dark-red-f-gr col-md-2"
-                              data-edit
-                              style={{
-                                margin: "0.3em",
-                              }}
-                              onClick={(e) => {
-                                Edit(e);
-                              }}
-                            >
-                              <i className="las la-edit" />
-                              edit reserve
-                            </button>
+                            {headBtns.map((e) => {
+                              console.log(e);
+                              return (
+                                <button
+                                  id={e[0]}
+                                  className={`btn btn${e[1]}-red-f-gr col-md-2`}
+                                  data-edit
+                                  style={{
+                                    margin: "0.3em",
+                                  }}
+                                  onClick={e[2]}
+                                >
+                                  <i className={`las ${e[3]}`} />
+                                  {e[4]}
+                                </button>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>
@@ -216,252 +239,58 @@ const ReserveDetails = () => {
                       id="editDet"
                       className="col d-flex justify-content-center res"
                     >
-                      <form id="form" method="post">
+                      <form id="form">
                         <div className="mini-card">
                           <div className="card-body">
                             <div className="row justify-content-center">
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>patient name</label>
-                                  <input
-                                    name="patName"
-                                    className="form-control"
-                                    readOnly="readonly"
-                                    defaultValue={reserves[0].patName}
-                                  />
-                                </div>
-                              </div>
-                              {type == "doctor" ? (
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>doctor name</label>
-                                    <input
-                                      name="docName"
-                                      className="form-control"
-                                      readOnly="readonly"
-                                      defaultValue={reserves[0].docName}
-                                    />
+                              {htmlData.map((e) => {
+                                return (
+                                  <div className="col-md-4">
+                                    <div className="form-group">
+                                      <label>{e[0]}</label>
+                                      <input
+                                        name={e[1]}
+                                        className="form-control"
+                                        readOnly
+                                        defaultValue={e[2]}
+                                      />
+                                    </div>
                                   </div>
-                                </div>
-                              ) : (
-                                ""
-                              )}
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>
-                                    {type == "doctor"
-                                      ? "speciality"
-                                      : "category"}
-                                  </label>
-                                  <input
-                                    name="speciality"
-                                    className="form-control"
-                                    readOnly="readonly"
-                                    defaultValue={reserves[0].speciality}
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>fees</label>
-                                  <input
-                                    name="fees"
-                                    className="form-control"
-                                    readOnly="readonly"
-                                    defaultValue={reserves[0].fees}
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>date</label>
-                                  <input
-                                    id="date"
-                                    className="form-control"
-                                    readOnly="readonly"
-                                    defaultValue={moment(
-                                      reserves[0].date
-                                    ).format("DD/MM/YYYY")}
-                                  />
-                                </div>
-                              </div>
-                              {type == "doctor" ? (
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>time</label>
-                                    <input
-                                      id="time"
-                                      className="form-control"
-                                      readOnly="readonly"
-                                      defaultValue={
-                                        reserves[0].time.from +
-                                        " - " +
-                                        reserves[0].time.to
-                                      }
-                                    />
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>sub Category</label>
-                                    <input
-                                      id="subCategory"
-                                      className="form-control"
-                                      readOnly="readonly"
-                                      defaultValue={reserves[0].subCategory}
-                                    />
-                                  </div>
-                                </div>
-                              )}
-
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>phone</label>
-                                  <input
-                                    name="phone"
-                                    className="form-control"
-                                    readOnly="readonly"
-                                    defaultValue={reserves[0].phone}
-                                  />
-                                </div>
-                              </div>
-                              {type == "doctor" ? (
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>visit type</label>
-                                    <input
-                                      name="visitType"
-                                      className="form-control"
-                                      readOnly="readonly"
-                                      defaultValue={reserves[0].visitType}
-                                    />
-                                  </div>
-                                </div>
-                              ) : (
-                                ""
-                              )}
-
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>another person</label>
-                                  <input
-                                    name="anotherPerson"
-                                    className="form-control"
-                                    readOnly="readonly"
-                                    defaultValue={anPer}
-                                  />
-                                </div>
-                              </div>
-                              {type == "doctor" ? (
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>turn number</label>
-                                    <input
-                                      name="turnNum"
-                                      className="form-control"
-                                      readOnly="readonly"
-                                      defaultValue={reserves[0].turnNum}
-                                    />
-                                  </div>
-                                </div>
-                              ) : (
-                                ""
-                              )}
-
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>patient id</label>
-                                  <input
-                                    name="patientId"
-                                    className="form-control"
-                                    readOnly="readonly"
-                                    defaultValue={reserves[0].patientId}
-                                  />
-                                </div>
-                              </div>
-                              {type == "doctor" ? (
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>doctor id</label>
-                                    <input
-                                      name="doctorId"
-                                      className="form-control"
-                                      readOnly="readonly"
-                                      defaultValue={reserves[0].doctorId}
-                                    />
-                                  </div>
-                                </div>
-                              ) : (
-                                ""
-                              )}
-
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>created at</label>
-                                  <input
-                                    name="createdAt"
-                                    className="form-control"
-                                    readOnly="readonly"
-                                    defaultValue={moment(
-                                      reserves[0].createdAt
-                                    ).format("DD/MM/YYYY h:mm A")}
-                                  />
-                                </div>
-                              </div>
-                              {moment(reserves[0].createdAt).format(
-                                "DD/MM/YYYY h:mm A"
-                              ) ==
-                              moment(reserves[0].updatedAt).format(
-                                "DD/MM/YYYY h:mm A"
-                              ) ? (
-                                ""
-                              ) : (
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>updated at</label>
-                                    <input
-                                      name="updatedAt"
-                                      className="form-control"
-                                      readOnly="readonly"
-                                      defaultValue={moment(
-                                        reserves[0].updatedAt
-                                      ).format("DD/MM/YYYY h:mm A")}
-                                    />
-                                  </div>
-                                </div>
-                              )}
+                                );
+                              })}
                             </div>
-                            <div className="card-footer">
-                              <div className="d-flex justify-content-center">
-                                <Link
-                                  to="/home/PatientDetails"
-                                  state={reserves[0].patientId}
-                                  className="btn btn-dark-red-f btn-sm col-sm-2"
-                                  style={{ marginRight: "0.4em" }}
-                                >
-                                  <i className="las la-user-injured" />
-                                  View Patient
-                                </Link>
-                                {type == "doctor" && (
+                            {role == "admin" && (
+                              <div className="card-footer">
+                                <div className="d-flex justify-content-center">
                                   <Link
-                                    to="/home/doctorDetails"
-                                    state={reserves[0].doctorId}
+                                    to={`/${role}/PatientDetails`}
+                                    state={reserves.patientId}
                                     className="btn btn-dark-red-f btn-sm col-sm-2"
+                                    style={{ marginRight: "0.4em" }}
                                   >
-                                    <i className="las la-stethoscope" />
-                                    View Doctor
+                                    <i className="las la-user-injured" />
+                                    View Patient
                                   </Link>
-                                )}
+                                  {type == "doctor" && (
+                                    <Link
+                                      to="/admin/doctorDetails"
+                                      state={reserves.doctorId}
+                                      className="btn btn-dark-red-f btn-sm col-sm-2"
+                                    >
+                                      <i className="las la-stethoscope" />
+                                      View Doctor
+                                    </Link>
+                                  )}
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                         </div>
                       </form>
                     </div>
                   </div>
                 </div>
-                {reserves[0].status && (
+                {reserves.status && (
                   <div>
                     <h2 style={{ textAlign: "center" }}>Report</h2>
                     <div className="card">
@@ -496,7 +325,7 @@ const ReserveDetails = () => {
                           name="prescription"
                           className="form-control"
                           style={{ height: "auto" }}
-                          defaultValue={reserves[0].report.prescription}
+                          defaultValue={reserves.report.prescription}
                           readOnly
                           rows={12}
                         />
@@ -507,7 +336,7 @@ const ReserveDetails = () => {
                           name="note"
                           className="form-control"
                           style={{ height: "auto" }}
-                          defaultValue={reserves[0].report.note}
+                          defaultValue={reserves.report.note}
                           readOnly
                           rows={12}
                         />
@@ -516,10 +345,11 @@ const ReserveDetails = () => {
                       <h3 style={{ color: "#0466c8" }}>Files</h3>
 
                       <FilesCard
+                        role={role}
                         id={id.state}
-                        type={reserves[0].type}
+                        type={reserves.type}
                         fieldName={"reserves"}
-                        files={reserves[0].report.files}
+                        files={reserves.report.files}
                       />
                     </div>
                   </div>

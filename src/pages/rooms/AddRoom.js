@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { addUser, rooms } from "../../adminAPI.js";
+import { rooms } from "../../adminAPI.js";
 
 const AddRoom = () => {
-  let [htmlData, setHtmlData] = useState([
+  let htmlData = [
     ["Name", "name", "text", 20],
     ["Level", "level", "number", 3],
-  ]);
+  ];
 
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ const AddRoom = () => {
     alert(add.message);
 
     if (add.message == "room added") {
-      navigate("/home/roomDetails", { state: add.added[0]._id });
+      navigate("/admin/roomDetails", { state: add.added[0]._id });
     }
   };
   return (

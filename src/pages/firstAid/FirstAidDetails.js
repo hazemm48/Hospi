@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { addUser, firstAids, rooms, uploadFile } from "../../adminAPI.js";
+import {
+  addUser,
+  firstAids,
+  getFirstAids,
+  rooms,
+  uploadFile,
+} from "../../adminAPI.js";
 import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
 import InputsHandler from "../../components/InputsHandler.js";
 
-const FirstAidDetails = () => {
+const FirstAidDetails = ({ role }) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
 
   const { state } = useLocation();
-
   const htmlData = [
     ["input", "Title", "title", "text"],
     ["textarea", "Description", "description", 3000],
     ["input", "Link", "link", "text"],
-    ["input", "created at", "createdAt", "date"],
   ];
+  role == "admin" &&
+    htmlData.push(["input", "created at", "createdAt", "date"]);
 
   let getFirstAidData = async () => {
     let body = {
@@ -24,7 +30,7 @@ const FirstAidDetails = () => {
         _id: state,
       },
     };
-    let { aids } = await firstAids(body, "POST", "get");
+    let { aids } = await getFirstAids(body);
     setData(aids[0]);
     setLoading(false);
   };
@@ -102,7 +108,7 @@ const FirstAidDetails = () => {
                   <div aria-label="breadcrumb">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item">
-                        <Link to="/home/medicalRecord" state={state}>
+                        <Link to={`/${role}/medicalRecord`} state={state}>
                           <a>first aids</a>
                         </Link>
                       </li>
@@ -115,18 +121,20 @@ const FirstAidDetails = () => {
                     </ol>
                   </div>
                 </div>
-                <div className="col-md-4">
-                  <button
-                    id="editPat"
-                    className="btn btn-dark-red-f-gr"
-                    onClick={() => {
-                      editFirstAid();
-                    }}
-                  >
-                    <i className="las la-edit" />
-                    edit first aid
-                  </button>
-                </div>
+                {role == "admin" && (
+                  <div className="col-md-4">
+                    <button
+                      id="editPat"
+                      className="btn btn-dark-red-f-gr"
+                      onClick={() => {
+                        editFirstAid();
+                      }}
+                    >
+                      <i className="las la-edit" />
+                      edit first aid
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="section patient-details-section">
                 <div className="row">
@@ -145,19 +153,21 @@ const FirstAidDetails = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="col-sm-12">
-                        <div className="card">
-                          <button
-                            className="btn btn-red-f-gr"
-                            onClick={() => {
-                              firstAidDelete();
-                            }}
-                          >
-                            <i className="las la-trash" />
-                            delete first aid
-                          </button>
+                      {role == "admin" && (
+                        <div className="col-sm-12">
+                          <div className="card">
+                            <button
+                              className="btn btn-red-f-gr"
+                              onClick={() => {
+                                firstAidDelete();
+                              }}
+                            >
+                              <i className="las la-trash" />
+                              delete first aid
+                            </button>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                   <div className="col-sm-4">
@@ -165,6 +175,7 @@ const FirstAidDetails = () => {
                       files={data.files}
                       fieldName={"firstAid"}
                       id={state}
+                      role={role}
                     />
                   </div>
                 </div>

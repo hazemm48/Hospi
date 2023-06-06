@@ -2,22 +2,19 @@ import moment from "moment";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { reserve, users } from "../../adminAPI.js";
 import LoadingSpinner from "../../components/Loading.js";
 import manImg from "../../images/man.svg";
 
-const CreateReserve = () => {
+const CreateReserve = ({ role }) => {
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState();
   const [startDate, setStartDate] = useState();
   const [scheduleDay, setScheduleDay] = useState();
   const [fees, setFees] = useState("examin");
 
-  let navigate = useNavigate();
   const { state } = useLocation();
-
-  console.log(state);
 
   const isWeekday = (date) => {
     const day = date.getDay(date);
@@ -26,17 +23,21 @@ const CreateReserve = () => {
     return day == moment.weekdays().indexOf(weekDayIndex);
   };
 
-  const GetDetails = async (id) => {
+  const GetDetails = async () => {
+    console.log(state);
     let body = {
-      id: id,
+      filter: {
+        _id: state.id,
+      },
     };
     let user = await users(body);
-    setUserDetails(user.users);
+    console.log(user);
+    setUserDetails(user.users[0]);
     console.log(user.users);
     setScheduleDay(0);
   };
   useEffect(() => {
-    GetDetails(state.id);
+    GetDetails();
   }, []);
 
   const feesChange = (e) => {
@@ -57,12 +58,14 @@ const CreateReserve = () => {
     data.docName = userDetails.name;
     data.anotherPerson = JSON.parse(data.anotherPerson);
     data.speciality = userDetails.doctorInfo?.speciality;
-    if (data.email || data.phone) {
-      let user = await users({ email: data.email, phone: data.phone });
-      if (user.users.length > 0) {
-        data.patientId = user.users[0]._id;
-      }
+    let filter = {};
+    data.email && role == "admin" && (filter.email = data.email);
+    data.phone && role == "admin" && (filter.phone = data.phone);
+    let user = await users(filter);
+    if (user.users.length > 0) {
+      data.patientId = user.users[0]._id;
     }
+
     let body = {
       oper: "reserve",
       data,
@@ -74,6 +77,7 @@ const CreateReserve = () => {
     } else {
       alert(reserveData.message);
     }
+    setLoading(false);
     console.log(reserveData);
   };
 
@@ -84,222 +88,236 @@ const CreateReserve = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {loading ? (
         <LoadingSpinner />
-      ) : userDetails?.doctorInfo ? (
-        <div className="main-content">
-          <div className="container-fluid">
-            <div className="section patient-details-section">
-              <div className="card ">
-                <h3>{state.type} Reserve</h3>
-                <div className="">
-                  <div className="col ">
-                    <div className="mini-card text-center">
-                      <div className="card-header">
-                        <img
-                          className="rounded-circle"
-                          src={userDetails.image ? userDetails.image : manImg}
-                          loading="lazy"
-                        />
-                      </div>
-                      <div
-                        className="card-body row"
-                        style={{ justifyContent: "center" }}
-                      >
-                        <h3>{userDetails.name}</h3>
-                        <h4>{userDetails.doctorInfo.speciality}</h4>
-
-                        <div className="d-flex justify-content-center ">
-                          <Link
-                            to="/home/doctorDetails"
-                            state={userDetails._id}
-                            className="btn btn-dark-red-f-gr col-md-2"
-                            style={{
-                              margin: "0.3em",
-                            }}
-                            onClick={(e) => {}}
-                          >
-                            <i className="las la-edit" />
-                            doctor details
-                          </Link>
+      ) : (
+        userDetails?.doctorInfo && (
+          <div className="main-content">
+            <div className="container-fluid">
+              <div className="section patient-details-section">
+                <div className="card ">
+                  <h3>{state.type} Reserve</h3>
+                  <div className="">
+                    <div className="col ">
+                      <div className="mini-card text-center">
+                        <div className="card-header">
+                          <img
+                            className="rounded-circle"
+                            src={userDetails.image ? userDetails.image : manImg}
+                            loading="lazy"
+                          />
+                        </div>
+                        <div
+                          className="card-body row"
+                          style={{ justifyContent: "center" }}
+                        >
+                          <h3>{userDetails.name}</h3>
+                          <h4>{userDetails.doctorInfo.speciality}</h4>
+                          {role == "admin" ? (
+                            <div className="d-flex justify-content-center ">
+                              <Link
+                                to="/admin/doctorDetails"
+                                state={userDetails._id}
+                                className="btn btn-dark-red-f-gr col-md-2"
+                                style={{
+                                  margin: "0.3em",
+                                }}
+                                onClick={(e) => {}}
+                              >
+                                <i className="las la-edit" />
+                                doctor details
+                              </Link>
+                            </div>
+                          ) : (
+                            <h6 style={{ color: "grey" }}>
+                              {userDetails.doctorInfo?.bio}
+                            </h6>
+                          )}
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div
-                    id="editDet"
-                    className="col d-flex justify-content-center res"
-                  >
-                    <form id="form" method="post">
-                      <div className="mini-card">
-                        <div className="card-body">
-                          <div className="row justify-content-center">
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>patient name</label>
-                                <input
-                                  name="patName"
-                                  className="form-control"
-                                  required
-                                />
+                    <div
+                      id="editDet"
+                      className="col d-flex justify-content-center res"
+                    >
+                      <form id="form" method="post">
+                        <div className="mini-card">
+                          <div className="card-body">
+                            <div className="row justify-content-center">
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>patient name</label>
+                                  <input
+                                    name="patName"
+                                    className="form-control"
+                                    required
+                                  />
+                                </div>
                               </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>visit type</label>
-                                <select
-                                  className="selectpicker form-control form-select dropdown-toggle"
-                                  name="visitType"
-                                  id="vt"
-                                  required
-                                  data-live-search="true"
-                                  onChange={(e) => {
-                                    feesChange(e);
-                                  }}
-                                >
-                                  <option
-                                    selected
-                                    value="examination"
-                                    data="examin"
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>visit type</label>
+                                  <select
+                                    className="selectpicker form-control form-select dropdown-toggle"
+                                    name="visitType"
+                                    id="vt"
+                                    required
+                                    data-live-search="true"
+                                    onChange={(e) => {
+                                      feesChange(e);
+                                    }}
                                   >
-                                    Examination
-                                  </option>
-                                  <option value="follow up" data="followUp">
-                                    Follow Up
-                                  </option>
-                                </select>
+                                    <option
+                                      selected
+                                      value="examination"
+                                      data="examin"
+                                    >
+                                      Examination
+                                    </option>
+                                    <option value="follow up" data="followUp">
+                                      Follow Up
+                                    </option>
+                                  </select>
+                                </div>
                               </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>fees</label>
-                                <input
-                                  value={userDetails?.doctorInfo?.fees[fees]}
-                                  name="fees"
-                                  id="fees"
-                                  className="form-control"
-                                  required
-                                />
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>fees</label>
+                                  <input
+                                    value={userDetails?.doctorInfo?.fees[fees]}
+                                    name="fees"
+                                    id="fees"
+                                    readOnly={role == "admin" ? false : true}
+                                    className="form-control"
+                                    required
+                                  />
+                                </div>
                               </div>
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>day</label>
+                                  <select
+                                    className="form-control form-select dropdown-toggle"
+                                    id="day"
+                                    name="day"
+                                    required
+                                    onChange={(e) => {
+                                      setScheduleDay(e.target.selectedIndex);
+                                      setStartDate();
+                                    }}
+                                  >
+                                    {userDetails?.doctorInfo?.schedule.map(
+                                      (e) => {
+                                        return (
+                                          <option value={e.day}>{e.day}</option>
+                                        );
+                                      }
+                                    )}
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>date</label>
+                                  <DatePicker
+                                    placeholderText="choose date"
+                                    minDate={new Date()}
+                                    filterDate={isWeekday}
+                                    dateFormat="dd-MM-yyyy"
+                                    className="form-control"
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    required
+                                    name="date"
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>time</label>
+                                  <input
+                                    className="form-control"
+                                    value={time()}
+                                    disabled
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>another person</label>
+                                  <select
+                                    className="form-control form-select dropdown-toggle"
+                                    name="anotherPerson"
+                                    required
+                                  >
+                                    <option value={false}>no</option>
+                                    <option value={true}>yes</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>phone</label>
+                                  <input
+                                    name="phone"
+                                    className="form-control"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              {role == "admin" && (
+                                <>
+                                  <div className="col-md-4">
+                                    <div className="form-group">
+                                      <label>email</label>
+                                      <input
+                                        name="email"
+                                        className="form-control"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-md-4">
+                                    <div className="form-group">
+                                      <label>patient id</label>
+                                      <input
+                                        name="patientId"
+                                        className="form-control"
+                                      />
+                                    </div>
+                                  </div>
+                                </>
+                              )}
                             </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>day</label>
-                                <select
-                                  className="form-control form-select dropdown-toggle"
-                                  id="day"
-                                  name="day"
-                                  required
-                                  onChange={(e) => {
-                                    setScheduleDay(e.target.selectedIndex);
-                                    setStartDate();
+                            <div className="card-footer">
+                              <div className="d-flex justify-content-center">
+                                <button
+                                  id="submit"
+                                  type="button"
+                                  className="btn btn-dark-red-f-gr col-md-2"
+                                  onClick={(e) => {
+                                    setLoading(true);
+                                    submit();
                                   }}
                                 >
-                                  {userDetails?.doctorInfo?.schedule.map(
-                                    (e) => {
-                                      return (
-                                        <option value={e.day}>{e.day}</option>
-                                      );
-                                    }
-                                  )}
-                                </select>
+                                  Submit
+                                </button>
                               </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>date</label>
-                                <DatePicker
-                                  placeholderText="choose date"
-                                  minDate={new Date()}
-                                  filterDate={isWeekday}
-                                  dateFormat="dd-MM-yyyy"
-                                  className="form-control"
-                                  selected={startDate}
-                                  onChange={(date) => setStartDate(date)}
-                                  required
-                                  name="date"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>time</label>
-                                <input
-                                  className="form-control"
-                                  value={time()}
-                                  disabled
-                                  required
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>phone</label>
-                                <input
-                                  name="phone"
-                                  className="form-control"
-                                  required
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>email</label>
-                                <input name="email" className="form-control" />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>another person</label>
-                                <select
-                                  className="form-control form-select dropdown-toggle"
-                                  name="anotherPerson"
-                                  required
-                                >
-                                  <option value={false}>no</option>
-                                  <option value={true}>yes</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>patient id</label>
-                                <input
-                                  name="patientId"
-                                  className="form-control"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="card-footer">
-                            <div className="d-flex justify-content-center">
-                              <button
-                                id="submit"
-                                type="button"
-                                className="btn btn-dark-red-f-gr col-md-2"
-                                onClick={(e) => {
-                                  submit();
-                                }}
-                              >
-                                Submit
-                              </button>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </form>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ) : (
-        ""
+        )
       )}
-    </React.Fragment>
+    </>
   );
 };
 

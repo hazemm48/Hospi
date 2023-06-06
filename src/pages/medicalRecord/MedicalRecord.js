@@ -6,7 +6,7 @@ import LoadingSpinner from "../../components/Loading.js";
 import { PagenationResult } from "../../components/Pagenation.js";
 import record from "../../images/patient.png";
 
-const MedicalRecord = () => {
+const MedicalRecord = ({role}) => {
   const [loading, setLoading] = useState(false);
   const [length, setLength] = useState();
   const [data, setData] = useState([]);
@@ -77,7 +77,7 @@ const MedicalRecord = () => {
             </div>
           </div>
           <div className="buttons-wrapper ml-auto">
-            <Link to="/home/addMedicalRecord" state={state}>
+            <Link to={`/${role}/addMedicalRecord`} state={state}>
               <button className="btn btn-dark-red-f-gr">
                 <i className="las la-plus-circle" />
                 add a new medical record
@@ -101,7 +101,7 @@ const MedicalRecord = () => {
                             <div className="card-img-top">
                               <img src={record} loading="lazy" />
                               <Link
-                                to={"/home/medicalRecordDetails"}
+                                to={`/${role}/medicalRecordDetails`}
                                 state={data._id}
                                 className="view-more"
                               >

@@ -1,18 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { uploadFile, users } from "../adminAPI";
 import manImg from "../images/man.svg";
 import moment from "moment";
-import LoadingSpinner from "./Loading.js";
 
 const CardView = (props) => {
-  const [users, setUsers] = useState(props.data);
+  const [users, setUsers] = useState([]);
+
+  const favDoc = (e, id) => {
+    let label = e.target.closest("div").querySelector("label");
+    if (!label.classList.contains("active")) {
+      label.classList.add("active");
+    } else {
+      label.classList.remove("active");
+    }
+    props.addDocFavFun(id);
+  };
+
+  useEffect(() => {
+    setUsers(props.data);
+  }, []);
+  console.log(props.role);
 
   return (
     <div id="cv" className="section patients-card-view">
       <div className="row">
-        {users &&
-          users.map((user) => {
+        {users.length > 0 &&
+          users.map((user, i) => {
+            let cl = "";
+            console.log(props.favDocs);
+
+            if (props.favDocs?.includes(user._id)) {
+              cl = "active";
+            }
             return (
               <div className="col-md-4">
                 <div className="card">
@@ -23,13 +42,26 @@ const CardView = (props) => {
                         src={user.image ? user.image : manImg}
                         loading="lazy"
                       />
-                      <Link
-                        to={`/home/${props.type}Details`}
-                        state={user._id}
-                        className="view-more"
-                      >
-                        view profile
-                      </Link>
+                      {props.role == "admin" ? (
+                        <Link
+                          to={`/${props.role}/${props.type}Details`}
+                          state={user._id}
+                          className="view-more"
+                        >
+                          view profile
+                        </Link>
+                      ) : (
+                        <div className="float-right">
+                          <label
+                            className={`heart ${cl}`}
+                            onClick={(e) => {
+                              favDoc(e, { id: user._id });
+                            }}
+                          >
+                            ❤
+                          </label>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="card-body">
@@ -45,12 +77,16 @@ const CardView = (props) => {
                           ? user.doctorInfo?.speciality
                           : user.email}
                       </p>
-                      <label className="text-muted">date of birth</label>
+                      <label className="text-muted">
+                        {props.type == "doctor" ? "schedule" : "date of birth"}{" "}
+                      </label>
                       <p>
-                        {user[`${props.type}Info`]?.birthDate &&
-                          moment(user[`${props.type}Info`].birthDate).format(
-                            "DD/MM/YYYY"
-                          )}
+                        {props.type == "doctor"
+                          ? user.scheduleDays.join(" , ")
+                          : user[`${props.type}Info`]?.birthDate &&
+                            moment(user[`${props.type}Info`].birthDate).format(
+                              "DD/MM/YYYY"
+                            )}
                       </p>
                       <label className="text-muted">gender</label>
                       <p>{user.gender}</p>
@@ -59,8 +95,8 @@ const CardView = (props) => {
                   {props.type == "doctor" && (
                     <div className="card-footer">
                       <Link
-                        to="/home/addReserve"
-                        state={{id:user._id,type:"doctor"}}
+                        to={`/${props.role}/addReserve`}
+                        state={{ id: user._id, type: "doctor" }}
                         className="float-right"
                       >
                         <button className="btn btn-dark-red-f-gr">

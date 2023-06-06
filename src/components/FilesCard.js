@@ -1,6 +1,4 @@
-import moment from "moment-timezone";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { removeFile, uploadFile } from "../adminAPI.js";
 import LoadingSpinner from "./Loading.js";
 
@@ -25,11 +23,7 @@ const FilesCard = (props) => {
     let uploaded = await uploadFile(formData, "uploadFiles");
     console.log(uploaded);
     if (uploaded.message == "done") {
-      if (props.fieldName == "reserves") {
-        setFiles(uploaded.report.files);
-      } else {
-        setFiles(uploaded.files);
-      }
+      setFiles(uploaded.files);
       setLoading(false);
     }
   };
@@ -57,26 +51,30 @@ const FilesCard = (props) => {
       <div className="card-header">
         <h5>
           files
-          <input
-            type="file"
-            accept="image/*,application/pdf"
-            multiple
-            id="fileupload"
-            style={{ display: "none" }}
-            onChange={(e) => {
-              setLoading(true);
-              upload(e);
-            }}
-          />
-          <button
-            className="btn btn-dark-red-f btn-sm"
-            onClick={() => {
-              document.getElementById("fileupload").click();
-            }}
-          >
-            <i className="las la-file-medical" />
-            add file
-          </button>
+          {props.role == "admin" && (
+            <>
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                multiple
+                id="fileupload"
+                style={{ display: "none" }}
+                onChange={(e) => {
+                  setLoading(true);
+                  upload(e);
+                }}
+              />
+              <button
+                className="btn btn-dark-red-f btn-sm"
+                onClick={() => {
+                  document.getElementById("fileupload").click();
+                }}
+              >
+                <i className="las la-file-medical" />
+                add file
+              </button>
+            </>
+          )}
         </h5>
       </div>
 
@@ -92,20 +90,22 @@ const FilesCard = (props) => {
                   <a href={e.path} target="_blank">
                     {e.name}
                   </a>
-                  <div className="float-right">
-                    <div className="action-buttons no-display">
-                      <button
-                        className="btn btn-sm btn-dark-red-f"
-                        data-id={e.path}
-                        onClick={() => {
-                          setLoading(true);
-                          deleteFiles(e.path);
-                        }}
-                      >
-                        <i className="las la-trash" />
-                      </button>
+                  {props.role == "admin" && (
+                    <div className="float-right">
+                      <div className="action-buttons no-display">
+                        <button
+                          className="btn btn-sm btn-dark-red-f"
+                          data-id={e.path}
+                          onClick={() => {
+                            setLoading(true);
+                            deleteFiles(e.path);
+                          }}
+                        >
+                          <i className="las la-trash" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               );
             })}

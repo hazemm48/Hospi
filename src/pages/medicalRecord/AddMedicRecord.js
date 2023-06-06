@@ -15,6 +15,7 @@ const AddMedicRecord = () => {
   const [pageView, setPageView] = useState(false);
 
   let { state } = useLocation();
+  console.log(state);
   let navigate = useNavigate();
 
   let data = [
@@ -47,8 +48,8 @@ const AddMedicRecord = () => {
         body[pair[0]] = pair[1];
       }
     }
-    console.log(body);
     body.patientId = state;
+    console.log(body);
     let files = body.file;
     delete body.file;
 
@@ -57,7 +58,7 @@ const AddMedicRecord = () => {
     alert(add.message);
     if (add.message == "added") {
       if (addFiles(files, add.added[0]._id)) {
-        navigate("/home/medicalRecord", { state: state });
+        navigate(-1);
       }
     } else {
       setLoading(false);

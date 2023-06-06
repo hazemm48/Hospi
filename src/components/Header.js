@@ -1,9 +1,9 @@
 import React from "react";
-import { useNavigate,Link } from "react-router-dom";
-import logo from '../images/hospi 2.png'
-import manImg from '../images/man.svg'
+import { useNavigate, Link } from "react-router-dom";
+import logo from "../images/hospi 2.png";
+import manImg from "../images/man.svg";
 
-const Header = (props) => {
+const Header = ({ user }) => {
   let navigate = useNavigate();
 
   const dropMenu = () => {
@@ -21,13 +21,18 @@ const Header = (props) => {
 
   const logout = () => {
     delete localStorage.token;
+    delete localStorage.role;
+    delete localStorage.apiMedicToken;
     navigate("/");
   };
 
   return (
     <header>
       <nav className="navbar navbar-expand-lg shadow-sm fixed-top">
-        <Link to="/home/dashboard" className="navbar-brand">
+        <Link
+          to={`/${user.role}/${user.role == "admin" ? "dashboard" : "home"}`}
+          className="navbar-brand"
+        >
           <img src={logo} />
           <span>HOSPI</span>
         </Link>
@@ -50,9 +55,9 @@ const Header = (props) => {
               >
                 <img
                   className="rounded-circle"
-                  src={manImg}
+                  src={user.image ? user.image : manImg}
                 />
-                <span className="d">{props.name}</span>
+                <span className="d">{user.name}</span>
               </a>
               <div className="dropdown">
                 <div
@@ -60,7 +65,7 @@ const Header = (props) => {
                   className="dropdown-menu shadow-lg profile-dropdown-menu"
                   aria-labelledby="profile-dropdown"
                 >
-                  <Link to="/home/settings" className="dropdown-item">
+                  <Link to={`/${user.role}/settings`} className="dropdown-item">
                     <i className="las la-cog mr-2" />
                     settings
                   </Link>

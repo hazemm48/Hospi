@@ -5,7 +5,7 @@ import manImg from "../images/man.svg";
 import moment from "moment";
 import LoadingSpinner from "../components/Loading.js";
 
-const Dashboard = (props) => {
+const Dashboard = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [allUsers, setAllUsers] = useState();
   const [patients, setPatients] = useState();
@@ -14,22 +14,39 @@ const Dashboard = (props) => {
   const [length, setLength] = useState();
   const [reserveUsers, setReserveUsers] = useState();
 
+  let role = user.role
   const GetDetails = async () => {
     let body = {
-      role: "all",
-      sort: "-createdAt",
+      filter: {},
+      sort: "createdAt:-1",
     };
     let res = await users(body);
     let user = res.users;
     setAllUsers(user);
     let pats = user.filter((e) => {
-      return e.role === "patient";
+      return e.role == "patient";
     });
     let docs = user.filter((e) => {
-      return e.role === "doctor";
+      return e.role == "patient";
+    });
+    let docObj ={
+      count: docs.length,
+      today:[]
+    }
+    user.map((e) => {
+      let today = moment()
+      .format("dddd")
+      .toLocaleLowerCase();;
+      if (e.role == "doctor") {
+        e.doctorInfo.schedule.map((o) => {
+          if (o.day == today) {
+            docObj.today.push(e);
+          }
+        });
+      }
     });
     let admins = user.filter((e) => {
-      return e.role === "admin";
+      return e.role == "admin";
     });
     let resBody = {
       oper: "get",
@@ -48,7 +65,7 @@ const Dashboard = (props) => {
     setLength(reserves.length);
     setAdmins(admins);
     setPatients(pats);
-    setDoctors(docs);
+    setDoctors(docObj);
     setLoading(false);
   };
 
@@ -81,7 +98,7 @@ const Dashboard = (props) => {
                           <h3>
                             Hello,
                             <span style={{ color: "#0466c8" }}>
-                              {props.name}
+                              {user.name}
                             </span>
                           </h3>
                           <h5>Welcome to your dashboard</h5>
@@ -100,7 +117,7 @@ const Dashboard = (props) => {
                         <div className="col-md-4">
                           <i className="las la-stethoscope la-3x align-self-center" />
                           <p>total doctors</p>
-                          <h4>{doctors?.length ? doctors.length : "0"}</h4>
+                          <h4>{doctors?.count}</h4>
                         </div>
                         <div className="col-md-4">
                           <i className="las la-calendar-check la-3x align-self-center" />
@@ -116,7 +133,7 @@ const Dashboard = (props) => {
             <div className="section functionality-section">
               <div className="section-content">
                 <div className="card-deck">
-                  <Link to="/home/addDoctor" className="card text-center">
+                  <Link to={"/admin/addDoctor"} className="card text-center">
                     <div className="card-title">
                       <div className="icon-wrapper">
                         <i className="las la-user-md" />
@@ -126,7 +143,7 @@ const Dashboard = (props) => {
                       <p>add a doctor</p>
                     </div>
                   </Link>
-                  <Link to="/home/addPatient" className="card text-center">
+                  <Link to="/admin/addPatient" className="card text-center">
                     <div className="card-title">
                       <div className="icon-wrapper">
                         <i className="las la-user-plus" />
@@ -136,8 +153,8 @@ const Dashboard = (props) => {
                       <p>add a patient</p>
                     </div>
                   </Link>
-                  {props.email == "admin@hospi.com" ? (
-                    <Link to="/home/addAdmin" className="card text-center">
+                  {user.email == "admin@hospi.com" && (
+                    <Link to="/admin/addAdmin" className="card text-center">
                       <div className="card-title">
                         <div className="icon-wrapper">
                           <i className="las la-user-lock" />
@@ -147,8 +164,6 @@ const Dashboard = (props) => {
                         <p>add an admin</p>
                       </div>
                     </Link>
-                  ) : (
-                    ""
                   )}
                 </div>
               </div>
@@ -191,7 +206,7 @@ const Dashboard = (props) => {
                         </div>
                         <div className="col-md-6">
                           <i className="las la-stethoscope la-2x mb-1" />
-                          <h4 className="mb-1">{doctors?.length}</h4>
+                          <h4 className="mb-1">{doctors?.count}</h4>
                           <p>total doctors</p>
                         </div>
                         <div className="col-md-6">
@@ -246,7 +261,7 @@ const Dashboard = (props) => {
                                 </td>
                                 <td>
                                   <Link
-                                    to="/home/patientDetails"
+                                    to="/admin/patientDetails"
                                     state={pat._id}
                                     className="btn btn-sm"
                                   >
@@ -260,7 +275,7 @@ const Dashboard = (props) => {
                       </table>
                     </div>
                     <div className="card-footer">
-                      <Link to="/home/patients" className="view-more">
+                      <Link to="/admin/patients" className="view-more">
                         more
                         <i className="las la-angle-right" />
                       </Link>
@@ -270,13 +285,13 @@ const Dashboard = (props) => {
                 <div className="card-deck">
                   <div className="card">
                     <div className="card-header">
-                      <h5>doctors lists</h5>
+                      <h5>today's doctors</h5>
                     </div>
                     <div className="card-body">
                       <table className="table table-borderless table-hover table-responsive-md">
                         <tbody>
                           {doctors
-                            ? doctors.slice(0, 5).map((doc) => {
+                            && doctors.today.slice(0, 5).map((doc) => {
                                 return (
                                   <tr>
                                     <td>
@@ -300,7 +315,7 @@ const Dashboard = (props) => {
                                     </td>
                                     <td className="text-right">
                                       <Link
-                                        to="/home/addReserve"
+                                        to="/admin/addReserve"
                                         state={{ id: doc._id, type: "doctor" }}
                                         className="btn btn-dark-red-f btn-sm"
                                       >
@@ -309,7 +324,7 @@ const Dashboard = (props) => {
                                     </td>
                                     <td>
                                       <Link
-                                        to="/home/doctorDetails"
+                                        to="/admin/doctorDetails"
                                         state={doc._id}
                                         className="btn btn-sm"
                                       >
@@ -318,13 +333,12 @@ const Dashboard = (props) => {
                                     </td>
                                   </tr>
                                 );
-                              })
-                            : ""}
+                              })}
                         </tbody>
                       </table>
                     </div>
                     <div className="card-footer">
-                      <Link to="/home/doctors" className="view-more">
+                      <Link to="/admin/doctors" className="view-more">
                         more
                         <i className="las la-angle-right" />
                       </Link>
@@ -338,7 +352,7 @@ const Dashboard = (props) => {
                       <table className="table table-borderless table-hover table-responsive-md">
                         <tbody>
                           {reserveUsers
-                            ? reserveUsers.map((reserve) => {
+                            && reserveUsers.map((reserve) => {
                                 return (
                                   <tr>
                                     <td>
@@ -379,7 +393,7 @@ const Dashboard = (props) => {
                                     </td>
                                     <td>
                                       <Link
-                                        to="/home/reserveDetails"
+                                        to="/admin/reserveDetails"
                                         state={reserve._id}
                                         className="btn btn-sm"
                                       >
@@ -388,13 +402,12 @@ const Dashboard = (props) => {
                                     </td>
                                   </tr>
                                 );
-                              })
-                            : ""}
+                              })}
                         </tbody>
                       </table>
                     </div>
                     <div className="card-footer">
-                      <Link to="/home/reservations" className="view-more">
+                      <Link to="/admin/reservations" className="view-more">
                         more
                         <i className="las la-angle-right" />
                       </Link>

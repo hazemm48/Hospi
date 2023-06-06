@@ -106,7 +106,7 @@ const Calendar = (props) => {
 
   const handleEventClick = (args) => {
     let state = args.event.id;
-    navigate("/home/reserveDetails", {
+    navigate(`/${props.role}/reserveDetails`, {
       state,
     });
   };

@@ -44,12 +44,12 @@ const Home = () => {
 
     let user = res.users;
     console.log(user);
-
-    setUser({
-      name: user.name,
-      email: user.email,
-      id: user._id,
-    });
+    if (user.role == "admin") {
+      setUser(user);
+    } else {
+      alert("not authorized");
+      navigate(-1);
+    }
     setLoading(false);
   };
 
@@ -69,32 +69,36 @@ const Home = () => {
       ) : (
         userDet && (
           <>
-            <Header name={userDet.name} email={userDet.email} id={userDet.id} />
+            <Header user={userDet} />
             <main>
-              <SideNav />
+              <SideNav role={"admin"} />
               <Routes>
                 <Route
                   exact
                   path="/dashboard"
-                  element={
-                    <Dashboard name={userDet.name} email={userDet.email} />
-                  }
+                  element={<Dashboard user={userDet} />}
                 />
                 <Route exact path="/addPatient" element={<AddPatient />} />
-                <Route exact path="/patients" element={<Patients />} />
+                <Route
+                  exact
+                  path="/patients"
+                  element={<Patients role={userDet.role} />}
+                />
                 <Route
                   exact
                   path="/patientDetails"
-                  element={<PatientDetails />}
+                  element={<PatientDetails role={userDet.role} />}
                 />
-                <Route exact path="/addDoctor" element={<AddDoctor />} />
-                <Route exact path="/doctors" element={<Doctors />} />
+                <Route
+                  exact
+                  path="/doctors"
+                  element={<Doctors role={userDet.role} />}
+                />
                 <Route
                   exact
                   path="/doctorDetails"
-                  element={<DoctorDetails />}
+                  element={<DoctorDetails role={userDet.role} />}
                 />
-                <Route exact path="/addRoom" element={<AddRoom />} />
                 <Route exact path="/rooms" element={<Rooms />} />
                 <Route exact path="/roomDetails" element={<RoomDetails />} />
                 <Route
@@ -105,33 +109,48 @@ const Home = () => {
                 <Route
                   exact
                   path="/medicalRecord"
-                  element={<MedicalRecord />}
+                  element={<MedicalRecord role={userDet.role} />}
                 />
                 <Route
                   exact
                   path="/medicalRecordDetails"
-                  element={<MedicRecordDetails />}
+                  element={<MedicRecordDetails role={userDet.role} />}
                 />
-                <Route exact path="/addReserve" element={<AddReserve />} />
+                <Route
+                  exact
+                  path="/addReserve"
+                  element={<AddReserve role={userDet.role} />}
+                />
                 <Route
                   exact
                   path="/reservations"
-                  element={<Calendar type={"res"} />}
+                  element={<Calendar type={"res"} role={userDet.role} />}
                 />
                 <Route
                   exact
                   path="/reserveDetails"
-                  element={<ReserveDetails />}
+                  element={<ReserveDetails role={userDet.role} />}
                 />
-                <Route exact path="/addFirstAid" element={<AddFirstAid />} />
-                <Route exact path="/firstAid" element={<FirstAid />} />
+                <Route
+                  exact
+                  path="/firstAid"
+                  element={<FirstAid role={userDet.role} />}
+                />
                 <Route
                   exact
                   path="/firstAidDetails"
-                  element={<FirstAidDetails />}
+                  element={<FirstAidDetails role={userDet.role} />}
                 />
-                <Route exact path="/laboratory" element={<Lab />} />
-                <Route exact path="/radiation" element={<Rad />} />
+                <Route
+                  exact
+                  path="/laboratory"
+                  element={<Lab role={userDet.role} />}
+                />
+                <Route
+                  exact
+                  path="/radiation"
+                  element={<Rad role={userDet.role} />}
+                />
                 <Route exact path="/notes" element={<Notes />} />
                 <Route exact path="/general" element={<General />} />
                 <Route exact path="/categories" element={<Categories />} />
@@ -144,17 +163,20 @@ const Home = () => {
                 <Route
                   exact
                   path="/settings"
-                  element={
-                    <Settings
-                      name={userDet.name}
-                      email={userDet.email}
-                      id={userDet.id}
-                    />
-                  }
+                  element={<Settings user={userDet} role={userDet.role} />}
                 />
 
                 {userDet.email == "admin@hospi.com" && (
-                  <Route exact path="/addAdmin" element={<AddAdmin />} />
+                  <>
+                    <Route
+                      exact
+                      path="/addFirstAid"
+                      element={<AddFirstAid />}
+                    />
+                    <Route exact path="/addRoom" element={<AddRoom />} />
+                    <Route exact path="/addDoctor" element={<AddDoctor />} />
+                    <Route exact path="/addAdmin" element={<AddAdmin />} />
+                  </>
                 )}
               </Routes>
             </main>

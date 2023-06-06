@@ -15,7 +15,7 @@ import LoadingSpinner from "../../components/Loading.js";
 import NotesCard from "../../components/NotesCard.js";
 import Calendar from "../Calender.js";
 
-const PatientDetails = () => {
+const PatientDetails = ({ role }) => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
   const [calView, setCalView] = useState(false);
@@ -56,7 +56,7 @@ const PatientDetails = () => {
       [
         "-dark",
         () => {
-          navigate("/home/medicalRecord", {
+          navigate("/admin/medicalRecord", {
             state: id.state,
           });
         },
@@ -84,17 +84,20 @@ const PatientDetails = () => {
 
   const GetDetails = async () => {
     let body = {
-      id: id.state,
+      filter: {
+        _id: id.state,
+      },
     };
     let user = await users(body);
     console.log(user);
-    if(!user.users){
-      alert("patient not found")
-      navigate(-1)
+    if (!user.users) {
+      alert("patient not found");
+      navigate(-1);
+    } else {
+      setState(user.users[0]);
+      createHtmlData(user.users[0]);
+      setLoading(false);
     }
-    setState(user.users);
-    createHtmlData(user.users);
-    setLoading(false);
   };
 
   const userDelete = async () => {
@@ -105,7 +108,7 @@ const PatientDetails = () => {
       let deleted = await deleteUser(body);
       alert(deleted.message);
       if (deleted.message == "user deleted") {
-        navigate("/home/patients");
+        navigate("/admin/patients");
       }
     }
   };
@@ -145,6 +148,7 @@ const PatientDetails = () => {
   };
 
   const resetPass = async () => {
+    console.log(state);
     if (window.confirm("Are you sure you want to reset user password")) {
       let body = {
         id: state._id,
@@ -168,6 +172,7 @@ const PatientDetails = () => {
               state && (
                 <>
                   <DetailsHeader
+                    role={role}
                     name={state.name}
                     type={"patient"}
                     updateUserDetails={updateUserDetails}
@@ -247,6 +252,7 @@ const PatientDetails = () => {
                       <div className="col-md-4">
                         <NotesCard id={state._id} />
                         <FilesCard
+                          role={role}
                           files={state.files}
                           id={state._id}
                           fieldName={"users"}

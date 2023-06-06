@@ -68,4 +68,43 @@ main .specialists-table-view .table tbody tr:focus {
   }
 }
 
+.heartIn {
+  position: absolute;
+  left: -100vw;
+}
+
+.heart {
+  color: #aab8c2;
+  cursor: pointer;
+  font-size: 2em;
+  align-self: center;  
+  transition: color 0.2s ease-in-out;
+}
+
+.heart:hover {
+  color: grey;
+}
+
+.heart::selection {
+  color: none;
+  background: transparent;
+}
+
+.heart::moz-selection {
+  color: none;
+  background: transparent;
+}
+
+.heart.active {
+  color: #e2264d;
+  will-change: font-size;
+  animation: heart 0.4s cubic-bezier(.17, .89, .32, 1.49);
+}
+
+
+
+@keyframes heart {0%, 17.5% {font-size: 0;}}
+
+
+
 /*# sourceMappingURL=specialists.css.map */

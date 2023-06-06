@@ -47,6 +47,7 @@ const Rooms = () => {
     srchFilter && (body.filter = srchFilter);
 
     let room = await rooms(body, "POST", "get");
+    console.log(room);
     setRoomList(room.room);
     setLength(room.length);
     setLoading(false);
@@ -58,7 +59,7 @@ const Rooms = () => {
   }, [srchFilter]);
 
   let GoToDoc = (e) => {
-    navigate("/home/DoctorDetails", {
+    navigate("/admin/DoctorDetails", {
       state: e.target.value,
     });
   };
@@ -78,7 +79,7 @@ const Rooms = () => {
           />
           <Search search={setSrchFilter} type={"room"} />
           <div className="buttons-wrapper ml-auto">
-            <Link to="/home/addRoom">
+            <Link to="/admin/addRoom">
               <button className="btn btn-dark-red-f-gr">
                 <i className="las la-plus-circle" />
                 add a new room
@@ -141,11 +142,10 @@ const Rooms = () => {
                           })}
                           <td>
                             <Link
-                              to={"/home/roomDetails"}
+                              to={"/admin/roomDetails"}
                               state={r._id}
                               className="view-more btn btn-sm btn-dark-red-f"
                             >
-                              {" "}
                               view room
                             </Link>
                           </td>
