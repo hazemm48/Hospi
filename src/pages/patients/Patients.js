@@ -50,7 +50,7 @@ const Patients = ({ role }) => {
     };
     srchFilter && (body.filter = { ...body.filter, ...srchFilter });
     let user = await users(body);
-    setLength(user.length);
+    setLength(user.count);
     setPatients(user.users);
     setLoading(false);
   };
