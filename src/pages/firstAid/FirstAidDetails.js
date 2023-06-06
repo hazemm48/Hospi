@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  addUser,
   firstAids,
   getFirstAids,
-  rooms,
-  uploadFile,
 } from "../../adminAPI.js";
 import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
@@ -68,7 +65,7 @@ const FirstAidDetails = ({ role }) => {
       let deleted = await firstAids(body, "DELETE");
       alert(deleted.message);
       if (deleted.message == "deleted") {
-        navigate("/home/firstAid");
+        navigate(-1);
       }
     }
   };
@@ -108,7 +105,7 @@ const FirstAidDetails = ({ role }) => {
                   <div aria-label="breadcrumb">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item">
-                        <Link to={`/${role}/medicalRecord`} state={state}>
+                        <Link to={`/${role}/firstAid`} state={state}>
                           <a>first aids</a>
                         </Link>
                       </li>
