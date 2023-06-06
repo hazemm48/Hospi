@@ -1,15 +1,15 @@
 import CryptoJS from "crypto-js";
 
 let computedHash = CryptoJS.HmacMD5(
-  process.env.apiMedicBASE_URL,
-  process.env.apiMedicSecret_key
+  process.env.REACT_APP_AM_BASE_URL,
+  process.env.REACT_APP_AM_Secret_key
 );
 let computedHashString = computedHash.toString(CryptoJS.enc.Base64);
 
-let uri = process.env.apiMedic_key + ":" + computedHashString;
+let uri = process.env.REACT_APP_AM_key + ":" + computedHashString;
 
 export const apiMedicLogin = async () => {
-  let data = await fetch(process.env.apiMedicBASE_URL, {
+  let data = await fetch(process.env.REACT_APP_AM_BASE_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -24,9 +24,9 @@ export const apiMedicLogin = async () => {
 
 export const mainAPi = async (url, body) => {
   let data = await fetch(
-    `${process.env.apiMedicPriaid_url}/${url}?token=${
+    `${process.env.REACT_APP_AM_Priaid_url}/${url}?token=${
       localStorage.apiMedicToken
-    }&language=${process.env.apiMedicLanguage}${body ? body : ""}`,
+    }&language=${process.env.REACT_APP_AM_Language}${body ? body : ""}`,
     {
       method: "GET",
     }
