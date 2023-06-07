@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Dashboard from "../pages/Dashboard.js";
 import Header from "../components/Header.js";
@@ -33,6 +33,7 @@ import Test from "./test.js";
 import SymptomChecker from "./symptomChecker/SymptomChecker.js";
 import LoadingSpinner from "../components/Loading.js";
 import LoginTest from "./test.js";
+import NotFoundPage from "./NotFoundPage.js";
 
 const Home = () => {
   const [userDet, setUser] = useState();
@@ -48,8 +49,7 @@ const Home = () => {
     if (user.role == "admin") {
       setUser(user);
     } else {
-      alert("not authorized");
-      navigate(-1);
+      navigate("/notAuthorized");
     }
     setLoading(false);
   };
@@ -179,6 +179,7 @@ const Home = () => {
                     <Route exact path="/addAdmin" element={<AddAdmin />} />
                   </>
                 )}
+                <Route path="*" element={<Navigate to="/notFound" replace />} />
               </Routes>
             </main>
           </>

@@ -43,7 +43,7 @@ const Login = () => {
         localStorage.setItem("role", data.role);
         navigate("/doctor/home");
       } else {
-        alert("not authorized");
+        navigate('/notAuthorized')
       }
     } else {
       alert(data.message);

@@ -1,5 +1,5 @@
-import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
-import React, {useEffect, useState } from "react";
+import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header.js";
 import SideNav from "../components/SideNav.js";
 import Doctors from "../pages/doctors/Doctors.js";
@@ -33,8 +33,7 @@ const PatientHome = () => {
     if (user.role == "patient") {
       setUserDet(user);
     } else {
-      alert("not authorized");
-      navigate(-1);
+      navigate("/notAuthorized");
     }
     setLoading(false);
   };
@@ -59,7 +58,11 @@ const PatientHome = () => {
             <main>
               <SideNav role={"patient"} />
               <Routes>
-                <Route exact path="/home" element={<HomePage user={userDet} />} />
+                <Route
+                  exact
+                  path="/home"
+                  element={<HomePage user={userDet} />}
+                />
                 <Route
                   path="doctors"
                   element={
@@ -133,13 +136,9 @@ const PatientHome = () => {
                 <Route
                   exact
                   path="/settings"
-                  element={
-                    <Settings
-                      user={userDet}
-                      role={userDet.role}
-                    />
-                  }
+                  element={<Settings user={userDet} role={userDet.role} />}
                 />
+                <Route path="*" element={<Navigate to="/notFound" replace />} />
               </Routes>
             </main>
           </>
