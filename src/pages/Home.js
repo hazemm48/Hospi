@@ -32,6 +32,7 @@ import Lab from "./laboratory/Lab.js";
 import Test from "./test.js";
 import SymptomChecker from "./symptomChecker/SymptomChecker.js";
 import LoadingSpinner from "../components/Loading.js";
+import LoginTest from "./test.js";
 
 const Home = () => {
   const [userDet, setUser] = useState();
@@ -154,7 +155,7 @@ const Home = () => {
                 <Route exact path="/notes" element={<Notes />} />
                 <Route exact path="/general" element={<General />} />
                 <Route exact path="/categories" element={<Categories />} />
-                {/* <Route exact path="/test" element={<Test />} /> */}
+                {/* <Route exact path="/test" element={<LoginTest />} /> */}
                 <Route
                   exact
                   path="/symptomChecker"

@@ -5,6 +5,7 @@ import Login from "./pages/Login.js";
 import React from "react";
 import PatientHome from "./patientPages/PatientHome.js";
 import DoctorHome from "./doctorPages/doctorHome.js";
+import LoginTest from "./pages/test.js";
 
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
       <Route path="/admin/*" element={<Home />} />
       <Route path="/patient/*" element={<PatientHome />} />
       <Route path="/doctor/*" element={<DoctorHome />} />
+      <Route path="/test/*" element={<LoginTest />} />
     </Routes>
   );
 };

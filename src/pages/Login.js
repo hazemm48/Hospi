@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Link, redirect, useNavigate } from "react-router-dom";
-import { login, navDetails } from "../../src/adminAPI";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../images/hospi.png";
-import logo1 from "../images/hospi 1.png";
 import LoadingSpinner from "../components/Loading.js";
+import { login } from "../adminAPI.js";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -19,13 +18,15 @@ const Login = () => {
     }
   }, []);
 
-  const validate = async () => {
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-    let body = {
-      email: email,
-      password: password,
-    };
+  const signIn = async () => {
+    let formEl = document.forms.signInForm;
+    let formData = new FormData(formEl);
+
+    let body = {};
+    for (const pair of formData.entries()) {
+      body[pair[0]] = pair[1];
+    }
+
     let data = await login(body);
     console.log(data);
     if (data.message == "welcome") {
@@ -50,50 +51,128 @@ const Login = () => {
     setLoading(false);
   };
 
+  useLayoutEffect(() => {
+    document.querySelector("body").style.background = "#0466c8";
+    const sign_in_btn = document.querySelector("#sign-in-btn");
+    const sign_up_btn = document.querySelector("#sign-up-btn");
+    const container = document.querySelector(".login");
+
+    sign_up_btn.addEventListener("click", () => {
+      container.classList.add("sign-up-mode");
+    });
+
+    sign_in_btn.addEventListener("click", () => {
+      container.classList.remove("sign-up-mode");
+    });
+  }, []);
+
   return (
-    <React.Fragment>
+    <div className="login">
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <form className="form-signin text-center">
-          <img className="mb-4" src={logo} alt="" width={160} height={160} />
-          <label htmlFor="inputEmail" className="sr-only">
-            Email address
-          </label>
-          <input
-            type="email"
-            id="email"
-            className="form-control"
-            placeholder="Email address"
-            required
-            autofocus
-            defaultValue="admin@hospi.com"
-          />
-          <label htmlFor="inputPassword" className="sr-only">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="form-control"
-            placeholder="Password"
-            required
-            defaultValue="Ha123"
-          />
-          <button
-            className="btn btn-lg btn-primary btn-block"
-            type="button"
-            onClick={() => {
-              setLoading(true);
-              validate();
-            }}
-          >
-            Sign in
-          </button>
-          <p className="mt-5 mb-3 text-muted">© HOSPI</p>
-        </form>
+        <>
+          <div className="forms-container">
+            <div className="signin-signup">
+              <form id="signInForm" className="sign-in-form">
+                <h2 className="title">Sign in</h2>
+                <div className="input-field">
+                  <i className="las la-user-circle" />
+                  <input
+                    name="email"
+                    type="text"
+                    placeholder="E-mail"
+                    defaultValue="admin@hospi.com"
+                  />
+                </div>
+                <div className="input-field">
+                  <i className="las la-key" />
+                  <input
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                    defaultValue="Ha123"
+                  />
+                </div>
+                <input
+                  type="submit"
+                  defaultValue="Login"
+                  className="btn solid"
+                  onClick={() => {
+                    setLoading(true);
+                    signIn();
+                  }}
+                />
+                {/* <p className="social-text">Or Sign in with social platforms</p>
+                <div className="social-media">
+                  <a href="#" className="social-icon">
+                    <i className="las la-facebook" />
+                  </a>
+                  <a href="#" className="social-icon">
+                    <i className="las la-google-plus" />
+                  </a>
+                </div> */}
+              </form>
+              <form id="signUpForm" className="sign-up-form">
+                <h2 className="title">Sign up</h2>
+                <div className="input-field">
+                  <i className="las la-envelope" />
+                  <input name="email" type="email" placeholder="Email" />
+                </div>
+                <div className="input-field">
+                  <i className="las la-key" />
+                  <input
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                  />
+                </div>
+                <div className="input-field">
+                  <i className="las la-calendar" />
+                  <input
+                    name="birthDate"
+                    type="date"
+                    placeholder="Birth Date"
+                  />
+                </div>
+                <input type="submit" className="btn" defaultValue="Sign up" />
+                {/* <p className="social-text">Or Sign up with social platforms</p>
+                <div className="social-media">
+                  <a href="#" className="social-icon">
+                    <i className="fab fa-facebook-f" />
+                  </a>
+                  <a href="#" className="social-icon">
+                    <i className="fab fa-google" />
+                  </a>
+                </div> */}
+              </form>
+            </div>
+          </div>
+          <div className="panels-container">
+            <div className="panel left-panel">
+              <div className="content">
+                <img src={logo} width="40%" alt="" />
+                <p>Hospital Management System</p>
+                <button className="btn transparent" id="sign-up-btn">
+                  Sign up
+                </button>
+              </div>
+              <img src className="image imagesign-up" alt="" />
+            </div>
+            <div className="panel right-panel">
+              <div className="content">
+                <h3>Already a user ?</h3>
+                <p></p>
+                <button className="btn transparent" id="sign-in-btn">
+                  Sign in
+                </button>
+              </div>
+              <img src className="image imagesign-in" alt="" />
+            </div>
+          </div>
+        </>
       )}
-    </React.Fragment>
+    </div>
   );
 };
 
