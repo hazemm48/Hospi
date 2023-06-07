@@ -52,7 +52,6 @@ const Login = () => {
   };
 
   useLayoutEffect(() => {
-    window.scrollTo(0, document.body.scrollHeight)
     document.querySelector("body").style.background = "#0466c8";
     const sign_in_btn = document.querySelector("#sign-in-btn");
     const sign_up_btn = document.querySelector("#sign-up-btn");
@@ -100,6 +99,7 @@ const Login = () => {
                   defaultValue="Login"
                   className="btn solid"
                   onClick={() => {
+                    document.querySelector("body").style.background = "white";
                     setLoading(true);
                     signIn();
                   }}
