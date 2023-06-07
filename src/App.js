@@ -6,7 +6,7 @@ import React from "react";
 import PatientHome from "./patientPages/PatientHome.js";
 import DoctorHome from "./doctorPages/doctorHome.js";
 import LoginTest from "./pages/test.js";
-
+import NotFoundPage from "./pages/NotFoundPage.js";
 
 const App = () => {
   return (
@@ -16,20 +16,9 @@ const App = () => {
       <Route path="/patient/*" element={<PatientHome />} />
       <Route path="/doctor/*" element={<DoctorHome />} />
       <Route path="/test/*" element={<LoginTest />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };
 
 export default App;
-
-/* import React from "react";
-
-class Header extends React.Component {
-  render() {
-    return (
-
-    );
-  }
-}
-
-export default Header; */
