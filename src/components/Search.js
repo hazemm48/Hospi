@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 
 const Search = (props) => {
-  let options = ["all", "id", "name"];
-  let role =localStorage.role
+  let options = ["all", "_id", "name"];
+  let role = localStorage.role;
   if (props.type == "room") {
     options.push("level", "type");
   } else if (props.type == "aid") {
     options[options.indexOf("name")] = "title";
-  } else {
+  } else if (props.type == "user") {
     options.push("email");
   }
-  if(role!="admin"){
-    options.splice(1,1)
+  if (role != "admin") {
+    options.splice(1, 1);
   }
 
   let searchData = () => {
@@ -26,7 +26,7 @@ const Search = (props) => {
         srchSlct == "all"
       )
     ) {
-      data[srchSlct] = searchIn.toLocaleLowerCase();
+      data[srchSlct] = searchIn.toLowerCase();
       props.search(data);
     }
     if (srchSlct == "all") {

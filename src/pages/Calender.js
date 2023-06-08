@@ -8,7 +8,6 @@ import moment from "moment";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import { useNavigate } from "react-router-dom";
-import LoadingSpinner from "../components/Loading.js";
 
 const Calendar = (props) => {
   const [reserves, setReserves] = useState();
@@ -16,17 +15,14 @@ const Calendar = (props) => {
   const [month, setMonth] = useState(moment().get("month") + 1);
   const [year, setYear] = useState(moment().get("year"));
   const [type, setType] = useState();
-  const [headLeft, setHeadLeft] = useState("prev,next today");
   const [cusBtns, setCusBtns] = useState();
   const [startDate, setStartDate] = useState(moment().toDate());
-  const [loading, setLoading] = useState(false);
 
   let navigate = useNavigate();
 
   let calenderRef = React.createRef();
 
   useEffect(() => {
-      setHeadLeft("prev,next today all,doctor,lab,rad");
       let arr = ["all", "doctor", "lab", "rad"];
       let obj = {};
       arr.map((e) => {
@@ -55,8 +51,6 @@ const Calendar = (props) => {
     let reserves = await reserve(body);
     let result = reserves.reservations;
     setReserves(result);
-    setLoading(false)
-    console.log(reserves);
   };
 
   let addEvents = () => {
@@ -89,7 +83,6 @@ const Calendar = (props) => {
   };
 
   useEffect(() => {
-    setLoading(true)
     GetReserves();
   }, [month, type]);
 
@@ -112,18 +105,16 @@ const Calendar = (props) => {
   };
 
   let handleDateChange = (args) => {
+    console.log(args);
     setStartDate(args.start)
     let date = moment(args.start);
     setMonth(date.get("month") + 1);
     setYear(date.get("year"));
   };
-
+console.log(startDate);
   return (
     <div className="main-content">
       <div className="container-fluid">
-        {loading ? (
-          <LoadingSpinner />
-        ) : (
           <div className="section">
             <div className="App">
               <FullCalendar
@@ -136,12 +127,9 @@ const Calendar = (props) => {
                   bootstrap5Plugin,
                 ]}
                 headerToolbar={{
-                  left: headLeft,
+                  left: "prev,next today all,doctor,lab,rad",
                   center: "title",
                   right: "dayGridMonth,timeGridWeek,timeGridDay",
-                }}
-                onScroll={(e) => {
-                  console.log(calenderRef.current.getDate());
                 }}
                 initialDate={startDate}
                 selectable={true}
@@ -157,7 +145,6 @@ const Calendar = (props) => {
               />
             </div>
           </div>
-        )}
       </div>
     </div>
   );

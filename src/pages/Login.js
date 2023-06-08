@@ -22,10 +22,11 @@ const Login = () => {
     let formEl = document.forms.signInForm;
     let formData = new FormData(formEl);
 
-    let body = {};
-    for (const pair of formData.entries()) {
-      body[pair[0]] = pair[1];
-    }
+    let body = {
+      email: formData.get("email").toLowerCase(),
+      password: formData.get("password"),
+    };
+    console.log(body);
 
     let data = await login(body);
     console.log(data);
@@ -43,7 +44,7 @@ const Login = () => {
         localStorage.setItem("role", data.role);
         navigate("/doctor/home");
       } else {
-        navigate('/notAuthorized')
+        navigate("/notAuthorized");
       }
     } else {
       alert(data.message);

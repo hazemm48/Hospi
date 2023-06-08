@@ -216,3 +216,25 @@ export const favoraiteDoc = async (body,url) => {
     .then((data) => data);
   return data;
 };
+
+export const categoriesApi = async (body,method,url) => {
+  let data = await fetch(`${baseApi}/category/${url ? url : ""}`, {
+    method: method,
+    body: JSON.stringify(body),
+    headers: headers(),
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+
+export const productsApi = async (body,method,url) => {
+  let data = await fetch(`${baseApi}/product/${url ? url : ""}`, {
+    method: method,
+    body: JSON.stringify(body),
+    headers: headers(),
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};

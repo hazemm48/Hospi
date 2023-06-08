@@ -6,7 +6,7 @@ const General = () => {
   let data = [
     ["rooms", "rooms"],
     ["firstAid", "first aid"],
-    ["doctor_specialities", "doctor specialities"],
+    ["speciality", "doctor specialities"],
   ];
   return (
     <div className="main-content">

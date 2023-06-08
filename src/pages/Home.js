@@ -29,11 +29,11 @@ import FirstAidDetails from "./firstAid/FirstAidDetails.js";
 import FirstAid from "./firstAid/FirstAid.js";
 import Rad from "./radiation/Rad.js";
 import Lab from "./laboratory/Lab.js";
-import Test from "./test.js";
 import SymptomChecker from "./symptomChecker/SymptomChecker.js";
 import LoadingSpinner from "../components/Loading.js";
-import LoginTest from "./test.js";
-import NotFoundPage from "./NotFoundPage.js";
+import AddCategory from "../components/AddCategory.js";
+import GetCategories from "../components/GetCategories.js";
+import ProductsManager from "./ProductsManager.js";
 
 const Home = () => {
   const [userDet, setUser] = useState();
@@ -152,10 +152,20 @@ const Home = () => {
                   path="/radiation"
                   element={<Rad role={userDet.role} />}
                 />
+                <Route
+                  exact
+                  path="/addCategory/:type"
+                  element={<AddCategory />}
+                />
+                <Route
+                  exact
+                  path="/categories/:type"
+                  element={<GetCategories role={userDet.role}/>}
+                />
                 <Route exact path="/notes" element={<Notes />} />
                 <Route exact path="/general" element={<General />} />
+                <Route exact path="/products/:type" element={<ProductsManager />} />
                 <Route exact path="/categories" element={<Categories />} />
-                {/* <Route exact path="/test" element={<LoginTest />} /> */}
                 <Route
                   exact
                   path="/symptomChecker"

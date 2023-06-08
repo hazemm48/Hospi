@@ -40,6 +40,16 @@ label {
   color: var(--orange);
   border-left: 3px solid var(--orange);
 }
+.label-red {
+  background-color: rgba(255, 171, 56, 0.1);
+  color: var(--red);
+}
+
+.label-red-bl {
+  background-color: rgba(255, 171, 56, 0.1);
+  color: var(--red);
+  border-left: 3px solid var(--orange);
+}
 
 .label-blue {
   background-color: rgba(71, 139, 229, 0.1);

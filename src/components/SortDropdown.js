@@ -5,7 +5,7 @@ const SortDropdown = (props) => {
     <div className="dropdowns-wrapper">
       <div className="dropdown">
         <select
-          id="sort"
+          id={props.type?"category":"sort"}
           className="form-select dropdown-toggle"
           role="button"
           onChange={() => {

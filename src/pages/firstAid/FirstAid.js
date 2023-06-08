@@ -47,7 +47,7 @@ const FirstAid = ({ role }) => {
           <Search search={setSrchFilter} type={"aid"} />
           {role == "admin" && (
             <div className="buttons-wrapper ml-auto">
-              <Link to={`/${role}/addFirstAid`}>
+              <Link to="/admin/addFirstAid">
                 <button className="btn btn-dark-red-f-gr">
                   <i className="las la-plus-circle" />
                   add a new first aid
