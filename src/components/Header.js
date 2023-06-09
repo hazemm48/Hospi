@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import logo from "../images/hospi 2.png";
+import logo from "../images/hospi.png";
 import manImg from "../images/man.svg";
 
 const Header = ({ user }) => {
@@ -34,8 +34,8 @@ const Header = ({ user }) => {
           className="navbar-brand"
         >
           <img src={logo} />
-          <span>HOSPI</span>
         </Link>
+        
         <div className="navbar-collapse">
           <ul className="navbar-nav">
             <li
@@ -57,7 +57,7 @@ const Header = ({ user }) => {
                   className="rounded-circle"
                   src={user.image ? user.image : manImg}
                 />
-                <span className="d">{user.name}</span>
+                <span className="blue-text">{user.name}</span>
               </a>
               <div className="dropdown">
                 <div

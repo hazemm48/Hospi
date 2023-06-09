@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Categories from "../../components/Categories.js";
-import lab from "../../images/lab-technician.png";
+import lab from "../../images/flask.png";
 
 const Lab = ({ role }) => {
   let [page, setPage] = useState();

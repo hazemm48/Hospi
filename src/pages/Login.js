@@ -78,7 +78,7 @@ const Login = () => {
               <form id="signInForm" className="sign-in-form">
                 <h2 className="title">Sign in</h2>
                 <div className="input-field">
-                  <i className="las la-user-circle" />
+                  <i className="las la-envelope" />
                   <input
                     name="email"
                     type="text"
@@ -117,6 +117,10 @@ const Login = () => {
               </form>
               <form id="signUpForm" className="sign-up-form">
                 <h2 className="title">Sign up</h2>
+                <div className="input-field">
+                  <i className="las la-user-circle" />
+                  <input name="name" type="text" placeholder="Your Full Name" />
+                </div>
                 <div className="input-field">
                   <i className="las la-envelope" />
                   <input name="email" type="email" placeholder="Email" />

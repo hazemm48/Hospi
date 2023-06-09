@@ -17,13 +17,13 @@ body {
 
 nav,
 .navbar {
-  background-color: #0466c8;
+  background-color: #ffffff;
   padding-right: 2em;
   padding-left: 2em;
 }
 nav .navbar-brand,
 .navbar .navbar-brand {
-  color: #ffffff;
+  color: #0466c8;
 }
 nav .navbar-brand img,
 .navbar .navbar-brand img {
@@ -42,7 +42,7 @@ nav .navbar-collapse .navbar-nav,
 nav .navbar-collapse .navbar-nav .nav-item .nav-link,
 .navbar .navbar-collapse .navbar-nav .nav-item .nav-link {
   padding: 0.5em 0.75em;
-  color: rgb(255, 255, 255);
+  color: #0466c8;
   text-transform: capitalize;
 }
 nav .navbar-collapse .navbar-nav .nav-item .nav-link .vertical-divider,
@@ -376,10 +376,14 @@ nav .navbar-collapse .navbar-nav .notification-dropdown-menu .dropdown-body p,
   }
 }
 
+.blue-text{
+  font-size: large;
+}
+
 .side-nav {
   padding: 1em 0;
   min-height: 100vh;
-  background-color: #0466c8;
+  background-color: #ffffff;
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
@@ -390,13 +394,13 @@ nav .navbar-collapse .navbar-nav .notification-dropdown-menu .dropdown-body p,
 }
 .side-nav .list-group .list-group-item {
   text-transform: capitalize;
-  color: white;
+  color: #0466c8;
   text-decoration: none;
   border: 1.5px solid transparent;
   font-weight: 500;
   border-radius: 0.15em;
   width: 101%;
-  background-color:#0466c8;
+  background-color:#ffffff;
   margin-bottom: 0.25em;
 }
 .side-nav .list-group .list-group-item i {
@@ -410,8 +414,8 @@ nav .navbar-collapse .navbar-nav .notification-dropdown-menu .dropdown-body p,
   transition: all ease-in-out 150ms;
 }
 .side-nav .list-group .active {
-  background: #ffffff;
-  color:#0466c8;
+  background: #0466c8;
+  color:#ffffff;
 }
 .side-nav .list-group .aob-items,
 .side-nav .list-group .side-nav-footer {

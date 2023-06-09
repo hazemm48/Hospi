@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Categories from "../../components/Categories.js";
 import LoadingSpinner from "../../components/Loading.js";
-import pulse from "../../images/diagnosis.png";
+import pulse from "../../images/checkup.png";
 import { apiMedicLogin } from "../../SymptomCheckerApi.js";
 import DiagnosisChecker from "./DiagnosisChecekr.js";
 
