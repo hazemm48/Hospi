@@ -24,8 +24,7 @@ export const resDetList = (type, data, role) => {
       ["turn number", "turnNum", data.turnNum]
     );
   } else {
-    list.splice(1, 0, ["category", "speciality", data.speciality]);
-    list.splice(5, 0, ["sub Category", "subCategory", data.subCategory]);
+    list.splice(1, 0, ["product Name", "productName", data.productName]);
   }
 
   if (role == "admin") {

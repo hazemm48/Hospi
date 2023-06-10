@@ -14,7 +14,7 @@ const Dashboard = ({ user }) => {
   const [length, setLength] = useState();
   const [reserveUsers, setReserveUsers] = useState();
 
-  let role = user.role
+  let role = user.role;
   const GetDetails = async () => {
     let body = {
       filter: {},
@@ -29,14 +29,12 @@ const Dashboard = ({ user }) => {
     let docs = user.filter((e) => {
       return e.role == "doctor";
     });
-    let docObj ={
+    let docObj = {
       count: docs.length,
-      today:[]
-    }
+      today: [],
+    };
     docs.map((e) => {
-      let today = moment()
-      .format("dddd")
-      .toLocaleLowerCase();;
+      let today = moment().format("dddd").toLocaleLowerCase();
       if (e.role == "doctor") {
         e.doctorInfo.schedule.map((o) => {
           if (o.day == today) {
@@ -241,7 +239,7 @@ const Dashboard = ({ user }) => {
                                 <td>
                                   <img
                                     className="rounded-circle"
-                                    src={manImg}
+                                    src={pat.image ? pat.image : manImg}
                                     loading="lazy"
                                   />
                                 </td>
@@ -290,50 +288,50 @@ const Dashboard = ({ user }) => {
                     <div className="card-body">
                       <table className="table table-borderless table-hover table-responsive-md">
                         <tbody>
-                          {doctors
-                            && doctors.today.slice(0, 5).map((doc) => {
-                                return (
-                                  <tr>
-                                    <td>
-                                      <img
-                                        className="rounded-circle"
-                                        src={manImg}
-                                        loading="lazy"
-                                      />
-                                    </td>
-                                    <td>
-                                      <p>{doc.name}</p>
-                                      <small className="text-muted">
-                                        {doc?.doctorInfo?.speciality}
-                                      </small>
-                                    </td>
-                                    <td>
-                                      <p className="text-muted">{doc.gender}</p>
-                                    </td>
-                                    <td className="text-right">
-                                      <p>{doc.phone}</p>
-                                    </td>
-                                    <td className="text-right">
-                                      <Link
-                                        to="/admin/addReserve"
-                                        state={{ id: doc._id, type: "doctor" }}
-                                        className="btn btn-dark-red-f btn-sm"
-                                      >
-                                        reserve
-                                      </Link>
-                                    </td>
-                                    <td>
-                                      <Link
-                                        to="/admin/doctorDetails"
-                                        state={doc._id}
-                                        className="btn btn-sm"
-                                      >
-                                        <i className="las la-info-circle" />
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                          {doctors &&
+                            doctors.today.slice(0, 5).map((doc) => {
+                              return (
+                                <tr>
+                                  <td>
+                                    <img
+                                      className="rounded-circle"
+                                      src={doc.image ? doc.image : manImg}
+                                      loading="lazy"
+                                    />
+                                  </td>
+                                  <td>
+                                    <p>{doc.name}</p>
+                                    <small className="text-muted">
+                                      {doc?.doctorInfo?.speciality}
+                                    </small>
+                                  </td>
+                                  <td>
+                                    <p className="text-muted">{doc.gender}</p>
+                                  </td>
+                                  <td className="text-right">
+                                    <p>{doc.phone}</p>
+                                  </td>
+                                  <td className="text-right">
+                                    <Link
+                                      to="/admin/addReserve"
+                                      state={{ id: doc._id, type: "doctor" }}
+                                      className="btn btn-dark-red-f btn-sm"
+                                    >
+                                      reserve
+                                    </Link>
+                                  </td>
+                                  <td>
+                                    <Link
+                                      to="/admin/doctorDetails"
+                                      state={doc._id}
+                                      className="btn btn-sm"
+                                    >
+                                      <i className="las la-info-circle" />
+                                    </Link>
+                                  </td>
+                                </tr>
+                              );
+                            })}
                         </tbody>
                       </table>
                     </div>
@@ -351,58 +349,57 @@ const Dashboard = ({ user }) => {
                     <div className="card-body">
                       <table className="table table-borderless table-hover table-responsive-md">
                         <tbody>
-                          {reserveUsers
-                            && reserveUsers.map((reserve) => {
-                                return (
-                                  <tr>
-                                    <td>
-                                      <img
-                                        className="rounded-circle"
-                                        src={manImg}
-                                        loading="lazy"
-                                      />
-                                    </td>
-                                    <td>
-                                      <p>{reserve.patName}</p>
-                                    </td>
-                                    <td>
-                                      <p>Dr. {reserve.docName}</p>
-                                      <small className="text-muted">
-                                        {reserve.specialty}
-                                      </small>
-                                    </td>
-                                    <td className="text-muted">
-                                      <p>
-                                        {moment(reserve.date).format(
-                                          "DD/MM/YYYY"
-                                        )}
-                                      </p>
-                                    </td>
-                                    <td className="text-muted">
-                                      <p>
-                                        {moment(
-                                          reserve.time.from,
-                                          "HH:mm"
-                                        ).format("h:mm")}
-                                        -
-                                        {moment(
-                                          reserve.time.to,
-                                          "HH:mm"
-                                        ).format("h:mm A")}
-                                      </p>
-                                    </td>
-                                    <td>
-                                      <Link
-                                        to="/admin/reserveDetails"
-                                        state={reserve._id}
-                                        className="btn btn-sm"
-                                      >
-                                        <i className="las la-info-circle" />
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                          {reserveUsers &&
+                            reserveUsers.map((reserve) => {
+                              return (
+                                <tr>
+                                  <td>
+                                    <img
+                                      className="rounded-circle"
+                                      src={manImg}
+                                      loading="lazy"
+                                    />
+                                  </td>
+                                  <td>
+                                    <p>{reserve.patName}</p>
+                                  </td>
+                                  <td>
+                                    <p>Dr. {reserve.docName}</p>
+                                    <small className="text-muted">
+                                      {reserve.speciality}
+                                    </small>
+                                  </td>
+                                  <td className="text-muted">
+                                    <p>
+                                      {moment(reserve.date).format(
+                                        "DD/MM/YYYY"
+                                      )}
+                                    </p>
+                                  </td>
+                                  <td className="text-muted">
+                                    <p>
+                                      {moment(
+                                        reserve.time.from,
+                                        "HH:mm"
+                                      ).format("h:mm")}
+                                      -
+                                      {moment(reserve.time.to, "HH:mm").format(
+                                        "h:mm A"
+                                      )}
+                                    </p>
+                                  </td>
+                                  <td>
+                                    <Link
+                                      to="/admin/reserveDetails"
+                                      state={reserve._id}
+                                      className="btn btn-sm"
+                                    >
+                                      <i className="las la-info-circle" />
+                                    </Link>
+                                  </td>
+                                </tr>
+                              );
+                            })}
                         </tbody>
                       </table>
                     </div>

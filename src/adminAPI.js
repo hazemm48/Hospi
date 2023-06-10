@@ -206,7 +206,7 @@ export const getFirstAids = async (body) => {
     .then((data) => data);
   return data;
 };
-export const favoraiteDoc = async (body,url) => {
+export const favoraiteDoc = async (body, url) => {
   let data = await fetch(`${api()}/favDoctors/${url ? url : ""}`, {
     method: "POST",
     body: JSON.stringify(body),
@@ -217,8 +217,8 @@ export const favoraiteDoc = async (body,url) => {
   return data;
 };
 
-export const categoriesApi = async (body,method,url) => {
-  let data = await fetch(`${baseApi}/category/${url ? url : ""}`, {
+export const categoriesApi = async (body, method, url) => {
+  let data = await fetch(`${api()}/category/${url ? url : ""}`, {
     method: method,
     body: JSON.stringify(body),
     headers: headers(),
@@ -228,8 +228,8 @@ export const categoriesApi = async (body,method,url) => {
   return data;
 };
 
-export const productsApi = async (body,method,url) => {
-  let data = await fetch(`${baseApi}/product/${url ? url : ""}`, {
+export const productsApi = async (body, method, url) => {
+  let data = await fetch(`${api()}/product/${url ? url : ""}`, {
     method: method,
     body: JSON.stringify(body),
     headers: headers(),
