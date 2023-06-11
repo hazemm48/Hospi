@@ -1,11 +1,12 @@
 import moment from "moment";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Link, useLocation } from "react-router-dom";
 import { reserve, users } from "../../adminAPI.js";
 import LoadingSpinner from "../../components/Loading.js";
-import manImg from "../../images/man.svg";
+import maleImg from "../../images/male.jpg";
+import femaleImg from "../../images/female.jpg";
 
 const CreateReserve = ({ role }) => {
   const [loading, setLoading] = useState(false);
@@ -104,7 +105,7 @@ const CreateReserve = ({ role }) => {
                         <div className="card-header">
                           <img
                             className="rounded-circle"
-                            src={userDetails.image ? userDetails.image : manImg}
+                            src={userDetails.image ? userDetails.image : (userDetails.gender=="male"?maleImg:femaleImg)}
                             loading="lazy"
                           />
                         </div>

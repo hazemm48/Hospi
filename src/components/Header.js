@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../images/hospi.png";
-import manImg from "../images/man.svg";
+import maleImg from "../images/male.jpg";
+import femaleImg from "../images/female.jpg";
 
 const Header = ({ user }) => {
   let navigate = useNavigate();
@@ -55,7 +56,7 @@ const Header = ({ user }) => {
               >
                 <img
                   className="rounded-circle"
-                  src={user.image ? user.image : manImg}
+                  src={user.image ? user.image : (user.gender=="male"?maleImg:femaleImg)}
                 />
                 <span className="blue-text">{user.name}</span>
               </a>

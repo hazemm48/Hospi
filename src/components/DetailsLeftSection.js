@@ -1,5 +1,6 @@
 import { removeFile, uploadFile } from "../adminAPI.js";
-import manImg from "../images/man.svg";
+import maleImg from "../images/male.jpg";
+import femaleImg from "../images/female.jpg";
 import moment from "moment";
 
 const DetailsLeftSection = ({ data, type, GetDetails, setLoading }) => {
@@ -36,7 +37,7 @@ const DetailsLeftSection = ({ data, type, GetDetails, setLoading }) => {
         <div className="card-header">
           <img
             className="rounded-circle"
-            src={data.image ? data.image : manImg}
+            src={data.image ? data.image : (data.gender=="male"?maleImg:femaleImg)}
             loading="lazy"
           />
         </div>

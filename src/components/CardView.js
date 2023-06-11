@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import manImg from "../images/man.svg";
+import maleImg from "../images/male.jpg";
+import femaleImg from "../images/female.jpg";
 import moment from "moment";
 
 const CardView = (props) => {
@@ -39,7 +40,7 @@ const CardView = (props) => {
                     <div className="card-img-top">
                       <img
                         className="rounded-circle"
-                        src={user.image ? user.image : manImg}
+                        src={user.image ? user.image : (user.gender=="male"?maleImg:femaleImg)}
                         loading="lazy"
                       />
                       {props.role == "admin" ? (

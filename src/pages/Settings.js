@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { changePass } from "../adminAPI.js";
-import manImg from '../images/man.svg'
+import maleImg from "../images/male.jpg";
+import femaleImg from "../images/female.jpg";
 
 const Settings = ({user}) => {
 
@@ -73,7 +73,7 @@ const Settings = ({user}) => {
                     <div className="col-lg-2 col-md-4">
                       <img
                         className="rounded-circle"
-                        src={user.image?user.image: manImg}
+                        src={user.image?user.image: (user.gender=="male"?maleImg:femaleImg)}
                       />
                     </div>
                   </div>

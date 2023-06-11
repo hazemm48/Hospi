@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { users, reserve } from "../../src/adminAPI";
-import manImg from "../images/man.svg";
+import maleImg from "../images/male.jpg";
+import femaleImg from "../images/female.jpg";
 import moment from "moment";
 import LoadingSpinner from "../components/Loading.js";
 
@@ -239,7 +240,7 @@ const Dashboard = ({ user }) => {
                                 <td>
                                   <img
                                     className="rounded-circle"
-                                    src={pat.image ? pat.image : manImg}
+                                    src={pat.image ? pat.image : (pat.gender=="male"?maleImg:femaleImg)}
                                     loading="lazy"
                                   />
                                 </td>
@@ -295,7 +296,7 @@ const Dashboard = ({ user }) => {
                                   <td>
                                     <img
                                       className="rounded-circle"
-                                      src={doc.image ? doc.image : manImg}
+                                      src={doc.image ? doc.image : (doc.gender=="male"?maleImg:femaleImg)}
                                       loading="lazy"
                                     />
                                   </td>
@@ -356,7 +357,7 @@ const Dashboard = ({ user }) => {
                                   <td>
                                     <img
                                       className="rounded-circle"
-                                      src={manImg}
+                                      src={maleImg}
                                       loading="lazy"
                                     />
                                   </td>
