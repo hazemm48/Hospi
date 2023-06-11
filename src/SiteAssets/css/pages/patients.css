@@ -15,9 +15,8 @@ main .filters-section {
   display: flex;
 }
 main .filters-section .switch-view-btns .btn-group .active {
-  background-color: #0466c8;
-  border: none;
-  color: white;
+  background: #d2e8ff;
+  color: #0466c8;
 }
 main .filters-section .dropdowns-wrapper {
   margin-right: 1em;

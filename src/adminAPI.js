@@ -63,6 +63,7 @@ export const updateUser = async (body) => {
     .then((data) => data);
   return data;
 };
+
 export const deleteUser = async (body) => {
   let data = await fetch(`${api()}/deleteUser`, {
     method: "Delete",
@@ -196,6 +197,7 @@ export const firstAids = async (body, method) => {
     .then((data) => data);
   return data;
 };
+
 export const getFirstAids = async (body) => {
   let data = await fetch(`${baseApi}/getFirstAid`, {
     method: "POST",
@@ -206,6 +208,7 @@ export const getFirstAids = async (body) => {
     .then((data) => data);
   return data;
 };
+
 export const favoraiteDoc = async (body, url) => {
   let data = await fetch(`${api()}/favDoctors/${url ? url : ""}`, {
     method: "POST",

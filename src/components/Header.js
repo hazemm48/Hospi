@@ -28,7 +28,7 @@ const Header = ({ user }) => {
 
   return (
     <header>
-      <nav className="navbar navbar-expand-lg shadow-sm fixed-top">
+      <nav className="navbar navbar-expand-lg fixed-top">
         <Link
           to={`/${user.role}/${user.role == "admin" ? "dashboard" : "home"}`}
           className="navbar-brand"
