@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { users, reserve } from "../../src/adminAPI";
 import maleImg from "../images/male.jpg";
 import femaleImg from "../images/female.jpg";
-import welcome from "../images/7975564.jpg";
+import welcome from "../images/79755644.jpg";
 import moment from "moment";
 import LoadingSpinner from "../components/Loading.js";
 
