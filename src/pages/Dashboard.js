@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { users, reserve } from "../../src/adminAPI";
 import maleImg from "../images/male.jpg";
 import femaleImg from "../images/female.jpg";
+import welcome from "../images/7975564.jpg";
 import moment from "moment";
 import LoadingSpinner from "../components/Loading.js";
 
@@ -93,7 +94,7 @@ const Dashboard = ({ user }) => {
                   <div className="card welcome-content-card">
                     <div className="card-body">
                       <div className="row">
-                        <div className="col-lg-9 welcome-text-wrapper align-self-center">
+                        <div className="col-lg-8 welcome-text-wrapper align-self-center">
                           <h3>
                             Hello,
                             <span style={{ color: "#0466c8" }}>
@@ -101,6 +102,9 @@ const Dashboard = ({ user }) => {
                             </span>
                           </h3>
                           <h5>Welcome to your dashboard</h5>
+                        </div>
+                        <div class="col-md-4 welcome-img-wrapper">
+                          <img src={welcome} />
                         </div>
                       </div>
                     </div>
@@ -240,7 +244,13 @@ const Dashboard = ({ user }) => {
                                 <td>
                                   <img
                                     className="rounded-circle"
-                                    src={pat.image ? pat.image : (pat.gender=="male"?maleImg:femaleImg)}
+                                    src={
+                                      pat.image
+                                        ? pat.image
+                                        : pat.gender == "male"
+                                        ? maleImg
+                                        : femaleImg
+                                    }
                                     loading="lazy"
                                   />
                                 </td>
@@ -296,7 +306,13 @@ const Dashboard = ({ user }) => {
                                   <td>
                                     <img
                                       className="rounded-circle"
-                                      src={doc.image ? doc.image : (doc.gender=="male"?maleImg:femaleImg)}
+                                      src={
+                                        doc.image
+                                          ? doc.image
+                                          : doc.gender == "male"
+                                          ? maleImg
+                                          : femaleImg
+                                      }
                                       loading="lazy"
                                     />
                                   </td>

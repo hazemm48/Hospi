@@ -32,7 +32,7 @@
   box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.5);
 }
 .notFound .page-not-found img {
-  height: 300px;
+  height: 25em;
   background-color: rgba(255, 255, 255, 0.5);
 }
 .notFound .page-not-found {
@@ -99,7 +99,7 @@
     width: 100%;
   }
   .notFound .page-not-found img {
-    height: 330px;
+    height: 15em;
   }
   .notFound .page-not-found h1 {
     font-size: 1.4rem;

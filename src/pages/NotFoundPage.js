@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../images/hospi.png";
-import notFound from '../images/404.svg'
+import notFound from '../images/5224483.jpg'
 
 const NotFoundPage = () => {
   let { state } = useLocation();

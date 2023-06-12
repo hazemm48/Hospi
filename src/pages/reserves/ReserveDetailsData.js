@@ -23,8 +23,11 @@ export const resDetList = (type, data, role) => {
       ["visit type", "visitType", data.visitType],
       ["turn number", "turnNum", data.turnNum]
     );
-  } else {
-    list.splice(1, 0, ["product Name", "productName", data.productName]);
+  } else if (type == "lab"){
+    list.splice(1, 0, ["analysis name", "productName", data.productName]);
+  }
+  else if (type == "rad"){
+    list.splice(1, 0, ["scan name", "productName", data.productName]);
   }
 
   if (role == "admin") {
