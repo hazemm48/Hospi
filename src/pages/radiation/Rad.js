@@ -14,7 +14,7 @@ const Rad = ({ role }) => {
 
   let GoTo = () => {
     if (page == "reserve") {
-      navigate(`/${role}/reserve`);
+      navigate(`/${role}/reserve/rad`);
     } else if (page == "category") {
       navigate(`/admin/categories/rad`,{state:{text:"radiation category",image:rad}});
     } else if (page == "product") {

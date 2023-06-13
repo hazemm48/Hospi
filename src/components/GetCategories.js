@@ -79,6 +79,7 @@ const GetCategories = ({ role }) => {
           <>
             <PagenationResult pageNo={0} length={length} />
             <Categories
+              id={true}
               view={type}
               data={data}
               image={state.image}

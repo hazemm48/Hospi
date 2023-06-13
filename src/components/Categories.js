@@ -68,11 +68,17 @@ const Categories = (props) => {
                       <h5 name={e[0]}>{e[1]}</h5>
                     </div>
                   </div>
-                  {["rad", "lab", "pharmacy","speciality"].includes(props.view) &&
+                  {props.id && (
+                        <small className="text-muted">{e[0]}</small>
+                      )}
+                  {["rad", "lab", "pharmacy", "speciality"].includes(
+                    props.view
+                  ) &&
                     props.page != "main" && (
                       <div className="card-footer">
                         <button
                           className="btn btn-red-f-gr"
+                          style={{marginTop:"0.5em"}}
                           onClick={() => {
                             props.deleteCategory(e[0]);
                           }}

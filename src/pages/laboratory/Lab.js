@@ -14,7 +14,7 @@ const Lab = ({ role }) => {
 
   let GoTo = () => {
     if (page == "reserve") {
-      navigate(`/${role}/reserve`);
+      navigate(`/${role}/reserve/lab`);
     } else if (page == "category") {
       navigate(`/admin/categories/lab`,{state:{text:"laboratory category",image:lab}});
     } else if (page == "product") {

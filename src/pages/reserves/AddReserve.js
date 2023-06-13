@@ -62,9 +62,11 @@ const CreateReserve = ({ role }) => {
     let filter = {};
     data.email && role == "admin" && (filter.email = data.email);
     data.phone && role == "admin" && (filter.phone = data.phone);
-    let user = await users(filter);
-    if (user.users.length > 0) {
-      data.patientId = user.users[0]._id;
+    if (filter) {
+      let user = await users(filter);
+      if (user.users.length > 0) {
+        data.patientId = user.users[0]._id;
+      }
     }
 
     let body = {
@@ -105,7 +107,13 @@ const CreateReserve = ({ role }) => {
                         <div className="card-header">
                           <img
                             className="rounded-circle"
-                            src={userDetails.image ? userDetails.image : (userDetails.gender=="male"?maleImg:femaleImg)}
+                            src={
+                              userDetails.image
+                                ? userDetails.image
+                                : userDetails.gender == "male"
+                                ? maleImg
+                                : femaleImg
+                            }
                             loading="lazy"
                           />
                         </div>

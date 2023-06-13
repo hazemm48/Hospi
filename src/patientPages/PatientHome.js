@@ -18,6 +18,7 @@ import Lab from "../pages/laboratory/Lab.js";
 import SymptomChecker from "../pages/symptomChecker/SymptomChecker.js";
 import LoadingSpinner from "../components/Loading.js";
 import HomePage from "./HomePage.js";
+import Reservation from "../pages/Reserve.js";
 
 const PatientHome = () => {
   const [userDet, setUserDet] = useState();
@@ -92,6 +93,11 @@ const PatientHome = () => {
                   exact
                   path="/addReserve"
                   element={<AddReserve role={userDet.role} />}
+                />
+                <Route
+                  exact
+                  path="/reserve/:type"
+                  element={<Reservation role={userDet.role} />}
                 />
                 <Route
                   exact

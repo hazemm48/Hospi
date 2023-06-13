@@ -34,6 +34,7 @@ import LoadingSpinner from "../components/Loading.js";
 import AddCategory from "../components/AddCategory.js";
 import GetCategories from "../components/GetCategories.js";
 import ProductsManager from "./ProductsManager.js";
+import Reservation from "./Reserve.js";
 
 const Home = () => {
   const [userDet, setUser] = useState();
@@ -161,6 +162,11 @@ const Home = () => {
                   exact
                   path="/categories/:type"
                   element={<GetCategories role={userDet.role}/>}
+                />
+                <Route
+                  exact
+                  path="/reserve/:type"
+                  element={<Reservation role={userDet.role}/>}
                 />
                 <Route exact path="/notes" element={<Notes />} />
                 <Route exact path="/general" element={<General />} />

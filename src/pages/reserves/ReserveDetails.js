@@ -64,14 +64,14 @@ const ReserveDetails = ({ role }) => {
       formEl.patName.removeAttribute("readOnly");
       formEl.fees.removeAttribute("readOnly");
       formEl.phone.removeAttribute("readOnly");
-      formEl.visitType.removeAttribute("readOnly");
+      formEl.visitType?.removeAttribute("readOnly");
       editBtn.removeAttribute("data-edit");
       editBtn.innerHTML = "submit";
     } else {
       formEl.patName.setAttribute("readOnly", true);
       formEl.fees.setAttribute("readOnly", true);
       formEl.phone.setAttribute("readOnly", true);
-      formEl.visitType.setAttribute("readOnly", true);
+      formEl.visitType?.setAttribute("readOnly", true);
       editBtn.setAttribute("data-edit", true);
       editBtn.innerHTML = "Edit Reserve";
       updatePat();
@@ -262,15 +262,18 @@ const ReserveDetails = ({ role }) => {
                             {role == "admin" && (
                               <div className="card-footer">
                                 <div className="d-flex justify-content-center">
-                                  <Link
-                                    to={`/${role}/PatientDetails`}
-                                    state={reserves.patientId}
-                                    className="btn btn-dark-red-f btn-sm col-sm-2"
-                                    style={{ marginRight: "0.4em" }}
-                                  >
-                                    <i className="las la-user-injured" />
-                                    View Patient
-                                  </Link>
+                                  {reserves.patientId && (
+                                    <Link
+                                      to={`/${role}/PatientDetails`}
+                                      state={reserves.patientId}
+                                      className="btn btn-dark-red-f btn-sm col-sm-2"
+                                      style={{ marginRight: "0.4em" }}
+                                    >
+                                      <i className="las la-user-injured" />
+                                      View Patient
+                                    </Link>
+                                  )}
+
                                   {type == "doctor" && (
                                     <Link
                                       to="/admin/doctorDetails"
