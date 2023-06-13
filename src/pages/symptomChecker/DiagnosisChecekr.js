@@ -16,8 +16,14 @@ const DiagnosisChecker = (props) => {
   const [issueInfo, setIssueInfo] = useState();
   const [result, setResult] = useState([]);
   const [symView, setSymView] = useState(false);
-
+  console.log(props);
   let table = ["name", "chances", "specialisations", "more Information"];
+
+  useEffect(() => {
+    if (props.type == "symptoms") {
+      setSymView(true);
+    }
+  }, []);
 
   let getData = async (url, selOpts) => {
     let data = await mainAPi(url);

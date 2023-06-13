@@ -76,7 +76,7 @@ console.log(data);
                 className="form-control "
                 disabled={disable}
                 defaultValue={data ? data[e[2]] : ""}
-                rows="3"
+                rows="6"
                 maxlength={e[3]}
                 name={e[2]}
                 required
