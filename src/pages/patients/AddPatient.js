@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import { addUser, uploadFile } from "../../adminAPI.js";
-import manImg from "../../images/man.svg";
+import manImg from "../../images/male.jpg";
 import LoadingSpinner from "../../components/Loading.js";
 import { useNavigate } from "react-router-dom";
 

@@ -5,7 +5,7 @@ import Categories from "../../components/Categories.js";
 import { medicList } from "./MedicRecordData.js";
 import { medicalRecord, uploadFile } from "../../adminAPI.js";
 import InputsHandler from "../../components/InputsHandler.js";
-import record from "../../images/patient.png";
+import record from "../../images/record.jpg";
 
 
 const AddMedicRecord = () => {

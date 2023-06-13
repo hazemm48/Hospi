@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import heart from "../images/heart.png";
-import stetho from "../images/stetho.png";
+import heart from "../images/fav.jpg";
+import stetho from "../images/stetho.jpg";
 
 const Categories = (props) => {
   const [data, setData] = useState();

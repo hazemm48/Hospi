@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { addUser, getGeneral, rooms, uploadFile } from "../../adminAPI.js";
 import moment from "moment-timezone";
 import Schedule from "../../components/Schedule.js";
-import manImg from "../../images/man.svg";
+import manImg from "../../images/male.jpg";
 import LoadingSpinner from "../../components/Loading.js";
 import { useNavigate } from "react-router-dom";
 

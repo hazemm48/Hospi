@@ -7,7 +7,7 @@ import CardView from "../../components/CardView.js";
 import TableView from "../../components/TableView.js";
 import SwitchView from "../../components/SwitchView.js";
 import Search from "../../components/Search.js";
-import stetho from "../../images/stetho.png";
+import stetho from "../../images/stetho.jpg";
 
 import {
   PagenationNavigate,

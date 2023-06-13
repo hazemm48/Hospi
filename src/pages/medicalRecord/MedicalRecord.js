@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { medicalRecord } from "../../adminAPI.js";
 import LoadingSpinner from "../../components/Loading.js";
 import { PagenationResult } from "../../components/Pagenation.js";
-import record from "../../images/patient.png";
+import record from "../../images/record.jpg";
 
 const MedicalRecord = ({role}) => {
   const [loading, setLoading] = useState(false);

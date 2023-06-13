@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { users, reserve } from "../../src/adminAPI";
-import whatsapp from "../images/whatsapp.png";
+import whatsapp from "../images/whatsapp.jpg";
 import sick from "../images/sick.png";
-import examin from "../images/4997671.jpg";
+import examin from "../images/hello.jpg";
+import maleImg from "../images/male.jpg";
 import LoadingSpinner from "../components/Loading.js";
+import moment from "moment";
 
 const HomePage = (props) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(props.user);
   const [resLength, setResLength] = useState(0);
+  const [reserves, setReserves] = useState([]);
 
   const GetDetails = async () => {
     let body = {};
@@ -23,7 +26,11 @@ const HomePage = (props) => {
       },
     };
     let reserves = await reserve(resBody);
+    let filtered = reserves.reservations.filter((e)=>{
+      return e.status ==false
+    })
     setResLength(reserves.reservations.length);
+    setReserves(filtered);
     setLoading(false);
   };
 
@@ -61,7 +68,7 @@ const HomePage = (props) => {
                     <div className="card welcome-content-card">
                       <div className="card-body">
                         <div className="row">
-                          <div className="col-lg-6 welcome-text-wrapper align-self-center">
+                          <div className="col-lg-8 welcome-text-wrapper align-self-center">
                             <h3>
                               Hello,
                               <span style={{ color: "#0466c8" }}>
@@ -70,8 +77,8 @@ const HomePage = (props) => {
                             </h3>
                             <h5>Welcome to HOSPI</h5>
                           </div>
-                          <div class="col-md-6 welcome-img-wrapper">
-                            <img src={examin} />
+                          <div class="col-md-4 welcome-img-wrapper">
+                            <img style={{width:"45%"}} src={examin} />
                           </div>
                         </div>
                       </div>
@@ -125,8 +132,8 @@ const HomePage = (props) => {
                     <div className="card welcome-content-card">
                       <div className="card-body">
                         <div className="row">
-                          <div style={{maxWidth:"35%"}} class="col-md-3">
-                            <img src={whatsapp} />
+                          <div style={{ maxWidth: "35%" }} class="col-md-3">
+                            <img className="patHomeImg" src={whatsapp} />
                           </div>
                           <div className="col-lg-9 welcome-text-wrapper align-self-center">
                             <h5>
@@ -146,8 +153,8 @@ const HomePage = (props) => {
                     <div className="card welcome-content-card">
                       <div className="card-body">
                         <div className="row">
-                          <div style={{maxWidth:"35%"}} className="col-md-3">
-                            <img src={sick} />
+                          <div style={{ maxWidth: "35%" }} className="col-md-3">
+                            <img className="patHomeImg" src={sick} />
                           </div>
                           <div className="col-lg-9 welcome-text-wrapper align-self-center">
                             <h5>
@@ -164,6 +171,74 @@ const HomePage = (props) => {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div className="section card-summaries">
+              <div className="section-content">
+              <div className="card-deck">
+                <div className="card">
+                  <div className="card-header">
+                    <h5>upcoming reservations</h5>
+                  </div>
+                  <div className="card-body">
+                    <table className="table table-borderless table-hover table-responsive-md">
+                      <tbody>
+                        {reserves.length ?
+                          reserves.splice(0,5).map((reserve) => {
+                            return (
+                              <tr>
+                                <td>
+                                  <img
+                                    className="rounded-circle"
+                                    src={maleImg}
+                                    loading="lazy"
+                                  />
+                                </td>
+                                <td>
+                                  <p>{reserve.patName}</p>
+                                </td>
+                                <td>
+                                  <p>{reserve.type} reserve</p>
+                                </td>
+                                <td className="text-muted">
+                                  <p>
+                                    {moment(reserve.date).format("DD/MM/YYYY")}
+                                  </p>
+                                </td>
+                                <td className="text-muted">
+                                  <p>
+                                    {moment(reserve.time.from, "HH:mm").format(
+                                      "h:mm"
+                                    )}
+                                    -
+                                    {moment(reserve.time.to, "HH:mm").format(
+                                      "h:mm A"
+                                    )}
+                                  </p>
+                                </td>
+                                <td>
+                                  <Link
+                                    to="/patient/reserveDetails"
+                                    state={reserve._id}
+                                    className="btn btn-sm"
+                                  >
+                                    <i className="las la-info-circle" />
+                                  </Link>
+                                </td>
+                              </tr>
+                            );
+                          }):(<p>No upcoming reservations</p>)}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="card-footer">
+                    <Link to="/patient/reservations" className="view-more">
+                      more
+                      <i className="las la-angle-right" />
+                    </Link>
+                  </div>
+                </div>
+                </div>
                 </div>
               </div>
             </>

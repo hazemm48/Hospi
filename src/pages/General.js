@@ -1,6 +1,6 @@
 import React from "react";
 import Categories from "../components/Categories.js";
-import menu from "../images/menu.png";
+import menu from "../images/cube.jpg";
 
 const General = () => {
   let data = [

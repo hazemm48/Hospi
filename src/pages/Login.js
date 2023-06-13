@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../images/hospi.png";
+import logo from "../images/hospi 2.jpg";
 import LoadingSpinner from "../components/Loading.js";
 import { login } from "../adminAPI.js";
 

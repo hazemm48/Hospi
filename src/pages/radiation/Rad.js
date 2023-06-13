@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Categories from "../../components/Categories.js";
-import rad from "../../images/radiation.png";
+import rad from "../../images/163.jpg";
 
 const Rad = ({ role }) => {
   let [page, setPage] = useState();

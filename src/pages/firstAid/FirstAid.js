@@ -5,7 +5,7 @@ import Categories from "../../components/Categories.js";
 import LoadingSpinner from "../../components/Loading.js";
 import { PagenationResult } from "../../components/Pagenation.js";
 import Search from "../../components/Search.js";
-import aid from "../../images/firstAid.png";
+import aid from "../../images/aidKit.jpg";
 
 const FirstAid = ({ role }) => {
   const [loading, setLoading] = useState(false);

@@ -72,6 +72,12 @@
   border: none;
 }
 
+.welcome-section .welcome-content-card .card-body .welcome-img-wrapper img {
+  width: 10em !important;
+  height: 10em;
+  object-fit: contain;
+}
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .card-deck {
@@ -134,7 +140,6 @@
 .btn-dark-red-f-gr:hover,
 .btn-dark-red-f-gr:focus {
   background: none;
-  border-color: #0466c8;
   color: #0466c8;
 }
 .btn-red-f-gr {
@@ -164,7 +169,6 @@
 .btn-dark-red-o:hover,
 .btn-dark-red-o:focus {
   background-color: #0466c8;
-  border: 1.5px solid transparent;
   color: white;
 }
 
@@ -541,7 +545,8 @@ main .main-content .card-summaries .card .card-footer .view-more:focus {
     text-align: center !important;
   }
   .welcome-section .welcome-content-card .card-body .welcome-img-wrapper img {
-    width: 50% !important;
+    width: 30% !important;
+    object-fit: contain;
   }
   .welcome-section .app-stats-card .card-body .col-md-4 {
     width: 33.33%;

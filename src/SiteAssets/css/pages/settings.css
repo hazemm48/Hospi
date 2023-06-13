@@ -8,8 +8,14 @@
   margin: 0;
 }
 .section .card .card-body img {
-  width: 100%;
-  height: auto;
+  width: 10em;
+  height: 10em;
+  object-fit: cover;
+}
+.patHomeImg{
+  width: 6em !important;
+  height: 6em !important;
+  object-fit: cover;
 }
 .section .card .card-body p {
   margin: 0;
