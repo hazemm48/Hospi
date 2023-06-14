@@ -187,20 +187,9 @@ export const generatePresc = async (body) => {
   return data;
 };
 
-export const firstAids = async (body, method) => {
-  let data = await fetch(`${api()}/firstAid`, {
+export const firstAids = async (body, method, url) => {
+  let data = await fetch(`${api()}/firstAid/${url ? url : ""}`, {
     method: method,
-    body: JSON.stringify(body),
-    headers: headers(),
-  })
-    .then((res) => res.json())
-    .then((data) => data);
-  return data;
-};
-
-export const getFirstAids = async (body) => {
-  let data = await fetch(`${baseApi}/getFirstAid`, {
-    method: "POST",
     body: JSON.stringify(body),
     headers: headers(),
   })

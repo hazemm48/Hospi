@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { getFirstAids } from "../../adminAPI.js";
+import { firstAids } from "../../adminAPI.js";
 import Categories from "../../components/Categories.js";
 import LoadingSpinner from "../../components/Loading.js";
 import { PagenationResult } from "../../components/Pagenation.js";
@@ -19,7 +19,8 @@ const FirstAid = ({ role }) => {
       filter: {},
     };
     srchFilter && (body.filter = srchFilter);
-    let { aids, message } = await getFirstAids(body);
+    let { aids, message } = await firstAids(body,"POST","get");
+    console.log(aids);
     let dataArr = [];
     if (message == "found") {
       aids.map((e) => {

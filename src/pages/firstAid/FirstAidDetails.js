@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   firstAids,
-  getFirstAids,
 } from "../../adminAPI.js";
 import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
@@ -27,7 +26,7 @@ const FirstAidDetails = ({ role }) => {
         _id: state,
       },
     };
-    let { aids } = await getFirstAids(body);
+    let { aids } = await firstAids(body,"POST","get");
     setData(aids[0]);
     setLoading(false);
   };

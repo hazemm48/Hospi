@@ -82,7 +82,6 @@ const Login = () => {
                     name="email"
                     type="text"
                     placeholder="E-mail"
-                    defaultValue="admin@hospi.com"
                   />
                 </div>
                 <div className="input-field">
@@ -91,7 +90,6 @@ const Login = () => {
                     name="password"
                     type="password"
                     placeholder="Password"
-                    defaultValue="Ha123"
                   />
                 </div>
                 <input
