@@ -54,6 +54,7 @@ const DrugsInteraction = (props) => {
         console.log(arr2);
         setResult(arr2);
       } else {
+        setResult([])
         setNoResult(true);
       }
     }
