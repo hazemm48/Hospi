@@ -35,6 +35,7 @@ import AddCategory from "../components/AddCategory.js";
 import GetCategories from "../components/GetCategories.js";
 import ProductsManager from "./ProductsManager.js";
 import Reservation from "./Reserve.js";
+import DrugsInteraction from "./DrugsInteraction.js";
 
 const Home = () => {
   const [userDet, setUser] = useState();
@@ -167,6 +168,11 @@ const Home = () => {
                   exact
                   path="/reserve/:type"
                   element={<Reservation role={userDet.role}/>}
+                />
+                <Route
+                  exact
+                  path="/drugsInteraction"
+                  element={<DrugsInteraction role={userDet.role}/>}
                 />
                 <Route exact path="/notes" element={<Notes />} />
                 <Route exact path="/general" element={<General />} />

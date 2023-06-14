@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { users, reserve } from "../../src/adminAPI";
 import whatsapp from "../images/whatsapp.jpg";
 import sick from "../images/sick.jpg";
+import drugs from "../images/drugs.jpg";
 import examin from "../images/hello.jpg";
 import maleImg from "../images/male.jpg";
 import LoadingSpinner from "../components/Loading.js";
@@ -171,6 +172,26 @@ const HomePage = (props) => {
                       </div>
                     </div>
                   </div>
+                  <div className="card welcome-content-card">
+                      <div className="card-body">
+                        <div className="row">
+                          <div style={{ maxWidth: "35%" }} className="col-md-1">
+                            <img className="patHomeImg" src={drugs} />
+                          </div>
+                          <div className="col-lg-10 welcome-text-wrapper align-self-center">
+                            <h5>
+                              you can check if there is any interaction between drugs with our{" "}
+                              <Link
+                                to="/patient/drugsInteraction"
+                                style={{ color: "#0466c8" }}
+                              >
+                                check drugs interaction system
+                              </Link>
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                 </div>
               </div>
               <div className="section card-summaries">

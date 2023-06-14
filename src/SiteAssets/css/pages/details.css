@@ -29,6 +29,10 @@ label {
   color: var(--green);
   border-left: 3px solid var(--green);
 }
+.label-yellow {
+  background-color: rgba(255, 230, 40, 0.226);
+  color: #be8f00;
+}
 
 .label-orange {
   background-color: rgba(255, 171, 56, 0.1);

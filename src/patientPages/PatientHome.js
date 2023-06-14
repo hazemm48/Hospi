@@ -19,6 +19,7 @@ import SymptomChecker from "../pages/symptomChecker/SymptomChecker.js";
 import LoadingSpinner from "../components/Loading.js";
 import HomePage from "./HomePage.js";
 import Reservation from "../pages/Reserve.js";
+import DrugsInteraction from "../pages/DrugsInteraction.js";
 
 const PatientHome = () => {
   const [userDet, setUserDet] = useState();
@@ -133,6 +134,11 @@ const PatientHome = () => {
                   exact
                   path="/radiation"
                   element={<Rad role={userDet.role} />}
+                />
+                <Route
+                  exact
+                  path="/drugsInteraction"
+                  element={<DrugsInteraction role={userDet.role}/>}
                 />
                 <Route
                   exact
