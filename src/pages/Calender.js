@@ -16,13 +16,16 @@ const Calendar = (props) => {
   const [year, setYear] = useState(moment().get("year"));
   const [type, setType] = useState();
   const [cusBtns, setCusBtns] = useState();
+  const [headBar, setHeadBar] = useState();
   const [startDate, setStartDate] = useState(moment().toDate());
 
   let navigate = useNavigate();
 
   let calenderRef = React.createRef();
 
-  useEffect(() => {
+  useEffect(() => { 
+    let head = "prev,next today"
+    if (props.role != "doctor") {
       let arr = ["all", "doctor", "lab", "rad"];
       let obj = {};
       arr.map((e) => {
@@ -33,7 +36,11 @@ const Calendar = (props) => {
           },
         };
       });
+      setHeadBar(head+" all,doctor,lab,rad")
       setCusBtns(obj);
+    }else{
+      setHeadBar(head)
+    }
   }, []);
 
   const GetReserves = async () => {
@@ -56,9 +63,17 @@ const Calendar = (props) => {
   let addEvents = () => {
     let obj = [];
     reserves.map((e) => {
+      let title = "";
+      if (e.type == "doctor" && ["patient", "admin"].includes(props.role)) {
+        title = "Dr." + e.docName;
+      } else if (e.type == "doctor" && props.role == "doctor") {
+        title = e.patName;
+      } else {
+        title = e.type + " reserve";
+      }
       let eventObj = {
         id: e._id,
-        title: `${e.type} reserve`,
+        title,
         display: "block",
       };
       if (e.type == "doctor") {
@@ -106,45 +121,45 @@ const Calendar = (props) => {
 
   let handleDateChange = (args) => {
     console.log(args);
-    setStartDate(args.start)
+    setStartDate(args.start);
     let date = moment(args.start);
     setMonth(date.get("month") + 1);
     setYear(date.get("year"));
   };
-console.log(startDate);
+  console.log(startDate);
   return (
     <div className="main-content">
       <div className="container-fluid">
-          <div className="section">
-            <div className="App">
-              <FullCalendar
-                ref={calenderRef}
-                customButtons={cusBtns}
-                plugins={[
-                  dayGridPlugin,
-                  interactionPlugin,
-                  timeGridPlugin,
-                  bootstrap5Plugin,
-                ]}
-                headerToolbar={{
-                  left: "prev,next today all,doctor,lab,rad",
-                  center: "title",
-                  right: "dayGridMonth,timeGridWeek,timeGridDay",
-                }}
-                initialDate={startDate}
-                selectable={true}
-                themeSystem={"bootstrap5"}
-                initialView={"dayGridMonth"}
-                datesSet={handleDateChange}
-                showNonCurrentDates={false}
-                events={events}
-                eventClick={handleEventClick}
-                navLinks={true}
-                navLinkDayClick={handleDateClick}
-                dayMaxEventRows={4}
-              />
-            </div>
+        <div className="section">
+          <div className="App">
+            <FullCalendar
+              ref={calenderRef}
+              customButtons={cusBtns}
+              plugins={[
+                dayGridPlugin,
+                interactionPlugin,
+                timeGridPlugin,
+                bootstrap5Plugin,
+              ]}
+              headerToolbar={{
+                left: headBar,
+                center: "title",
+                right: "dayGridMonth,timeGridWeek,timeGridDay",
+              }}
+              initialDate={startDate}
+              selectable={true}
+              themeSystem={"bootstrap5"}
+              initialView={"dayGridMonth"}
+              datesSet={handleDateChange}
+              showNonCurrentDates={false}
+              events={events}
+              eventClick={handleEventClick}
+              navLinks={true}
+              navLinkDayClick={handleDateClick}
+              dayMaxEventRows={4}
+            />
           </div>
+        </div>
       </div>
     </div>
   );

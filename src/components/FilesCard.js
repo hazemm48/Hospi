@@ -24,7 +24,6 @@ const FilesCard = (props) => {
     console.log(uploaded);
     if (uploaded.message == "done") {
       setFiles(uploaded.files);
-      setLoading(false);
     }
   };
 
@@ -43,7 +42,6 @@ const FilesCard = (props) => {
     let deleted = await removeFile(body, "removeFiles");
     console.log(deleted);
     deleted.message == "file deleted" && setFiles(deleted.files);
-    setLoading(false);
   };
 
   return (
@@ -51,7 +49,8 @@ const FilesCard = (props) => {
       <div className="card-header">
         <h5>
           files
-          {props.role == "admin" && (
+          {(props.role == "admin" ||
+            (props.role == "doctor" && props.fieldName == "reserves")) && (
             <>
               <input
                 type="file"
@@ -60,7 +59,6 @@ const FilesCard = (props) => {
                 id="fileupload"
                 style={{ display: "none" }}
                 onChange={(e) => {
-                  setLoading(true);
                   upload(e);
                 }}
               />
@@ -90,14 +88,15 @@ const FilesCard = (props) => {
                   <a href={e.path} target="_blank">
                     {e.name}
                   </a>
-                  {props.role == "admin" && (
+                  {(props.role == "admin" ||
+                    (props.role == "doctor" &&
+                      props.fieldName == "reserves")) && (
                     <div className="float-right">
                       <div className="action-buttons no-display">
                         <button
                           className="btn btn-sm btn-dark-red-f"
                           data-id={e.path}
                           onClick={() => {
-                            setLoading(true);
                             deleteFiles(e.path);
                           }}
                         >

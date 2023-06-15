@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { addUser, getGeneral, rooms, uploadFile } from "../../adminAPI.js";
+import {
+  addUser,
+  categoriesApi,
+  rooms,
+  uploadFile,
+} from "../../adminAPI.js";
 import moment from "moment-timezone";
 import Schedule from "../../components/Schedule.js";
 import manImg from "../../images/male.jpg";
@@ -100,12 +105,17 @@ const AddDoctor = () => {
 
   const GetSpecialities = async () => {
     let body = {
-      filter: "specialities",
+      filter: {
+        type: "speciality",
+      },
     };
-    let general = await getGeneral(body);
-    delete general.data[0].specialities[0];
-    setSpecialities(general.data[0].specialities);
+    let { message, results } = await categoriesApi(body, "POST", "get");
+    results = results.map((e) => {
+      return e.name;
+    });
+    setSpecialities(results);
   };
+
   const GetRoom = async () => {
     let body = {
       filter: { type: "consult" },
@@ -143,7 +153,12 @@ const AddDoctor = () => {
             <div className="card container">
               <div className="col-md-3">
                 <div className="card-header">
-                  <img className="rounded-circle" src={manImg} loading="lazy" />
+                  <img
+                    className="rounded-circle"
+                    width="80%"
+                    src={manImg}
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div className="card-body">
@@ -192,13 +207,16 @@ const AddDoctor = () => {
                               })}
                             </select>
                           </div>
-                          <div className="form-group col-sm-2">
+                          <div className="form-group col-sm-5">
                             <label>Gender</label>
                             <select
                               className="form-control form-select dropdown-toggle"
                               name="gender"
                               required
                             >
+                              <option disabled selected>
+                                -- choose gender --
+                              </option>
                               <option value="male">Male</option>
                               <option value="female">Female</option>
                             </select>
@@ -210,6 +228,10 @@ const AddDoctor = () => {
                               name="speciality"
                               required
                             >
+                              <option disabled selected>
+                                -- choose speciality --
+                              </option>
+
                               {specialities?.map((e) => {
                                 return <option value={e}>{e}</option>;
                               })}

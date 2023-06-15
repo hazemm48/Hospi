@@ -26,7 +26,7 @@ const PatientDetails = ({ role }) => {
   const navigate = useNavigate();
 
   let createHtmlData = (state) => {
-    setHtmlData([
+    let data = [
       ["gender", state.gender ? state.gender : "", "gender"],
       ["phone", state.phone ? state.phone : "", "phone number"],
       ["city", state.patientInfo?.city ? state.patientInfo.city : "", "city"],
@@ -37,49 +37,57 @@ const PatientDetails = ({ role }) => {
           : "",
         "date of birth",
       ],
-      ["sta", state.isLoggedIn ? "Online" : "Offline", "member status"],
-      [
-        "reg",
-        moment(state.createdAt).local().format("DD/MM/YYYY"),
-        "registered date",
-      ],
-    ]);
-    setBottomBtns([
+    ];
+    let arr = [
       [
         "-dark",
         () => {
-          setCalView(true);
-        },
-        "view appointments",
-        "la-calendar-day",
-      ],
-      [
-        "-dark",
-        () => {
-          navigate("/admin/medicalRecord", {
+          navigate(`/${role}/medicalRecord`, {
             state: id.state,
           });
         },
         "medical record",
         "la-notes-medical",
       ],
-      [
-        "",
-        () => {
-          resetPass();
-        },
-        "reset password",
-        "la-lock",
-      ],
-      [
-        "",
-        () => {
-          userDelete();
-        },
-        "delete user",
-        "la-trash",
-      ],
-    ]);
+    ];
+    if (role == "admin") {
+      data.push(
+        ["sta", state.isLoggedIn ? "Online" : "Offline", "member status"],
+        [
+          "reg",
+          moment(state.createdAt).local().format("DD/MM/YYYY"),
+          "registered date",
+        ]
+      );
+      arr.push(
+        [
+          "-dark",
+          () => {
+            setCalView(true);
+          },
+          "view appointments",
+          "la-calendar-day",
+        ],
+        [
+          "",
+          () => {
+            resetPass();
+          },
+          "reset password",
+          "la-lock",
+        ],
+        [
+          "",
+          () => {
+            userDelete();
+          },
+          "delete user",
+          "la-trash",
+        ]
+      );
+    }
+    setBottomBtns(arr);
+    setHtmlData(data);
   };
 
   const GetDetails = async () => {
@@ -162,7 +170,7 @@ const PatientDetails = ({ role }) => {
   return (
     <>
       {calView ? (
-        <Calendar filter={{ patientId: id.state }} />
+        <Calendar filter={{ patientId: id.state }} role={role} />
       ) : (
         <div className="main-content">
           <div className="container-fluid">
@@ -186,6 +194,7 @@ const PatientDetails = ({ role }) => {
                               <div className="row">
                                 <DetailsLeftSection
                                   data={state}
+                                  role={role}
                                   type={"patient"}
                                   GetDetails={GetDetails}
                                   setLoading={setLoading}
@@ -250,13 +259,15 @@ const PatientDetails = ({ role }) => {
                         </div>
                       </div>
                       <div className="col-md-4">
-                        <NotesCard id={state._id} />
-                        <FilesCard
-                          role={role}
-                          files={state.files}
-                          id={state._id}
-                          fieldName={"users"}
-                        />
+                        <NotesCard id={state._id} role={role} />
+                        {role == "admin" && (
+                          <FilesCard
+                            role={role}
+                            files={state.files}
+                            id={state._id}
+                            fieldName={"users"}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>

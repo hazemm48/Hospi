@@ -12,7 +12,7 @@ import {
 } from "../../components/Pagenation.js";
 import SortDropdown from "../../components/SortDropdown.js";
 
-const Patients = ({ role, docId }) => {
+const Admins = ({ role }) => {
   const [loading, setLoading] = useState(false);
   const [patients, setPatients] = useState();
   const [pageNo, setPageNo] = useState();
@@ -25,8 +25,6 @@ const Patients = ({ role, docId }) => {
     ["createdAt:1", "Oldest"],
     ["name:1", "Name ascending"],
     ["name:-1", "Name descending"],
-    ["patientInfo.birthDate:-1", "New born"],
-    ["patientInfo.birthDate:1", "Old born"],
     ["gender:-1", "Male"],
     ["gender:1", "Female"],
   ];
@@ -42,15 +40,20 @@ const Patients = ({ role, docId }) => {
     let sort = document.getElementById("sort").value;
     let body = {
       filter: {
-        role: "patient",
+        role: "admin",
       },
       sort: sort,
       pageNo: currentPage,
       limit: resultLimit,
     };
-    role == "doctor" && (body.filter["patientInfo.reservedDoctors"] = docId);
     srchFilter && (body.filter = { ...body.filter, ...srchFilter });
     let user = await users(body);
+    user.users.map((e, i) => {
+      if (e.email == process.env.REACT_APP_SA) {
+        user.users.splice(i, 1);
+        user.count = user.count - 1;
+      }
+    });
     setLength(user.count);
     setPatients(user.users);
     setLoading(false);
@@ -65,7 +68,7 @@ const Patients = ({ role, docId }) => {
     <div className="main-content">
       <div className="container-fluid">
         <div className="section title-section">
-          <h5 className="page-title">Patients</h5>
+          <h5 className="page-title">Admins</h5>
         </div>
         <div className="section filters-section">
           <SortDropdown
@@ -76,16 +79,14 @@ const Patients = ({ role, docId }) => {
           />
           <SwitchView />
           <Search search={setSrchFilter} type={"user"} />
-          {role == "admin" && (
-            <div className="buttons-wrapper ml-auto">
-              <Link to="/admin/addPatient">
-                <button className="btn btn-dark-red-f-gr">
-                  <i className="las la-plus-circle" />
-                  add a new patient
-                </button>
-              </Link>
-            </div>
-          )}
+          <div className="buttons-wrapper ml-auto">
+            <Link to="/admin/addAdmin">
+              <button className="btn btn-dark-red-f-gr">
+                <i className="las la-plus-circle" />
+                add a new admin
+              </button>
+            </Link>
+          </div>
         </div>
         {loading ? (
           <LoadingSpinner />
@@ -96,8 +97,8 @@ const Patients = ({ role, docId }) => {
               length={length}
               resultLimit={resultLimit}
             />
-            <CardView type="patient" data={patients} role={role} />
-            <TableView type="patient" data={patients} role={role} display="no-display" />
+            <CardView type="admin" data={patients} role={role} />
+            <TableView type="admin" data={patients} display="no-display" />
           </>
         )}
       </div>
@@ -111,4 +112,4 @@ const Patients = ({ role, docId }) => {
   );
 };
 
-export default Patients;
+export default Admins;

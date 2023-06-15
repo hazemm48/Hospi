@@ -40,10 +40,16 @@ const CardView = (props) => {
                     <div className="card-img-top">
                       <img
                         className="rounded-circle"
-                        src={user.image ? user.image : (user.gender=="male"?maleImg:femaleImg)}
+                        src={
+                          user.image
+                            ? user.image
+                            : user.gender == "male"
+                            ? maleImg
+                            : femaleImg
+                        }
                         loading="lazy"
                       />
-                      {props.role == "admin" ? (
+                      {["admin","doctor"].includes(props.role) ? (
                         <Link
                           to={`/${props.role}/${props.type}Details`}
                           state={user._id}
@@ -78,17 +84,23 @@ const CardView = (props) => {
                           ? user.doctorInfo?.speciality
                           : user.email}
                       </p>
-                      <label className="text-muted">
-                        {props.type == "doctor" ? "schedule" : "date of birth"}{" "}
-                      </label>
-                      <p>
-                        {props.type == "doctor"
-                          ? user.scheduleDays.join(" , ")
-                          : user[`${props.type}Info`]?.birthDate &&
-                            moment(user[`${props.type}Info`].birthDate).format(
-                              "DD/MM/YYYY"
-                            )}
-                      </p>
+                      {props.type != "admin" && (
+                        <>
+                          <label className="text-muted">
+                            {props.type == "doctor"
+                              ? "schedule"
+                              : "date of birth"}{" "}
+                          </label>
+                          <p>
+                            {props.type == "doctor"
+                              ? user.scheduleDays.join(" , ")
+                              : user[`${props.type}Info`]?.birthDate &&
+                                moment(
+                                  user[`${props.type}Info`].birthDate
+                                ).format("DD/MM/YYYY")}
+                          </p>
+                        </>
+                      )}
                       <label className="text-muted">gender</label>
                       <p>{user.gender}</p>
                     </div>

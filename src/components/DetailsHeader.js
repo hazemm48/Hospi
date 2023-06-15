@@ -56,18 +56,20 @@ const DetailsHeader = ({ name, type, updateUserDetails, role }) => {
           </ol>
         </div>
       </div>
-      <div className="col-md-4">
-        <button
-          id="editDetails"
-          className="btn btn-dark-red-f-gr"
-          onClick={() => {
-            editDetails();
-          }}
-        >
-          <i className="las la-edit" />
-          {`edit ${type}`}
-        </button>
-      </div>
+      {(role == "admin") && (
+        <div className="col-md-4">
+          <button
+            id="editDetails"
+            className="btn btn-dark-red-f-gr"
+            onClick={() => {
+              editDetails();
+            }}
+          >
+            <i className="las la-edit" />
+            {`edit ${type}`}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

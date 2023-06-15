@@ -33,8 +33,15 @@ const CreateReserve = ({ role }) => {
     };
     let user = await users(body);
     console.log(user);
+    let dates = [];
+    if (user.users[0].doctorInfo?.unavailableDates) {
+      user.users[0].doctorInfo.unavailableDates =
+        user.users[0].doctorInfo.unavailableDates.map((e) => {
+          return moment(e).toDate();
+        });
+    }
+    console.log(user.users[0].doctorInfo?.unavailableDates);
     setUserDetails(user.users[0]);
-    console.log(user.users);
     setScheduleDay(0);
   };
   useEffect(() => {
@@ -60,10 +67,13 @@ const CreateReserve = ({ role }) => {
     data.anotherPerson = JSON.parse(data.anotherPerson);
     data.speciality = userDetails.doctorInfo?.speciality;
     let filter = {};
-    data.email && role == "admin" && (filter.email = data.email);
+    data.email && role == "admin" && (filter.email = data.email.toLowerCase());
     data.phone && role == "admin" && (filter.phone = data.phone);
+    console.log(filter);
     if (filter) {
-      let user = await users(filter);
+      let body = { filter };
+      let user = await users(body);
+      console.log(user);
       if (user.users.length > 0) {
         data.patientId = user.users[0]._id;
       }
@@ -119,7 +129,7 @@ const CreateReserve = ({ role }) => {
                         </div>
                         <div
                           className="card-body row"
-                          style={{ justifyContent: "center" }}
+                          style={{ justifyContent: "center", display: "block" }}
                         >
                           <h3>{userDetails.name}</h3>
                           <h4>{userDetails.doctorInfo.speciality}</h4>
@@ -132,7 +142,6 @@ const CreateReserve = ({ role }) => {
                                 style={{
                                   margin: "0.3em",
                                 }}
-                                onClick={(e) => {}}
                               >
                                 <i className="las la-edit" />
                                 doctor details
@@ -234,6 +243,12 @@ const CreateReserve = ({ role }) => {
                                     placeholderText="choose date"
                                     minDate={new Date()}
                                     filterDate={isWeekday}
+                                    excludeDates={
+                                      userDetails.doctorInfo?.unavailableDates
+                                        ? userDetails.doctorInfo
+                                            .unavailableDates
+                                        : []
+                                    }
                                     dateFormat="dd-MM-yyyy"
                                     className="form-control"
                                     selected={startDate}

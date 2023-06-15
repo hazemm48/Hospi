@@ -9,7 +9,7 @@
 }
 .section .card .card-body img {
   width: 10em;
-  height: 10em;
+  /* height: 10em; */
   object-fit: cover;
 }
 .patHomeImg{

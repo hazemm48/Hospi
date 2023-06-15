@@ -3,9 +3,7 @@ import maleImg from "../images/male.jpg";
 import femaleImg from "../images/female.jpg";
 import moment from "moment";
 
-const DetailsLeftSection = ({ data, type, GetDetails, setLoading }) => {
-  console.log(data, type);
-
+const DetailsLeftSection = ({ data, type, GetDetails, setLoading, role }) => {
   let addProfilePic = async (e) => {
     let formData = new FormData();
     formData.append("fieldName", "users");
@@ -37,42 +35,51 @@ const DetailsLeftSection = ({ data, type, GetDetails, setLoading }) => {
         <div className="card-header">
           <img
             className="rounded-circle"
-            src={data.image ? data.image : (data.gender=="male"?maleImg:femaleImg)}
+            src={
+              data.image
+                ? data.image
+                : data.gender == "male"
+                ? maleImg
+                : femaleImg
+            }
             loading="lazy"
           />
         </div>
         <div className="card-body">
-          <div className="">
-            <button
-              className="btn btn-red-f-gr btn-sm float-center"
-              style={{ margin: "1em" }}
-              onClick={() => {
-                removeProfilePic();
-              }}
-            >
-              <i className="las la-trash" />
-              delete
-            </button>
-            <input
-              type="file"
-              accept="image/*"
-              id="imgupload"
-              style={{ display: "none" }}
-              onChange={(e) => {
-                addProfilePic(e);
-              }}
-            />
-            <button
-              className="btn btn-dark-red-f btn-sm float-center"
-              style={{ margin: "1em" }}
-              onClick={() => {
-                document.getElementById("imgupload").click();
-              }}
-            >
-              <i className="las la-image" />
-              change
-            </button>
-          </div>
+          {role == "admin" && (
+            <div className="">
+              <button
+                className="btn btn-red-f-gr btn-sm float-center"
+                style={{ margin: "1em" }}
+                onClick={() => {
+                  removeProfilePic();
+                }}
+              >
+                <i className="las la-trash" />
+                delete
+              </button>
+              <input
+                type="file"
+                accept="image/*"
+                id="imgupload"
+                style={{ display: "none" }}
+                onChange={(e) => {
+                  addProfilePic(e);
+                }}
+              />
+              <button
+                className="btn btn-dark-red-f btn-sm float-center"
+                style={{ margin: "1em" }}
+                onClick={() => {
+                  document.getElementById("imgupload").click();
+                }}
+              >
+                <i className="las la-image" />
+                change
+              </button>
+            </div>
+          )}
+
           <input
             name="name"
             id="name"
@@ -83,8 +90,12 @@ const DetailsLeftSection = ({ data, type, GetDetails, setLoading }) => {
           />
 
           <small className="text-muted">{data._id}</small>
-          <h5>Age</h5>
-          <p>{moment().diff(data[`${type}Info`]?.birthDate, "years")}</p>
+          {data.role != "admin" && (
+            <>
+              <h5>Age</h5>
+              <p>{moment().diff(data[`${type}Info`]?.birthDate, "years")}</p>
+            </>
+          )}
         </div>
       </div>
     </div>

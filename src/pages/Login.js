@@ -1,11 +1,15 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 import logo from "../images/hospi 2.jpg";
 import LoadingSpinner from "../components/Loading.js";
-import { login } from "../adminAPI.js";
+import { login, signUpApi } from "../adminAPI.js";
+import moment from "moment";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const [birthDate, setBirthDate] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,6 +56,33 @@ const Login = () => {
     setLoading(false);
   };
 
+  const signUp = async () => {
+    let formEl = document.forms.signUpForm;
+    let formData = new FormData(formEl);
+
+    let body = {
+      name: formData.get("name").toLowerCase(),
+      email: formData.get("email").toLowerCase(),
+      password: formData.get("password"),
+      patientInfo: {
+        birthDate: moment(birthDate).format("MM-DD-YYYY"),
+      },
+      gender: formData.get("gender"),
+      role: "patient",
+    };
+    console.log(body);
+    let { message } = await signUpApi(body);
+    if (message == "patient added") {
+      alert(
+        "an email confirmation message have been sent to your email\nplease confirm your email first before continue"
+      );
+      window.location.reload();
+    } else {
+      alert(message);
+    }
+    console.log(message);
+  };
+
   useLayoutEffect(() => {
     const sign_in_btn = document.querySelector("#sign-in-btn");
     const sign_up_btn = document.querySelector("#sign-up-btn");
@@ -78,11 +109,7 @@ const Login = () => {
                 <h2 className="title">Sign in</h2>
                 <div className="input-field">
                   <i className="las la-envelope" />
-                  <input
-                    name="email"
-                    type="text"
-                    placeholder="E-mail"
-                  />
+                  <input name="email" type="text" placeholder="E-mail" />
                 </div>
                 <div className="input-field">
                   <i className="las la-key" />
@@ -102,7 +129,7 @@ const Login = () => {
                     signIn();
                   }}
                 />
-                {/* <p className="social-text">Or Sign in with social platforms</p>
+                <p className="social-text">Or Sign in with social platforms</p>
                 <div className="social-media">
                   <a href="#" className="social-icon">
                     <i className="las la-facebook" />
@@ -110,7 +137,7 @@ const Login = () => {
                   <a href="#" className="social-icon">
                     <i className="las la-google-plus" />
                   </a>
-                </div> */}
+                </div>
               </form>
               <form id="signUpForm" className="sign-up-form">
                 <h2 className="title">Sign up</h2>
@@ -132,14 +159,40 @@ const Login = () => {
                 </div>
                 <div className="input-field">
                   <i className="las la-calendar" />
-                  <input
+                  <DatePicker
                     name="birthDate"
-                    type="date"
-                    placeholder="Birth Date"
+                    placeholderText="choose date"
+                    minDate={moment().subtract(100, "years")._d}
+                    maxDate={moment().subtract(1, "years")._d}
+                    selected={birthDate}
+                    onChange={setBirthDate}
+                    dateFormat="dd-MM-yyyy"
+                    required
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
                   />
                 </div>
-                <input type="submit" className="btn" defaultValue="Sign up" />
-                {/* <p className="social-text">Or Sign up with social platforms</p>
+                <div className="input-field">
+                  <i className="las la-transgender" />
+                  <select
+                    name="gender"
+                    style={{ background: "none", border: "none" }}
+                  >
+                    <option disabled selected>
+                      -- choose your gender --
+                    </option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+                <input
+                  type="button"
+                  className="btn"
+                  defaultValue="Sign up"
+                  onClick={signUp}
+                />
+                <p className="social-text">Or Sign up with social platforms</p>
                 <div className="social-media">
                   <a href="#" className="social-icon">
                     <i className="fab fa-facebook-f" />
@@ -147,7 +200,7 @@ const Login = () => {
                   <a href="#" className="social-icon">
                     <i className="fab fa-google" />
                   </a>
-                </div> */}
+                </div>
               </form>
             </div>
           </div>

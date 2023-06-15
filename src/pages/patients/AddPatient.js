@@ -84,7 +84,7 @@ const AddPatient = () => {
             <div className="card container">
               <div className="col-md-3">
                 <div className="card-header">
-                  <img className="rounded-circle" src={manImg} loading="lazy" />
+                  <img className="rounded-circle" width="80%" src={manImg} loading="lazy" />
                 </div>
               </div>
               <div className="card-body">
@@ -116,13 +116,14 @@ const AddPatient = () => {
                               </div>
                             );
                           })}
-                          <div className="form-group col-sm-2">
+                          <div className="form-group col-sm-5">
                             <label>Gender</label>
                             <select
                               className="form-control form-select dropdown-toggle"
                               name="gender"
                               required
                             >
+                              <option disabled selected>-- choose gender --</option>
                               <option value="male">Male</option>
                               <option value="female">Female</option>
                             </select>

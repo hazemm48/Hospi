@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { useLocation, useParams } from "react-router-dom";
-import { categoriesApi } from "../adminAPI.js";
-import LoadingSpinner from "../components/Loading.js";
-import InputsHandler from "./InputsHandler.js";
+import { categoriesApi } from "../../adminAPI.js";
+import LoadingSpinner from "../../components/Loading.js";
+import InputsHandler from "../../components/InputsHandler.js";
 
 const AddCategory = () => {
   const [loading, setLoading] = useState(false);

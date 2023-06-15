@@ -4,32 +4,36 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   updateUser,
   users,
-  getGeneral,
   deleteUser,
   rooms,
   resetPassword,
+  categoriesApi,
 } from "../../adminAPI.js";
 import DetailsBottom from "../../components/DetailsBottom.js";
 import DetailsHeader from "../../components/DetailsHeader.js";
 import DetailsLeftSection from "../../components/DetailsLeftSection.js";
+import DoctorScheduleCard from "../../components/DoctorScheduleCard.js";
 import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
 import NotesCard from "../../components/NotesCard.js";
 import Schedule from "../../components/Schedule.js";
 import Calendar from "../Calender.js";
 
-const DoctorDetails = ({ role }) => {
+const DoctorDetails = ({ role , userId }) => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
   const [htmlData, setHtmlData] = useState([]);
   const [bottomBtns, setBottomBtns] = useState([]);
   const [specialities, setSpecialities] = useState();
   const [calView, setCalView] = useState(false);
-  const [scheduleNo, setScheduleNo] = useState(0);
   const [roomList, setRoomList] = useState([]);
 
   const id = useLocation();
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    !id.state&&(id.state=userId)
+  },[])
 
   let createHtmlData = (state) => {
     setHtmlData([
@@ -105,11 +109,15 @@ const DoctorDetails = ({ role }) => {
 
   const GetSpecialities = async () => {
     let body = {
-      filter: "specialities",
+      filter: {
+        type: "speciality",
+      },
     };
-    let general = await getGeneral(body);
-    delete general.data[0].specialities[0];
-    setSpecialities(general.data[0].specialities);
+    let { message, results } = await categoriesApi(body, "POST", "get");
+    results = results.map((e) => {
+      return e.name;
+    });
+    setSpecialities(results);
   };
 
   const GetRooms = async () => {
@@ -206,7 +214,8 @@ const DoctorDetails = ({ role }) => {
     }
     details.name = document.getElementById("name").value;
     details.doctorInfo.schedule = schedule;
-    details.doctorInfo.birthDate = moment(details.doctorInfo.birthDate).format(
+    console.log(details.doctorInfo.birthDate);
+    details.doctorInfo.birthDate = moment(details.doctorInfo.birthDate,'DD-MM-YYYY').format(
       "MM-DD-YYYY"
     );
     let body = {
@@ -240,7 +249,7 @@ const DoctorDetails = ({ role }) => {
         {loading ? (
           <LoadingSpinner />
         ) : calView ? (
-          <Calendar filter={{ doctorId: id.state }} />
+          <Calendar filter={{ doctorId: id.state }} role={role} />
         ) : (
           state && (
             <>
@@ -367,48 +376,12 @@ const DoctorDetails = ({ role }) => {
                           </div>
                         </div>
                       </div>
-                      <div id="schDet" className="col-sm-12">
-                        <div className="card">
-                          <form id="schForm">
-                            <div className="mini-card">
-                              <div className="card-body">
-                                <div className="row">
-                                  {state.doctorInfo?.schedule.map((e, i) => {
-                                    return (
-                                      <Schedule
-                                        docDetails={true}
-                                        key={i}
-                                        schDetails={e}
-                                        index={i}
-                                      />
-                                    );
-                                  })}
-                                  {[...Array(scheduleNo)].map((e, i) => {
-                                    return <Schedule key={i} />;
-                                  })}
-                                </div>
-                              </div>
-                            </div>
-                            <button
-                              id="schBtn"
-                              className="btn btn-dark-f-gr mt-4"
-                              type="button"
-                              hidden
-                              onClick={() => {
-                                setScheduleNo(scheduleNo + 1);
-                              }}
-                            >
-                              <i className="las la-plus" />
-                              Add
-                            </button>
-                          </form>
-                        </div>
-                      </div>
+                      <DoctorScheduleCard user={state}/>
                       <DetailsBottom arr={bottomBtns} />
                     </div>
                   </div>
                   <div className="col-md-4">
-                    <NotesCard id={state._id} />
+                    <NotesCard id={state._id} role={role} />
                     <FilesCard
                       role={role}
                       files={state.files}

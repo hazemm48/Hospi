@@ -19,9 +19,14 @@ const TableView = (props) => {
     " ",
   ];
   let patTable = ["name", "gender", "Date of birth", "age", "email", " "];
+  let adminTable = ["name", "gender", "email", " "];
 
   useEffect(() => {
-    props.type == "doctor" ? setTable(docTable) : setTable(patTable);
+    props.type == "doctor"
+      ? setTable(docTable)
+      : props.type == "patient"
+      ? setTable(patTable)
+      : setTable(adminTable);
   }, []);
 
   return (
@@ -54,24 +59,28 @@ const TableView = (props) => {
                     <span className="ml-2">{user.name}</span>
                   </td>
                   <td>{user.gender}</td>
-                  <td>
-                    {moment(user[`${props.type}Info`]?.birthDate).format(
-                      "DD/MM/YYYY"
-                    )}
-                  </td>
-                  <td>
-                    {props.type == "doctor"
-                      ? user.doctorInfo?.speciality
-                      : moment().diff(
-                          user[`${props.type}Info`]?.birthDate,
-                          "years"
+                  {props.type != "admin" && (
+                    <>
+                      <td>
+                        {moment(user[`${props.type}Info`]?.birthDate).format(
+                          "DD/MM/YYYY"
                         )}
-                  </td>
+                      </td>
+                      <td>
+                        {props.type == "doctor"
+                          ? user.doctorInfo?.speciality
+                          : moment().diff(
+                              user[`${props.type}Info`]?.birthDate,
+                              "years"
+                            )}
+                      </td>
+                    </>
+                  )}
                   <td>{props.type == "doctor" ? user.phone : user.email}</td>
                   <td>
-                    {role == "admin" && (
+                    {["admin", "doctor"].includes(role) && (
                       <Link
-                        to={`/home/${props.type}Details`}
+                        to={`/${props.role}/${props.type}Details`}
                         state={user._id}
                         className="view-more btn btn-sm btn-dark-red-f"
                       >

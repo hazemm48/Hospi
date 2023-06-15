@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { categoriesApi, productsApi, rooms } from "../adminAPI.js";
-import LoadingSpinner from "../components/Loading.js";
-import Search from "../components/Search.js";
+import { categoriesApi, productsApi, rooms } from "../../adminAPI.js";
+import LoadingSpinner from "../../components/Loading.js";
+import Search from "../../components/Search.js";
 import {
   PagenationNavigate,
   PagenationResult,
-} from "../components/Pagenation.js";
-import SortDropdown from "../components/SortDropdown.js";
+} from "../../components/Pagenation.js";
+import SortDropdown from "../../components/SortDropdown.js";
 
 const ProductsManager = () => {
   const [loading, setLoading] = useState(false);
@@ -156,7 +156,7 @@ const ProductsManager = () => {
           />
           <Search search={setSrchFilter} type={"product"} />
           <div className="buttons-wrapper ml-auto">
-            <Link to="/admin/addRoom">
+            <Link to={`/admin/addProduct/${type}`}>
               <button className="btn btn-dark-red-f-gr">
                 <i className="las la-plus-circle" />
                 add a new product

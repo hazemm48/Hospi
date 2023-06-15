@@ -5,7 +5,6 @@ import DatePicker from "react-datepicker";
 import { BodyComponent } from "reactjs-human-body";
 import warning from "../../images/warning.jpg";
 
-
 import moment from "moment";
 
 const DiagnosisChecker = (props) => {
@@ -228,27 +227,26 @@ const DiagnosisChecker = (props) => {
                 </div>
               </div>
             </div>
-            {result.length > 0 && (
-              <div className="col-sm-12">
-                <div className="card container label-yellow">
-                  <div className="card-body">
-                    <div className="row">
-                      <div style={{ maxWidth: "35%" }} class="col-md-1">
-                        <img className="patHomeImg" src={warning} />
-                      </div>
-                      <div className="col-md-10 welcome-text-wrapper align-self-center">
-                        <p>
-                          It is not our intention to provide specific medical
-                          advice, but rather to provide users with information
-                          to better understand their health. we urges you to consult with a qualified
-                          physician for advice about your symptoms.
-                        </p>
-                      </div>
+            <div className="col-sm-12">
+              <div className="card container label-yellow">
+                <div className="card-body">
+                  <div className="row">
+                    <div style={{ maxWidth: "35%" }} class="col-md-1">
+                      <img className="patHomeImg" src={warning} />
+                    </div>
+                    <div className="col-md-10 welcome-text-wrapper align-self-center">
+                      <p>
+                        It is not our intention to provide specific medical
+                        advice, but rather to provide users with information to
+                        better understand their health. we urges you to consult
+                        with a qualified physician for advice about your
+                        symptoms.
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
-            )}
+            </div>
             <div className="col-sm-12">
               <div className="card container">
                 <div id="tv" className={`section patients-table-view`}>

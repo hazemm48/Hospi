@@ -6,11 +6,13 @@ import LoadingSpinner from "../../components/Loading.js";
 import { PagenationResult } from "../../components/Pagenation.js";
 import record from "../../images/record.jpg";
 
-const MedicalRecord = ({role}) => {
+const MedicalRecord = ({ role }) => {
   const [loading, setLoading] = useState(false);
   const [length, setLength] = useState();
   const [data, setData] = useState([]);
   let { state } = useLocation();
+  console.log(state);
+
 
   let filterValues = [
     ["all", "All"],
@@ -49,7 +51,7 @@ const MedicalRecord = ({role}) => {
           <h5 className="page-title">Medical Records</h5>
         </div>
         <div className="section filters-section">
-          <div style={{marginRight:"0.5em"}}>
+          <div style={{ marginRight: "0.5em" }}>
             <label>Type :</label>
           </div>
           <div className="dropdowns-wrapper">
@@ -76,14 +78,16 @@ const MedicalRecord = ({role}) => {
               </select>
             </div>
           </div>
-          <div className="buttons-wrapper ml-auto">
-            <Link to={`/${role}/addMedicalRecord`} state={state}>
-              <button className="btn btn-dark-red-f-gr">
-                <i className="las la-plus-circle" />
-                add a new medical record
-              </button>
-            </Link>
-          </div>
+          {role != "doctor" && (
+            <div className="buttons-wrapper ml-auto">
+              <Link to={`/${role}/addMedicalRecord`} state={state}>
+                <button className="btn btn-dark-red-f-gr">
+                  <i className="las la-plus-circle" />
+                  add a new medical record
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
         {loading ? (
           <LoadingSpinner />

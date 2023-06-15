@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { favoraiteDoc, getGeneral, users } from "../../adminAPI";
+import { categoriesApi, favoraiteDoc, users } from "../../adminAPI";
 import LoadingSpinner from "../../components/Loading.js";
 import Categories from "../../components/Categories.js";
 import CardView from "../../components/CardView.js";
@@ -70,10 +70,10 @@ const Doctors = ({ role, id, favDocs }) => {
       user = await users(body);
     } else {
       user = await favoraiteDoc({}, "get");
-      let docs = user.users.map((e)=>{
-        return e._id
-      })
-      setFavDoc(docs)
+      let docs = user.users.map((e) => {
+        return e._id;
+      });
+      setFavDoc(docs);
     }
     user.users.map((e) => {
       let arr = [];
@@ -92,19 +92,19 @@ const Doctors = ({ role, id, favDocs }) => {
 
   const GetSpecialities = async () => {
     let body = {
-      filter: "specialities",
+      filter: {
+        type: "speciality",
+      },
     };
-    let general = await getGeneral(body);
-    let data = general.data[0].specialities;
-    let dataArr = [["all", "all"]];
-    data.map((e) => {
-      let arr = [e, e];
-      dataArr.push(arr);
+    let { message, results } = await categoriesApi(body, "POST", "get");
+    results = results.map((e) => {
+      return [e.name, e.name];
     });
+    results.unshift(["all", "all"]);
     if (role == "patient") {
-      dataArr.unshift(["fav", "favourites"]);
+      results.unshift(["fav", "favourites"]);
     }
-    setSpec(dataArr);
+    setSpec(results);
   };
 
   const addDocToFav = async ({ id }) => {
@@ -112,7 +112,7 @@ const Doctors = ({ role, id, favDocs }) => {
       docId: id,
     };
     let add = await favoraiteDoc(body);
-    setFavDoc(add.users)
+    setFavDoc(add.users);
     console.log(add);
   };
 

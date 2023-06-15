@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { addUser } from "../adminAPI.js";
-import FeedBack from "../components/FeedBack.js";
+import { addUser } from "../../adminAPI.js";
+import FeedBack from "../../components/FeedBack.js";
 
 const AddAdmin = () => {
   let [htmlData, setHtmlData] = useState();
@@ -21,22 +21,15 @@ const AddAdmin = () => {
     let formEl = document.forms.form;
     let formData = new FormData(formEl);
     let body = {
-      details: {
-        email: formData.get("email"),
-        name: formData.get("name"),
-        password: formData.get("password"),
-        role: "admin",
-      },
+      email: formData.get("email"),
+      name: formData.get("name"),
+      password: formData.get("password"),
+      gender: formData.get("gender"),
+      role: "admin",
     };
-    let add = await addUser(body);
-    console.log(add);
-    if (add.message == "admin added") {
-      if (window.confirm("admin Added Successfully")) {
-        window.location.reload();
-      }
-    } else {
-      alert("Wrong Data");
-    }
+    let {message} = await addUser(body);
+    console.log(message);
+    alert(message);
   };
   return (
     <div className="main-content">
@@ -51,7 +44,7 @@ const AddAdmin = () => {
                 <div className="sub-section-body">
                   <div className="user-password-form">
                     <form id="form">
-                      <div className="form-row">
+                      <div className="form">
                         {htmlData?.map((e) => {
                           return (
                             <div className="form-group col-sm-8">
@@ -65,6 +58,20 @@ const AddAdmin = () => {
                             </div>
                           );
                         })}
+                        <div className="form-group col-sm-5">
+                          <label>Gender</label>
+                          <select
+                            className="form-control form-select dropdown-toggle"
+                            name="gender"
+                            required
+                          >
+                            <option disabled selected>
+                              -- choose gender --
+                            </option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                          </select>
+                        </div>
                       </div>
                       <button
                         className="btn btn-dark-red-f-gr mt-4"

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { categoriesApi } from "../adminAPI.js";
-import Categories from "../components/Categories.js";
-import LoadingSpinner from "../components/Loading.js";
-import { PagenationResult } from "../components/Pagenation.js";
+import { categoriesApi } from "../../adminAPI.js";
+import Categories from "../../components/Categories.js";
+import LoadingSpinner from "../../components/Loading.js";
+import { PagenationResult } from "../../components/Pagenation.js";
 
 const GetCategories = ({ role }) => {
   const [loading, setLoading] = useState(false);

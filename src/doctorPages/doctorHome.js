@@ -14,6 +14,9 @@ import Calendar from "../pages/Calender.js";
 import MedicalRecord from "../pages/medicalRecord/MedicalRecord.js";
 import MedicRecordDetails from "../pages/medicalRecord/MedicalRecordDetails.js";
 import LoadingSpinner from "../components/Loading.js";
+import DrugsInteraction from "../pages/DrugsInteraction.js";
+import HomePage from "./HomePage.js";
+import DoctorSettings from "./DoctorSettings.js";
 
 const DoctorHome = () => {
   const [userDet, setUserDet] = useState();
@@ -29,8 +32,7 @@ const DoctorHome = () => {
     if (user.role == "doctor") {
       setUserDet(user);
     } else {
-      alert("not authorized");
-      navigate(-1);
+      navigate("/notAuthorized");
     }
     setLoading(false);
   };
@@ -57,12 +59,16 @@ const DoctorHome = () => {
               <Routes>
                 <Route
                   exact
-                  path="/dashboard"
+                  path="/home"
                   element={
-                    <Dashboard name={userDet.name} email={userDet.email} role={userDet.role}/>
+                    <HomePage user={userDet} />
                   }
                 />
-                <Route exact path="/patients" element={<Patients role={userDet.role} />} />
+                <Route
+                  exact
+                  path="/patients"
+                  element={<Patients role={userDet.role} docId={userDet._id} />}
+                />
                 <Route
                   exact
                   path="/patientDetails"
@@ -76,32 +82,46 @@ const DoctorHome = () => {
                 <Route
                   exact
                   path="/medicalRecordDetails"
-                  element={<MedicRecordDetails role={userDet.role}/>}
+                  element={<MedicRecordDetails role={userDet.role} />}
                 />
                 <Route
                   exact
                   path="/reservations"
-                  element={<Calendar type={"res"} role={userDet.role} />}
+                  element={<Calendar type={"res"} role={userDet.role} filter={{ doctorId: userDet._id }} />}
                 />
                 <Route
                   exact
                   path="/reserveDetails"
                   element={<ReserveDetails role={userDet.role} />}
                 />
-                <Route exact path="/notes" element={<Notes />} role={userDet.role} />
-                <Route exact path="/categories" element={<Categories />} role={userDet.role} />
+                <Route
+                  exact
+                  path="/drugsInteraction"
+                  element={<DrugsInteraction role={userDet.role} />}
+                />
+                <Route
+                  exact
+                  path="/notes"
+                  element={<Notes />}
+                  role={userDet.role}
+                />
+                <Route
+                  exact
+                  path="/categories"
+                  element={<Categories />}
+                  role={userDet.role}
+                />
                 <Route
                   exact
                   path="/settings"
                   element={
-                    <Settings
-                      name={userDet.name}
-                      email={userDet.email}
-                      id={userDet.id}
-                      role={userDet.role}
+                    <DoctorSettings
+                    user={userDet}
                     />
                   }
                 />
+                <Route exact path="/notes" element={<Notes />} />
+
               </Routes>
             </main>
           </>

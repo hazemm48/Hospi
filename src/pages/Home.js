@@ -8,7 +8,7 @@ import PatientDetails from "./patients/PatientDetails.js";
 import Settings from "./Settings.js";
 import AddPatient from "./patients/AddPatient.js";
 import AddDoctor from "./doctors/AddDoctor.js";
-import AddAdmin from "./AddAdmin.js";
+import AddAdmin from "./admins/AddAdmin.js";
 import Patients from "./patients/Patients.js";
 import { users } from "../../src/adminAPI";
 import ReserveDetails from "./reserves/ReserveDetails.js";
@@ -29,13 +29,16 @@ import FirstAidDetails from "./firstAid/FirstAidDetails.js";
 import FirstAid from "./firstAid/FirstAid.js";
 import Rad from "./radiation/Rad.js";
 import Lab from "./laboratory/Lab.js";
+import Reservation from "./reserves/Reserve.js";
+import DrugsInteraction from "./DrugsInteraction.js";
 import SymptomChecker from "./symptomChecker/SymptomChecker.js";
 import LoadingSpinner from "../components/Loading.js";
-import AddCategory from "../components/AddCategory.js";
-import GetCategories from "../components/GetCategories.js";
-import ProductsManager from "./ProductsManager.js";
-import Reservation from "./Reserve.js";
-import DrugsInteraction from "./DrugsInteraction.js";
+import AddCategory from "./categories/AddCategory.js";
+import GetCategories from "./categories/GetCategories.js";
+import ProductsManager from "./products/ProductsManager.js";
+import Admins from "./admins/Admins.js";
+import AdminDetails from "./admins/AdminDetails.js";
+import AddProduct from "./products/AddProduct.js";
 
 const Home = () => {
   const [userDet, setUser] = useState();
@@ -156,33 +159,22 @@ const Home = () => {
                 />
                 <Route
                   exact
-                  path="/addCategory/:type"
-                  element={<AddCategory />}
-                />
-                <Route
-                  exact
                   path="/categories/:type"
-                  element={<GetCategories role={userDet.role}/>}
+                  element={<GetCategories role={userDet.role} />}
                 />
                 <Route
                   exact
                   path="/reserve/:type"
-                  element={<Reservation role={userDet.role}/>}
-                />
-                <Route
-                  exact
-                  path="/drugsInteraction"
-                  element={<DrugsInteraction role={userDet.role}/>}
+                  element={<Reservation role={userDet.role} />}
                 />
                 <Route exact path="/notes" element={<Notes />} />
                 <Route exact path="/general" element={<General />} />
-                <Route exact path="/products/:type" element={<ProductsManager />} />
-                <Route exact path="/categories" element={<Categories />} />
                 <Route
                   exact
-                  path="/symptomChecker"
-                  element={<SymptomChecker />}
+                  path="/products/:type"
+                  element={<ProductsManager />}
                 />
+                <Route exact path="/categories" element={<Categories />} />
                 <Route
                   exact
                   path="/settings"
@@ -196,9 +188,29 @@ const Home = () => {
                       path="/addFirstAid"
                       element={<AddFirstAid />}
                     />
+                    <Route
+                      exact
+                      path="/addCategory/:type"
+                      element={<AddCategory />}
+                    />
+                    <Route
+                      exact
+                      path="/addProduct/:type"
+                      element={<AddProduct />}
+                    />
                     <Route exact path="/addRoom" element={<AddRoom />} />
                     <Route exact path="/addDoctor" element={<AddDoctor />} />
                     <Route exact path="/addAdmin" element={<AddAdmin />} />
+                    <Route
+                      exact
+                      path="/admins"
+                      element={<Admins role={userDet.role} />}
+                    />
+                    <Route
+                      exact
+                      path="/adminDetails"
+                      element={<AdminDetails role={userDet.role} />}
+                    />
                   </>
                 )}
                 <Route path="*" element={<Navigate to="/notFound" replace />} />

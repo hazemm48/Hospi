@@ -1,9 +1,7 @@
 import React from "react";
 import { changePass } from "../adminAPI.js";
-import maleImg from "../images/male.jpg";
-import femaleImg from "../images/female.jpg";
 
-const Settings = ({user}) => {
+const ChangePassword = () => {
 
   const changePassword = async (body) => {
     console.log(body);
@@ -56,56 +54,6 @@ const Settings = ({user}) => {
   };
 
   return (
-    <div className="main-content">
-      <div className="container-fluid">
-        <div className="section">
-          <h5 className="page-title">settings</h5>
-        </div>
-        <div className="section profile-section">
-          <div className="card container">
-            <div className="card-header">
-              <h5>personal details</h5>
-            </div>
-            <div className="card-body">
-              <div className="sub-section col-lg-10 col-md-12">
-                <div className="sub-section-body">
-                  <div className="row">
-                    <div className="col-lg-2 col-md-4">
-                      <img
-                        className="rounded-circle"
-                        src={user.image?user.image: (user.gender=="male"?maleImg:femaleImg)}
-                        style={{height:"10em"}}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="sub-section col-md-12 col-lg-8">
-                <div className="sub-section-body">
-                  <div className="user-details-form">
-                    <div className="form">
-                      <div className="form-group col-sm-6">
-                        <label>Name</label>
-                        <input
-                          className="form-control"
-                          defaultValue={user.name}
-                          disabled
-                        />
-                      </div>
-                      <div className="form-group col-lg-6">
-                        <label>email address</label>
-                        <input
-                          className="form-control"
-                          defaultValue={user.email}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div className="card container">
             <div className="card-header">
               <h5>password</h5>
@@ -181,10 +129,7 @@ const Settings = ({user}) => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
   );
 };
 
-export default Settings;
+export default ChangePassword;

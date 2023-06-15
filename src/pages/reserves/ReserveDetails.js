@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { generatePresc, reserve } from "../../adminAPI.js";
+import { addReport, generatePresc, reserve } from "../../adminAPI.js";
 import FeedBack from "../../components/FeedBack.js";
 import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
@@ -166,6 +166,21 @@ const ReserveDetails = ({ role }) => {
     return arr;
   };
 
+  const addReserveReport = async () => {
+    let body = {
+      resId: id.state,
+      prescription: document.getElementById("presc").value,
+      note: document.getElementById("note").value,
+    };
+    let { message } = await addReport(body);
+    console.log(message);
+    if (message == "added") {
+      alert("report saved");
+    } else {
+      alert("something went wrong try again");
+    }
+  };
+
   return (
     <>
       <div className="main-content">
@@ -184,7 +199,7 @@ const ReserveDetails = ({ role }) => {
                       <div className="mini-card text-center">
                         <div
                           className="card-body row"
-                          style={{ justifyContent: "center" }}
+                          style={{ justifyContent: "center", display: "block" }}
                         >
                           <h3>{type} reserve</h3>
                           <small className="text-muted">{reserves._id}</small>
@@ -259,7 +274,7 @@ const ReserveDetails = ({ role }) => {
                                 );
                               })}
                             </div>
-                            {role == "admin" && (
+                            {role != "patient" && (
                               <div className="card-footer">
                                 <div className="d-flex justify-content-center">
                                   {reserves.patientId && (
@@ -274,7 +289,7 @@ const ReserveDetails = ({ role }) => {
                                     </Link>
                                   )}
 
-                                  {type == "doctor" && (
+                                  {type == "doctor" && role == "admin" && (
                                     <Link
                                       to="/admin/doctorDetails"
                                       state={reserves.doctorId}
@@ -293,7 +308,7 @@ const ReserveDetails = ({ role }) => {
                     </div>
                   </div>
                 </div>
-                {reserves.status && (
+                {(reserves.status || role == "doctor") && (
                   <div>
                     <h2 style={{ textAlign: "center" }}>Report</h2>
                     <div className="card">
@@ -323,27 +338,44 @@ const ReserveDetails = ({ role }) => {
                             generate PDF
                           </button>
                         </h3>
+                        {role == "doctor" && (
+                          <button
+                            name="submitPresc"
+                            onClick={() => {
+                              addReserveReport();
+                            }}
+                            className="btn label-green  float-right "
+                            style={{ margin: "0.5em" }}
+                          >
+                            <i className="las la-save" />
+                            save
+                          </button>
+                        )}
 
                         <textarea
+                          id="presc"
                           name="prescription"
                           className="form-control"
                           style={{ height: "auto" }}
                           defaultValue={reserves.report.prescription}
-                          readOnly
+                          readOnly={role != "doctor" ? true : false}
                           rows={12}
                         />
                       </div>
-                      <div>
-                        <h3 style={{ color: "#0466c8" }}>Notes</h3>
-                        <textarea
-                          name="note"
-                          className="form-control"
-                          style={{ height: "auto" }}
-                          defaultValue={reserves.report.note}
-                          readOnly
-                          rows={12}
-                        />
-                      </div>
+                      {role == "doctor" && (
+                        <div>
+                          <h3 style={{ color: "#0466c8" }}>Notes</h3>
+                          <textarea
+                            id="note"
+                            name="note"
+                            className="form-control"
+                            style={{ height: "auto" }}
+                            defaultValue={reserves.report.note}
+                            readOnly={role != "doctor" ? true : false}
+                            rows={12}
+                          />
+                        </div>
+                      )}
 
                       <h3 style={{ color: "#0466c8" }}>Files</h3>
 

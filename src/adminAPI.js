@@ -31,6 +31,19 @@ export const login = async (body) => {
   return data;
 };
 
+export const signUpApi = async (body) => {
+  let data = await fetch(`${baseApi}/signUp`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+
 export const users = async (body) => {
   let data = await fetch(`${api()}/getAllUsers`, {
     method: "POST",
@@ -107,17 +120,6 @@ export const note = async (body) => {
   return data;
 };
 
-export const getGeneral = async (body) => {
-  let data = await fetch(`${baseApi}/getGeneral`, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: headers(),
-  })
-    .then((res) => res.json())
-    .then((data) => data);
-  return data;
-};
-
 export const rooms = async (body, method, url) => {
   let data = await fetch(`${api()}/room/${url ? url : ""}`, {
     method: method,
@@ -177,8 +179,30 @@ export const medicalRecord = async (body, method, url) => {
 };
 
 export const generatePresc = async (body) => {
-  let data = await fetch(`${api()}/generatePresc`, {
+  let data = await fetch(`${baseApi}/generatePresc`, {
     method: "POST",
+    body: JSON.stringify(body),
+    headers: headers(),
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+
+export const addReport = async (body) => {
+  let data = await fetch(`${baseApi}/doctor/addReport`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+    headers: headers(),
+  })
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
+
+export const docUnavailableDates = async (body, url) => {
+  let data = await fetch(`${api()}/unavailableDate/${url}`, {
+    method: "PUT",
     body: JSON.stringify(body),
     headers: headers(),
   })

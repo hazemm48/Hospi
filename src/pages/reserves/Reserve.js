@@ -4,8 +4,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useParams } from "react-router-dom";
 import Select from "react-select";
-import LoadingSpinner from "../components/Loading.js";
-import { categoriesApi, productsApi, reserve, users } from "../adminAPI.js";
+import LoadingSpinner from "../../components/Loading.js";
+import { categoriesApi, productsApi, reserve, users } from "../../adminAPI.js";
 
 const Reservation = ({ role }) => {
   const [loading, setLoading] = useState(false);

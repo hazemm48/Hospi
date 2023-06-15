@@ -14,8 +14,7 @@ let data = {
 doctor:[
   ["/doctor/home","la-shapes","Dashboard"],
   ["/doctor/patients","la-user-injured","Patients"],
-  ["/doctor/pharmacy","la-capsules","Pharmacy"],
-  ["/doctor/reservations","la-calendar-check","Reservations"],
+  ["/doctor/reservations","la-calendar-check","Schedule"],
   ["/doctor/drugsInteraction","la-capsules","Drugs Interaction"],
   ["/doctor/settings","la-cogs","Settings"]
 ],
@@ -27,8 +26,6 @@ admin:[
   ["/admin/reservations","la-calendar-check","Reservations"],
   ["/admin/radiation","la-x-ray","Radiations"],
   ["/admin/laboratory","la-vials","Laboratory"],
-  ["/admin/drugsInteraction","la-capsules","Drugs Interaction"],
-  ["/admin/symptomChecker","la-heartbeat","Symptom checker"],
   ["/admin/general","la-globe","General"],
   ["/admin/settings","la-cogs","Settings"],
 ]

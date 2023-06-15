@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 import warning from "../images/warning.jpg";
-import { getInteractionApi, suggestApi } from "./RxNormAPI.js";
+import { getInteractionApi, suggestApi } from "../RxNormAPI.js";
 
-const DrugsInteraction = (props) => {
+const DrugsInteraction = () => {
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [result, setResult] = useState([]);
   const [noResult, setNoResult] = useState(false);
@@ -12,7 +12,6 @@ const DrugsInteraction = (props) => {
     let { approximateGroup } = await suggestApi(o);
     let suggestions = approximateGroup.candidate;
     let arr = [];
-    console.log(suggestions);
     suggestions.map((e) => {
       if (["RXNORM"].includes(e.source)) {
         arr.push({
@@ -49,19 +48,14 @@ const DrugsInteraction = (props) => {
           obj.effMaterial = drugNameArr[2].split("and")[0].trimStart();
           obj.desc = e.interactionPair[0].description;
           arr2.push(obj);
-          console.log(obj);
         });
-        console.log(arr2);
         setResult(arr2);
       } else {
-        setResult([])
+        setResult([]);
         setNoResult(true);
       }
     }
   };
-  console.log(selectedDrugs);
-
-  useEffect(() => {}, []);
 
   return (
     <div className="main-content">
@@ -84,7 +78,7 @@ const DrugsInteraction = (props) => {
                             loadOptions={searchSuggest}
                             isOptionDisabled={() => selectedDrugs.length >= 50}
                             onChange={(o) => {
-                              o && setSelectedDrugs(o);
+                              o ? setSelectedDrugs(o) : setResult();
                             }}
                             isClearable
                             required
@@ -103,28 +97,26 @@ const DrugsInteraction = (props) => {
                     </div>
                   </div>
                 </div>
-                {(result.length > 0 || noResult) && (
-                  <div className="col-sm-12">
-                    <div className="card welcome-content-card label-yellow">
-                      <div className="card-body">
-                        <div className="row">
-                          <div style={{ maxWidth: "35%" }} class="col-md-2">
-                            <img className="patHomeImg" src={warning} />
-                          </div>
-                          <div className="col-md-10 welcome-text-wrapper align-self-center">
-                            <p>
-                              It is not our intention to provide specific
-                              medical advice, but rather to provide users with
-                              information to better understand their health and
-                              their medications. we urges you to consult with a
-                              qualified physician for advice about medications.
-                            </p>
-                          </div>
+                <div className="col-sm-12">
+                  <div className="card welcome-content-card label-yellow">
+                    <div className="card-body">
+                      <div className="row">
+                        <div style={{ maxWidth: "35%" }} class="col-md-2">
+                          <img className="patHomeImg" src={warning} />
+                        </div>
+                        <div className="col-md-10 welcome-text-wrapper align-self-center">
+                          <p>
+                            It is not our intention to provide specific medical
+                            advice, but rather to provide users with information
+                            to better understand their health and their
+                            medications. we urges you to consult with a
+                            qualified physician for advice about medications.
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
                 {result.length > 0 && (
                   <div>
                     <h2 style={{ textAlign: "center" }}>Results</h2>

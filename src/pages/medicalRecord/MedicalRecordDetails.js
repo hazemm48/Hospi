@@ -14,13 +14,12 @@ const MedicRecordDetails = ({ role }) => {
   const { state } = useLocation();
 
   let createHtmlData = (type) => {
-    console.log(type);
     let data = medicList(type);
-    console.log(data);
-    data.data.push(
-      ["input", "patient id", "patientId", "text"],
-      ["input", "created at", "createdAt", "date"]
-    );
+    role == "admin" &&
+      data.data.push(
+        ["input", "patient id", "patientId", "text"],
+        ["input", "created at", "createdAt", "date"]
+      );
     setHtmlData(data);
   };
 
@@ -115,7 +114,7 @@ const MedicRecordDetails = ({ role }) => {
                   <div aria-label="breadcrumb">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item">
-                        <Link to={`/${role}/medicalRecord`} state={state}>
+                        <Link to={`/${role}/medicalRecord`} state={data.patientId}>
                           <a>medical records</a>
                         </Link>
                       </li>
@@ -128,18 +127,20 @@ const MedicRecordDetails = ({ role }) => {
                     </ol>
                   </div>
                 </div>
-                <div className="col-md-4">
-                  <button
-                    id="editPat"
-                    className="btn btn-dark-red-f-gr"
-                    onClick={() => {
-                      editRecord();
-                    }}
-                  >
-                    <i className="las la-edit" />
-                    edit record
-                  </button>
-                </div>
+                {role != "doctor" && (
+                  <div className="col-md-4">
+                    <button
+                      id="editPat"
+                      className="btn btn-dark-red-f-gr"
+                      onClick={() => {
+                        editRecord();
+                      }}
+                    >
+                      <i className="las la-edit" />
+                      edit record
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="section patient-details-section">
                 <div className="row">
@@ -158,19 +159,21 @@ const MedicRecordDetails = ({ role }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="col-sm-12">
-                        <div className="card">
-                          <button
-                            className="btn btn-red-f-gr"
-                            onClick={() => {
-                              recordDelete();
-                            }}
-                          >
-                            <i className="las la-trash" />
-                            delete medical record
-                          </button>
+                      {role != "doctor" && (
+                        <div className="col-sm-12">
+                          <div className="card">
+                            <button
+                              className="btn btn-red-f-gr"
+                              onClick={() => {
+                                recordDelete();
+                              }}
+                            >
+                              <i className="las la-trash" />
+                              delete medical record
+                            </button>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                   <div className="col-sm-4">
