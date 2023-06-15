@@ -7,9 +7,9 @@
 This is my graduation project.
 It is an hospital management system with four roles : patient, doctor, admin, super admin
 The purpose of the project :
--For patients: To make it easier for them to book appointments, see the available doctors & lab test & radiations in the hospital, save their medical records in one place, check on themselves with the apiMedic symptom checker system, check if their is any interaction between drugs with drugBank drug interaction system
--For doctors: To make it easier for them to manage their schedules and see their patients details and their previous medical records, check if their is any interaction between drugs with drugBank drug interaction system
--For admin & super admin : To make it easier for them to manage the hospital
+- For patients: To make it easier for them to book appointments, see the available doctors & lab test & radiations in the hospital, save their medical records in one place, check on themselves with the apiMedic symptom checker system, check if their is any interaction between drugs with drugBank drug interaction system
+- For doctors: To make it easier for them to manage their schedules and see their patients details and their previous medical records, check if their is any interaction between drugs with drugBank drug interaction system
+- For admin & super admin : To make it easier for them to manage the hospital
 
 ## Used Technologies
 
