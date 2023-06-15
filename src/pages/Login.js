@@ -14,7 +14,6 @@ const Login = () => {
 
   useEffect(() => {
     if (localStorage.token) {
-      console.log("dsad");
       let role = localStorage.role;
       role == "admin"
         ? navigate(`/${role}/dashboard`)

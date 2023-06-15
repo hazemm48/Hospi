@@ -116,7 +116,7 @@ const PatientDetails = ({ role }) => {
       let deleted = await deleteUser(body);
       alert(deleted.message);
       if (deleted.message == "user deleted") {
-        navigate("/admin/patients");
+        navigate(-1);
       }
     }
   };

@@ -147,7 +147,7 @@ const DoctorDetails = ({ role , userId }) => {
       let deleted = await deleteUser(body);
       alert(deleted.message);
       if (deleted.message == "user deleted") {
-        navigate("/home/doctors");
+        navigate("/admin/doctors");
       }
     }
   };
@@ -268,6 +268,7 @@ const DoctorDetails = ({ role , userId }) => {
                           <div className="row">
                             <DetailsLeftSection
                               data={state}
+                              role={role}
                               type={"doctor"}
                               GetDetails={GetDetails}
                               setLoading={setLoading}
