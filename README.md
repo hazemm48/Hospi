@@ -13,11 +13,11 @@ The purpose of the project :
 
 ## Used Technologies
 
-Node.js, Express.js, MongoDB, React.js
+Node.js, Express.js, MongoDB, React.js, RESTful APIs
 
 ## How to Load the App
 
-The project uses Node.js RESTfulAPIs and the Create-React-App starter. If you do not have Node >= 6.x installed, you can download it here: [Node.js](https://nodejs.org/en/)
+The project uses Node.js and the Create-React-App starter. If you do not have Node >= 6.x installed, you can download it here: [Node.js](https://nodejs.org/en/)
 
 Once Node is installed, navigate to the directory where you want to store the app
 ```
