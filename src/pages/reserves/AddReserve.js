@@ -96,7 +96,7 @@ const CreateReserve = ({ role }) => {
 
   let time = () => {
     let time = userDetails?.doctorInfo?.schedule[scheduleDay].time;
-    let timeCon = `${time.from} - ${time.to}`;
+    let timeCon = `${moment(time.from,'HH:mm').format('h:mm A')} - ${moment(time.to,'HH:mm').format('h:mm A')}`;
     return timeCon;
   };
 

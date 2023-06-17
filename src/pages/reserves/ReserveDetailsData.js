@@ -19,7 +19,7 @@ export const resDetList = (type, data, role) => {
     list.splice(
       5,
       0,
-      ["time", "time", data.time.from + " - " + data.time.to],
+      ["time", "time", moment(data.time.from,'HH:mm').format('hh:mm A')  + " - " + moment(data.time.to,'HH:mm').format('hh:mm A')],
       ["visit type", "visitType", data.visitType],
       ["turn number", "turnNum", data.turnNum]
     );

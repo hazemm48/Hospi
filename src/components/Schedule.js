@@ -107,7 +107,7 @@ const Schedule = (props) => {
           showTimeSelectOnly
           timeIntervals={30}
           timeCaption="Time"
-          dateFormat="h:mm aa"
+          dateFormat="hh:mm aa"
           onChange={(time) => {
             seeTime(time);
           }}
