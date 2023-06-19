@@ -16,7 +16,7 @@ import {
 import SortDropdown from "../../components/SortDropdown.js";
 import moment from "moment";
 
-const Doctors = ({ role, id, favDocs }) => {
+const Doctors = ({ role, id, favDocs, superAdmin }) => {
   const [loading, setLoading] = useState(false);
   const [doctors, setDoctors] = useState([]);
   const [filter, setFilter] = useState();
@@ -128,7 +128,7 @@ const Doctors = ({ role, id, favDocs }) => {
   return (
     <div className="main-content">
       <div className="container-fluid">
-        {role == "admin" && (
+        {superAdmin && (
           <div className="section ">
             <div className="buttons-wrapper float-right">
               <Link to="/admin/addDoctor">

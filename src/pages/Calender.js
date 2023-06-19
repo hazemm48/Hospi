@@ -1,12 +1,12 @@
 import React, { createRef, useEffect, useState } from "react";
+import moment from "moment";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import { reserve } from "../adminAPI.js";
-import moment from "moment";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
+import interactionPlugin from "@fullcalendar/interaction";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import { reserve } from "../adminAPI.js";
 import { useNavigate } from "react-router-dom";
 
 const Calendar = (props) => {
@@ -21,7 +21,7 @@ const Calendar = (props) => {
 
   let navigate = useNavigate();
 
-  let calenderRef = React.createRef();
+  let calenderRef = createRef();
 
   useEffect(() => { 
     let head = "prev,next today"

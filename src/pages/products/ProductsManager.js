@@ -17,8 +17,8 @@ const ProductsManager = () => {
   const [roomList, setRoomList] = useState();
   const [typeValues, setTypeValues] = useState([["all", "all"]]);
 
-  const {state}=useLocation()
-  const {type}=useParams()
+  const { state } = useLocation();
+  const { type } = useParams();
 
   let resultLimit = 12;
   let table = ["name", "price", "reserved times", "status", "", ""];
@@ -60,7 +60,7 @@ const ProductsManager = () => {
     let category = document.getElementById("category").value;
     let body = {
       filter: {
-        categoryType:type
+        categoryType: type,
       },
       sort: sort,
       pageNo: currentPage,
@@ -122,9 +122,10 @@ const ProductsManager = () => {
       }
     });
     let update = await productsApi(body, "PUT");
-    alert(update.message);
     if (update.message == "product updated") {
-      window.location.reload();
+      alert(update.message);
+    } else {
+      alert("something went wrong");
     }
   };
 

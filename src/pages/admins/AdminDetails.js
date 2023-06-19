@@ -132,6 +132,7 @@ const AdminDetails = ({ role }) => {
           state && (
             <>
               <DetailsHeader
+                superAdmin={true}
                 role={role}
                 name={state.name}
                 type={"admin"}
@@ -146,7 +147,8 @@ const AdminDetails = ({ role }) => {
                           <div className="row">
                             <DetailsLeftSection
                               data={state}
-                              type={"patient"}
+                              superAdmin={true}
+                              type={"admin"}
                               GetDetails={GetDetails}
                               setLoading={setLoading}
                             />

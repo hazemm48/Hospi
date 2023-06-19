@@ -19,7 +19,7 @@ import NotesCard from "../../components/NotesCard.js";
 import Schedule from "../../components/Schedule.js";
 import Calendar from "../Calender.js";
 
-const DoctorDetails = ({ role , userId }) => {
+const DoctorDetails = ({ role, userId, superAdmin }) => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
   const [htmlData, setHtmlData] = useState([]);
@@ -31,9 +31,9 @@ const DoctorDetails = ({ role , userId }) => {
   const id = useLocation();
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    !id.state&&(id.state=userId)
-  },[])
+  useEffect(() => {
+    !id.state && (id.state = userId);
+  }, []);
 
   let createHtmlData = (state) => {
     setHtmlData([
@@ -54,8 +54,7 @@ const DoctorDetails = ({ role , userId }) => {
         "registered date",
       ],
     ]);
-
-    setBottomBtns([
+    let arr = [
       [
         "-dark",
         () => {
@@ -82,15 +81,17 @@ const DoctorDetails = ({ role , userId }) => {
         "reset password",
         "la-lock",
       ],
-      [
+    ];
+    superAdmin &&
+      arr.push([
         "",
         () => {
           userDelete();
         },
         "delete user",
         "la-trash",
-      ],
-    ]);
+      ]);
+    setBottomBtns(arr);
   };
 
   const GetDetails = async () => {
@@ -215,14 +216,17 @@ const DoctorDetails = ({ role , userId }) => {
     details.name = document.getElementById("name").value;
     details.doctorInfo.schedule = schedule;
     console.log(details.doctorInfo.birthDate);
-    details.doctorInfo.birthDate = moment(details.doctorInfo.birthDate,'DD-MM-YYYY').format(
-      "MM-DD-YYYY"
-    );
+    details.doctorInfo.birthDate = moment(
+      details.doctorInfo.birthDate,
+      "DD-MM-YYYY"
+    ).format("MM-DD-YYYY");
+    let currentRoom = document.getElementById("room");
+    details.doctorInfo.room=currentRoom.options[currentRoom.selectedIndex].innerHTML
     let body = {
       details,
       id: state._id,
     };
-    let currentRoom = document.getElementById("room");
+    console.log(body);
     if (
       !(
         currentRoom.options[currentRoom.selectedIndex].innerHTML ==
@@ -230,6 +234,7 @@ const DoctorDetails = ({ role , userId }) => {
       )
     ) {
       for (let i = 0; i < currentRoom.length; i++) {
+        console.log(currentRoom.options[i].value);
         if (currentRoom.options[i].innerHTML == state.doctorInfo.room) {
           body.oldRoom = currentRoom.options[i].value;
           body.roomId = currentRoom.options[currentRoom.selectedIndex].value;
@@ -239,7 +244,6 @@ const DoctorDetails = ({ role , userId }) => {
     let update = await updateUser(body);
     alert(update.message);
     if (update.message == "update success") {
-      window.location.reload();
     }
   };
 
@@ -255,6 +259,7 @@ const DoctorDetails = ({ role , userId }) => {
             <>
               <DetailsHeader
                 role={role}
+                superAdmin={superAdmin}
                 name={state.name}
                 type={"doctor"}
                 updateUserDetails={updateUserDetails}
@@ -269,6 +274,7 @@ const DoctorDetails = ({ role , userId }) => {
                             <DetailsLeftSection
                               data={state}
                               role={role}
+                              superAdmin={superAdmin}
                               type={"doctor"}
                               GetDetails={GetDetails}
                               setLoading={setLoading}
@@ -298,10 +304,12 @@ const DoctorDetails = ({ role , userId }) => {
                                                 required
                                               >
                                                 {e[1]?.map((o) => {
-                                                  let d = o;
+                                                  let d = "";
                                                   if (e[0] == "room") {
-                                                    o = o.name;
                                                     d = o._id;
+                                                    o = o.name;
+                                                  } else {
+                                                    d = o;
                                                   }
                                                   if (
                                                     o == state.doctorInfo[e[0]]
@@ -377,7 +385,7 @@ const DoctorDetails = ({ role , userId }) => {
                           </div>
                         </div>
                       </div>
-                      <DoctorScheduleCard user={state}/>
+                      <DoctorScheduleCard user={state} />
                       <DetailsBottom arr={bottomBtns} />
                     </div>
                   </div>

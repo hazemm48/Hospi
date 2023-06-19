@@ -4,15 +4,20 @@ import { useLocation } from "react-router-dom";
 import { note } from "../adminAPI.js";
 import LoadingSpinner from "../components/Loading.js";
 
-const Notes = () => {
+const Notes = ({ superAdmin, email }) => {
   let { state } = useLocation();
+  console.log(state);
 
   const [notes, setNotes] = useState();
   const [loading, setLoading] = useState(false);
 
   const GetNotes = async () => {
+    let query = "";
+    state.personal
+      ? (query = `filter[userId]=${state.id}&filter[personal]=${true}`)
+      : (query = `filter[userId]=${state.id}`);
     let body = {
-      query: `filter[userId]=${state}`,
+      query,
       data: {
         method: "GET",
       },
@@ -85,18 +90,20 @@ const Notes = () => {
                           <div className="float-left">
                             <p>{n._id}</p>
                           </div>
-                          <div className="float-right">
-                            <button
-                              className="btn btn-dark-red-f btn-sm"
-                              onClick={(e) => {
-                                deleteNote(n._id);
-                              }}
-                              data-edit
-                            >
-                              <i className="las la-trash" />
-                              delete note
-                            </button>
-                          </div>
+                          {(superAdmin || n.createdBy == email) && (
+                            <div className="float-right">
+                              <button
+                                className="btn btn-dark-red-f btn-sm"
+                                onClick={(e) => {
+                                  deleteNote(n._id);
+                                }}
+                                data-edit
+                              >
+                                <i className="las la-trash" />
+                                delete note
+                              </button>
+                            </div>
+                          )}
                         </div>
                         <div className="card-body">
                           <textarea
@@ -106,16 +113,18 @@ const Notes = () => {
                             readOnly
                             defaultValue={n.content}
                           />
-                          <button
-                            className="btn btn-dark-red-f float-right btn-sm"
-                            onClick={(e) => {
-                              editNote({ e, id: n._id });
-                            }}
-                            data-edit
-                          >
-                            <i className="las la-save" />
-                            edit note
-                          </button>
+                          {(superAdmin || n.createdBy == email) && (
+                            <button
+                              className="btn btn-dark-red-f float-right btn-sm"
+                              onClick={(e) => {
+                                editNote({ e, id: n._id });
+                              }}
+                              data-edit
+                            >
+                              <i className="las la-save" />
+                              edit note
+                            </button>
+                          )}
                         </div>
                         <div className="card-footer">
                           <div className="float-left">

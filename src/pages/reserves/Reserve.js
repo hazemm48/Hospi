@@ -7,7 +7,7 @@ import Select from "react-select";
 import LoadingSpinner from "../../components/Loading.js";
 import { categoriesApi, productsApi, reserve, users } from "../../adminAPI.js";
 
-const Reservation = ({ role }) => {
+const Reservation = ({ role, type }) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -15,8 +15,6 @@ const Reservation = ({ role }) => {
   const [selectedProduct, setSelectedProduct] = useState();
   const [productFees, setProductFees] = useState([]);
   const [selectedProductFees, setSelectedProductFees] = useState(0);
-
-  const { type } = useParams();
 
   const GetCategories = async () => {
     let body = {
@@ -32,6 +30,9 @@ const Reservation = ({ role }) => {
       };
     });
     setCategories(results);
+    setProducts([]);
+    setSelectedProduct();
+    setLoading(false);
   };
 
   const GetProducts = async (o) => {
@@ -61,7 +62,8 @@ const Reservation = ({ role }) => {
 
   useEffect(() => {
     GetCategories();
-  }, []);
+    setLoading(true);
+  }, [type]);
 
   const getFees = () => {
     let fees = productFees.find((e) => {
@@ -112,167 +114,163 @@ const Reservation = ({ role }) => {
   };
 
   return (
-    <>
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <div className="main-content">
-          <div className="container-fluid">
-            <div className="section patient-details-section">
-              <div className="card ">
-                <h3>{type} Reserve</h3>
-                <div className="">
-                  <div
-                    id="editDet"
-                    className="col d-flex justify-content-center res"
-                  >
-                    <form id="form" method="post">
-                      <div className="mini-card">
-                        <div className="card-body">
-                          <div className="row justify-content-center">
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>patient name</label>
-                                <input
-                                  name="patName"
-                                  className="form-control"
-                                  required
-                                />
-                              </div>
+    <div className="main-content">
+      <div className="container-fluid">
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="section patient-details-section">
+            <div className="card ">
+              <h3>{type} Reserve</h3>
+              <div className="">
+                <div
+                  id="editDet"
+                  className="col d-flex justify-content-center res"
+                >
+                  <form id="form" method="post">
+                    <div className="mini-card">
+                      <div className="card-body">
+                        <div className="row justify-content-center">
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label>patient name</label>
+                              <input
+                                name="patName"
+                                className="form-control"
+                                required
+                              />
                             </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>category</label>
-                                <Select
-                                  options={categories}
-                                  onChange={(o) => {
-                                    GetProducts(o);
-                                  }}
-                                  isSearchable
-                                  isClearable
-                                  required
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>
-                                  {type == "analysis"
-                                    ? "analysis"
-                                    : "radiation"}
-                                </label>
-                                <Select
-                                  name="productId"
-                                  options={products}
-                                  onChange={(o) => {
-                                    setSelectedProduct(o);
-                                  }}
-                                  isSearchable
-                                  isClearable
-                                  required
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>fees</label>
-                                <input
-                                  value={selectedProductFees}
-                                  name="fees"
-                                  id="fees"
-                                  readOnly={role == "admin" ? false : true}
-                                  className="form-control"
-                                  required
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>date</label>
-                                <DatePicker
-                                  placeholderText="choose date"
-                                  minDate={new Date()}
-                                  dateFormat="dd-MM-yyyy"
-                                  className="form-control"
-                                  selected={startDate}
-                                  onChange={(date) => setStartDate(date)}
-                                  required
-                                  name="date"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>another person</label>
-                                <select
-                                  className="form-control form-select dropdown-toggle"
-                                  name="anotherPerson"
-                                  required
-                                >
-                                  <option value={false}>no</option>
-                                  <option value={true}>yes</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <div className="form-group">
-                                <label>phone</label>
-                                <input
-                                  name="phone"
-                                  className="form-control"
-                                  required
-                                />
-                              </div>
-                            </div>
-                            {role == "admin" && (
-                              <>
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>email</label>
-                                    <input
-                                      name="email"
-                                      className="form-control"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>patient id</label>
-                                    <input
-                                      name="patientId"
-                                      className="form-control"
-                                    />
-                                  </div>
-                                </div>
-                              </>
-                            )}
                           </div>
-                          <div className="card-footer">
-                            <div className="d-flex justify-content-center">
-                              <button
-                                id="submit"
-                                type="button"
-                                className="btn btn-dark-red-f-gr col-md-2"
-                                onClick={(e) => {
-                                  setLoading(true);
-                                  submit();
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label>category</label>
+                              <Select
+                                options={categories}
+                                onChange={(o) => {
+                                  GetProducts(o);
                                 }}
-                              >
-                                Submit
-                              </button>
+                                isSearchable
+                                isClearable
+                                required
+                              />
                             </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label>
+                                {type == "lab" ? "analysis" : "radiation"}
+                              </label>
+                              <Select
+                                name="productId"
+                                options={products}
+                                onChange={(o) => {
+                                  setSelectedProduct(o);
+                                }}
+                                isSearchable
+                                isClearable
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label>fees</label>
+                              <input
+                                value={selectedProductFees}
+                                name="fees"
+                                id="fees"
+                                readOnly={role == "admin" ? false : true}
+                                className="form-control"
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label>date</label>
+                              <DatePicker
+                                placeholderText="choose date"
+                                minDate={new Date()}
+                                dateFormat="dd-MM-yyyy"
+                                className="form-control"
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                required
+                                name="date"
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label>another person</label>
+                              <select
+                                className="form-control form-select dropdown-toggle"
+                                name="anotherPerson"
+                                required
+                              >
+                                <option value={false}>no</option>
+                                <option value={true}>yes</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label>phone</label>
+                              <input
+                                name="phone"
+                                className="form-control"
+                                required
+                              />
+                            </div>
+                          </div>
+                          {role == "admin" && (
+                            <>
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>email</label>
+                                  <input
+                                    name="email"
+                                    className="form-control"
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-md-4">
+                                <div className="form-group">
+                                  <label>patient id</label>
+                                  <input
+                                    name="patientId"
+                                    className="form-control"
+                                  />
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <div className="card-footer">
+                          <div className="d-flex justify-content-center">
+                            <button
+                              id="submit"
+                              type="button"
+                              className="btn btn-dark-red-f-gr col-md-2"
+                              onClick={(e) => {
+                                setLoading(true);
+                                submit();
+                              }}
+                            >
+                              Submit
+                            </button>
                           </div>
                         </div>
                       </div>
-                    </form>
-                  </div>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 };
 

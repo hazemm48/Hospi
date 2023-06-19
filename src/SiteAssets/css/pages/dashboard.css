@@ -1,5 +1,9 @@
 /* Color Theme Swatches in Hex */
 /* Color Theme Swatches in RGBA */
+html {
+  scroll-behavior: smooth;
+}
+
 .section {
   margin: 2em;
 }

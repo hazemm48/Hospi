@@ -3,7 +3,7 @@ import maleImg from "../images/male.jpg";
 import femaleImg from "../images/female.jpg";
 import moment from "moment";
 
-const DetailsLeftSection = ({ data, type, GetDetails, setLoading, role }) => {
+const DetailsLeftSection = ({ data, type, GetDetails, setLoading, role,superAdmin }) => {
   let addProfilePic = async (e) => {
     let formData = new FormData();
     formData.append("fieldName", "users");
@@ -46,8 +46,8 @@ const DetailsLeftSection = ({ data, type, GetDetails, setLoading, role }) => {
           />
         </div>
         <div className="card-body">
-          {role == "admin" && (
-            <div className="">
+          {superAdmin && (
+            <div style={{display:'inline-flex'}}>
               <button
                 className="btn btn-red-f-gr btn-sm float-center"
                 style={{ margin: "1em" }}
@@ -55,7 +55,7 @@ const DetailsLeftSection = ({ data, type, GetDetails, setLoading, role }) => {
                   removeProfilePic();
                 }}
               >
-                <i className="las la-trash" />
+                <i className="las la-image" />
                 delete
               </button>
               <input

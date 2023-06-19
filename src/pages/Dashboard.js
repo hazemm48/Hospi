@@ -7,7 +7,7 @@ import welcome from "../images/79755644.jpg";
 import moment from "moment";
 import LoadingSpinner from "../components/Loading.js";
 
-const Dashboard = ({ user }) => {
+const Dashboard = ({ user, superAdmin }) => {
   const [loading, setLoading] = useState(false);
   const [allUsers, setAllUsers] = useState();
   const [patients, setPatients] = useState();
@@ -16,7 +16,6 @@ const Dashboard = ({ user }) => {
   const [length, setLength] = useState();
   const [reserveUsers, setReserveUsers] = useState();
 
-  let role = user.role;
   const GetDetails = async () => {
     let body = {
       filter: {},
@@ -136,16 +135,6 @@ const Dashboard = ({ user }) => {
             <div className="section functionality-section">
               <div className="section-content">
                 <div className="card-deck">
-                  <Link to={"/admin/addDoctor"} className="card text-center">
-                    <div className="card-title">
-                      <div className="icon-wrapper">
-                        <i className="las la-user-md" />
-                      </div>
-                    </div>
-                    <div className="card-body">
-                      <p>add a doctor</p>
-                    </div>
-                  </Link>
                   <Link to="/admin/addPatient" className="card text-center">
                     <div className="card-title">
                       <div className="icon-wrapper">
@@ -156,17 +145,32 @@ const Dashboard = ({ user }) => {
                       <p>add a patient</p>
                     </div>
                   </Link>
-                  {user.email == "admin@hospi.com" && (
-                    <Link to="/admin/addAdmin" className="card text-center">
-                      <div className="card-title">
-                        <div className="icon-wrapper">
-                          <i className="las la-user-lock" />
+                  {superAdmin && (
+                    <>
+                      <Link
+                        to={"/admin/addDoctor"}
+                        className="card text-center"
+                      >
+                        <div className="card-title">
+                          <div className="icon-wrapper">
+                            <i className="las la-user-md" />
+                          </div>
                         </div>
-                      </div>
-                      <div className="card-body">
-                        <p>add an admin</p>
-                      </div>
-                    </Link>
+                        <div className="card-body">
+                          <p>add a doctor</p>
+                        </div>
+                      </Link>
+                      <Link to="/admin/addAdmin" className="card text-center">
+                        <div className="card-title">
+                          <div className="icon-wrapper">
+                            <i className="las la-user-lock" />
+                          </div>
+                        </div>
+                        <div className="card-body">
+                          <p>add an admin</p>
+                        </div>
+                      </Link>
+                    </>
                   )}
                 </div>
               </div>

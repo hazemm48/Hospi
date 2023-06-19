@@ -7,7 +7,7 @@ import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
 import { resDetList } from "./ReserveDetailsData.js";
 
-const ReserveDetails = ({ role }) => {
+const ReserveDetails = ({ role,superAdmin }) => {
   let navigate = useNavigate();
   const id = useLocation();
   const [reserves, setReserves] = useState();
@@ -362,7 +362,7 @@ const ReserveDetails = ({ role }) => {
                           rows={12}
                         />
                       </div>
-                      {role == "doctor" && (
+                      {(role == "doctor" || superAdmin) && (
                         <div>
                           <h3 style={{ color: "#0466c8" }}>Notes</h3>
                           <textarea

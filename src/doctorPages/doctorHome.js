@@ -17,6 +17,7 @@ import LoadingSpinner from "../components/Loading.js";
 import DrugsInteraction from "../pages/DrugsInteraction.js";
 import HomePage from "./HomePage.js";
 import DoctorSettings from "./DoctorSettings.js";
+import DoctorNotes from "./doctorNotes.js";
 
 const DoctorHome = () => {
   const [userDet, setUserDet] = useState();
@@ -60,9 +61,7 @@ const DoctorHome = () => {
                 <Route
                   exact
                   path="/home"
-                  element={
-                    <HomePage user={userDet} />
-                  }
+                  element={<HomePage user={userDet} />}
                 />
                 <Route
                   exact
@@ -73,6 +72,11 @@ const DoctorHome = () => {
                   exact
                   path="/patientDetails"
                   element={<PatientDetails role={userDet.role} />}
+                />
+                <Route
+                  exact
+                  path="/doctorNotes"
+                  element={<DoctorNotes role={userDet.role} id={userDet._id} />}
                 />
                 <Route
                   exact
@@ -87,7 +91,13 @@ const DoctorHome = () => {
                 <Route
                   exact
                   path="/reservations"
-                  element={<Calendar type={"res"} role={userDet.role} filter={{ doctorId: userDet._id }} />}
+                  element={
+                    <Calendar
+                      type={"res"}
+                      role={userDet.role}
+                      filter={{ doctorId: userDet._id }}
+                    />
+                  }
                 />
                 <Route
                   exact
@@ -102,26 +112,19 @@ const DoctorHome = () => {
                 <Route
                   exact
                   path="/notes"
-                  element={<Notes />}
-                  role={userDet.role}
+                  element={<Notes role={userDet.role} email={userDet.email} />}
                 />
                 <Route
                   exact
                   path="/categories"
-                  element={<Categories />}
-                  role={userDet.role}
+                  element={<Categories role={userDet.role} />}
                 />
                 <Route
                   exact
                   path="/settings"
-                  element={
-                    <DoctorSettings
-                    user={userDet}
-                    />
-                  }
+                  element={<DoctorSettings user={userDet} />}
                 />
                 <Route exact path="/notes" element={<Notes />} />
-
               </Routes>
             </main>
           </>

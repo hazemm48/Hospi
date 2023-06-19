@@ -97,8 +97,13 @@ const PatientHome = () => {
                 />
                 <Route
                   exact
-                  path="/reserve/:type"
-                  element={<Reservation role={userDet.role} />}
+                  path="/reserve/rad"
+                  element={<Reservation role={userDet.role} type={'rad'} />}
+                />
+                <Route
+                  exact
+                  path="/reserve/lab"
+                  element={<Reservation role={userDet.role} type={'lab'} />}
                 />
                 <Route
                   exact

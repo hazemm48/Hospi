@@ -1,19 +1,39 @@
+import moment from "moment";
+
 const baseApi = process.env.REACT_APP_API;
 
 let api = () => {
   return `${baseApi}/${localStorage.getItem("role")}`;
 };
 
+let tokenCheck = () => {
+  if (localStorage.token) {
+    let token = JSON.parse(localStorage.token);
+    if (token.expiry) {
+      console.log("sss");
+      let date = moment().format("YYYY-MM-DD HH:mm");
+      if (moment(date).diff(moment(token.expiry)) >= 0) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        window.location.href = "/";
+      }
+    }
+  }
+};
+tokenCheck();
+
 let headers = () => {
+  tokenCheck();
   let key = "";
   if (localStorage.getItem("role") == "admin") {
     key = "SIM";
   } else if (["doctor", "patient"].includes(localStorage.getItem("role"))) {
     key = "Bearer";
   }
+  let token = JSON.parse(localStorage.getItem("token"));
   return {
     Accept: "application/json",
-    Authorization: `${key} ${localStorage.getItem("token")}`,
+    Authorization: `${key} ${token.key}`,
     "Content-Type": "application/json",
   };
 };

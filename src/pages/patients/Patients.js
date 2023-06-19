@@ -12,7 +12,7 @@ import {
 } from "../../components/Pagenation.js";
 import SortDropdown from "../../components/SortDropdown.js";
 
-const Patients = ({ role, docId }) => {
+const Patients = ({ role, docId, superAdmin }) => {
   const [loading, setLoading] = useState(false);
   const [patients, setPatients] = useState();
   const [pageNo, setPageNo] = useState();
@@ -76,7 +76,7 @@ const Patients = ({ role, docId }) => {
           />
           <SwitchView />
           <Search search={setSrchFilter} type={"user"} />
-          {role == "admin" && (
+          {superAdmin && (
             <div className="buttons-wrapper ml-auto">
               <Link to="/admin/addPatient">
                 <button className="btn btn-dark-red-f-gr">

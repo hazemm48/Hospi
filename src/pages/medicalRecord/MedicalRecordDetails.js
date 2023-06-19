@@ -6,7 +6,7 @@ import LoadingSpinner from "../../components/Loading.js";
 import InputsHandler from "../../components/InputsHandler.js";
 import { medicList } from "./MedicRecordData.js";
 
-const MedicRecordDetails = ({ role }) => {
+const MedicRecordDetails = ({ role, superAdmin }) => {
   const [loading, setLoading] = useState(true);
   const [htmlData, setHtmlData] = useState();
   const [data, setData] = useState();
@@ -102,19 +102,22 @@ const MedicRecordDetails = ({ role }) => {
   };
 
   return (
-    <>
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <div className="main-content">
-          {data && (
-            <div className="container-fluid">
+    <div className="main-content">
+      <div className="container-fluid">
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          data && (
+            <>
               <div className="section row title-section">
                 <div className="col-md-8">
                   <div aria-label="breadcrumb">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item">
-                        <Link to={`/${role}/medicalRecord`} state={data.patientId}>
+                        <Link
+                          to={`/${role}/medicalRecord`}
+                          state={data.patientId}
+                        >
                           <a>medical records</a>
                         </Link>
                       </li>
@@ -127,7 +130,7 @@ const MedicRecordDetails = ({ role }) => {
                     </ol>
                   </div>
                 </div>
-                {role != "doctor" && (
+                {(role == "patient" || superAdmin) && (
                   <div className="col-md-4">
                     <button
                       id="editPat"
@@ -159,7 +162,7 @@ const MedicRecordDetails = ({ role }) => {
                           </div>
                         </div>
                       </div>
-                      {role != "doctor" && (
+                      {(role == "patient" || superAdmin) && (
                         <div className="col-sm-12">
                           <div className="card">
                             <button
@@ -187,11 +190,11 @@ const MedicRecordDetails = ({ role }) => {
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
-    </>
+            </>
+          )
+        )}
+      </div>
+    </div>
   );
 };
 

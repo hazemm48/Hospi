@@ -4,21 +4,22 @@ import { Link } from "react-router-dom";
 import { note } from "../adminAPI.js";
 
 const NotesCard = (props) => {
-
   const addNote = async () => {
-    let noteCon =document.getElementById("noteCon")
+    let noteCon = document.getElementById("noteCon");
+    let personal = props.personal ? true : false;
     let body = {
       data: {
         method: "POST",
         body: JSON.stringify({
           content: noteCon.value,
           id: props.id,
+          personal,
         }),
-      }
+      },
     };
     let add = await note(body);
-    alert(add.message)
-    noteCon.value=""
+    alert(add.message);
+    noteCon.value = "";
   };
   return (
     <div className="card notes-card">
@@ -27,7 +28,7 @@ const NotesCard = (props) => {
           notes
           <Link
             to={`/${props.role}/notes`}
-            state={props.id}
+            state={{ id: props.id, personal: props.personal }}
             className="btn btn-dark-red-f btn-sm float-right"
           >
             see all
@@ -42,7 +43,10 @@ const NotesCard = (props) => {
           rows={16}
           defaultValue={""}
         />
-        <button className="btn btn-dark-red-f float-right btn-sm" onClick={()=>addNote()}>
+        <button
+          className="btn btn-dark-red-f float-right btn-sm"
+          onClick={() => addNote()}
+        >
           <i className="las la-save" />
           save note
         </button>

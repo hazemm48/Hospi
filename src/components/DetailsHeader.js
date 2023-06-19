@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const DetailsHeader = ({ name, type, updateUserDetails, role }) => {
-  console.log(name, type);
+const DetailsHeader = ({ name, type, updateUserDetails, role,superAdmin }) => {
 
   const editDetails = () => {
     let userDet = Array.from(
@@ -56,7 +55,7 @@ const DetailsHeader = ({ name, type, updateUserDetails, role }) => {
           </ol>
         </div>
       </div>
-      {(role == "admin") && (
+      {superAdmin && (
         <div className="col-md-4">
           <button
             id="editDetails"

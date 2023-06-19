@@ -144,6 +144,7 @@ const DiagnosisChecker = (props) => {
   const getIssueInfo = async (e) => {
     let data = await mainAPi(`issues/${e}/info`);
     setIssueInfo(data);
+    window.scrollTo(0, document.body.scrollHeight);
     console.log(data);
   };
 
@@ -247,21 +248,21 @@ const DiagnosisChecker = (props) => {
                 </div>
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="card container">
-                <div id="tv" className={`section patients-table-view`}>
-                  <label>possible conditions</label>
-                  <table className="table table-hover table-responsive-lg">
-                    <thead>
-                      <tr>
-                        {table?.map((e) => {
-                          return <th>{e}</th>;
-                        })}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {result &&
-                        result.map((e) => {
+            {result.length > 0 && (
+              <div className="col-sm-12">
+                <div className="card container">
+                  <div id="tv" className={`section patients-table-view`}>
+                    <label>possible conditions</label>
+                    <table className="table table-hover table-responsive-lg">
+                      <thead>
+                        <tr>
+                          {table?.map((e) => {
+                            return <th>{e}</th>;
+                          })}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {result.map((e) => {
                           return (
                             <tr>
                               <td>{e.Issue.Name}</td>
@@ -273,6 +274,7 @@ const DiagnosisChecker = (props) => {
                               </td>
                               <td>
                                 <button
+                                  autoFocus
                                   className="view-more btn btn-sm btn-dark-red-f"
                                   onClick={() => {
                                     getIssueInfo(e.Issue.ID);
@@ -284,11 +286,12 @@ const DiagnosisChecker = (props) => {
                             </tr>
                           );
                         })}
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
         {!(props.type == "symptoms") && (
@@ -307,6 +310,7 @@ const DiagnosisChecker = (props) => {
           <div className="card container">
             <div className="card-body">
               <textarea
+                id="info"
                 className="form-control"
                 rows={16}
                 readOnly

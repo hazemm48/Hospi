@@ -43,6 +43,7 @@ import AddProduct from "./products/AddProduct.js";
 const Home = () => {
   const [userDet, setUser] = useState();
   const [loading, setLoading] = useState(false);
+  const [superAdmin, setSuperAdmin] = useState(false);
   let navigate = useNavigate();
 
   const GetDetails = async () => {
@@ -53,12 +54,15 @@ const Home = () => {
     console.log(user);
     if (user.role == "admin") {
       setUser(user);
+      if (user.email == process.env.REACT_APP_SA) {
+        setSuperAdmin(true);
+      }
     } else {
       navigate("/notAuthorized");
     }
     setLoading(false);
   };
-
+console.log(superAdmin);
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setLoading(true);
@@ -77,50 +81,65 @@ const Home = () => {
           <>
             <Header user={userDet} />
             <main>
-              <SideNav role={"admin"} />
+              <SideNav role={"admin"} superAdmin={superAdmin} />
               <Routes>
                 <Route
                   exact
                   path="/dashboard"
-                  element={<Dashboard user={userDet} />}
+                  element={<Dashboard user={userDet} superAdmin={superAdmin} />}
                 />
                 <Route exact path="/addPatient" element={<AddPatient />} />
                 <Route
                   exact
                   path="/patients"
-                  element={<Patients role={userDet.role} />}
+                  element={<Patients role={userDet.role} superAdmin={superAdmin} />}
                 />
                 <Route
                   exact
                   path="/patientDetails"
-                  element={<PatientDetails role={userDet.role} />}
+                  element={
+                    <PatientDetails
+                      role={userDet.role}
+                      superAdmin={superAdmin}
+                    />
+                  }
                 />
                 <Route
                   exact
                   path="/doctors"
-                  element={<Doctors role={userDet.role} />}
+                  element={
+                    <Doctors role={userDet.role} superAdmin={superAdmin} />
+                  }
                 />
                 <Route
                   exact
                   path="/doctorDetails"
-                  element={<DoctorDetails role={userDet.role} />}
+                  element={
+                    <DoctorDetails
+                      role={userDet.role}
+                      superAdmin={superAdmin}
+                    />
+                  }
                 />
-                <Route exact path="/rooms" element={<Rooms />} />
-                <Route exact path="/roomDetails" element={<RoomDetails />} />
                 <Route
                   exact
                   path="/addMedicalRecord"
-                  element={<AddMedicRecord />}
+                  element={<AddMedicRecord superAdmin={superAdmin} />}
                 />
                 <Route
                   exact
                   path="/medicalRecord"
-                  element={<MedicalRecord role={userDet.role} />}
+                  element={
+                    <MedicalRecord
+                      role={userDet.role}
+                      superAdmin={superAdmin}
+                    />
+                  }
                 />
                 <Route
                   exact
                   path="/medicalRecordDetails"
-                  element={<MedicRecordDetails role={userDet.role} />}
+                  element={<MedicRecordDetails role={userDet.role} superAdmin={superAdmin} />}
                 />
                 <Route
                   exact
@@ -135,8 +154,27 @@ const Home = () => {
                 <Route
                   exact
                   path="/reserveDetails"
-                  element={<ReserveDetails role={userDet.role} />}
+                  element={<ReserveDetails role={userDet.role} superAdmin={superAdmin} />}
                 />
+                <Route
+                  exact
+                  path="/reserve/rad"
+                  element={<Reservation role={userDet.role} type={'rad'} />}
+                />
+                <Route
+                  exact
+                  path="/reserve/lab"
+                  element={<Reservation role={userDet.role} type={'lab'} />}
+                />
+                <Route exact path="/notes" element={<Notes superAdmin={superAdmin} email={userDet.email} />} />
+                <Route
+                  exact
+                  path="/settings"
+                  element={<Settings user={userDet} role={userDet.role} />}
+                  />
+
+                {userDet.email == process.env.REACT_APP_SA && (
+                  <>
                 <Route
                   exact
                   path="/firstAid"
@@ -157,32 +195,18 @@ const Home = () => {
                   path="/radiation"
                   element={<Rad role={userDet.role} />}
                 />
-                <Route
-                  exact
-                  path="/categories/:type"
-                  element={<GetCategories role={userDet.role} />}
-                />
-                <Route
-                  exact
-                  path="/reserve/:type"
-                  element={<Reservation role={userDet.role} />}
-                />
-                <Route exact path="/notes" element={<Notes />} />
-                <Route exact path="/general" element={<General />} />
-                <Route
-                  exact
-                  path="/products/:type"
-                  element={<ProductsManager />}
-                />
-                <Route exact path="/categories" element={<Categories />} />
-                <Route
-                  exact
-                  path="/settings"
-                  element={<Settings user={userDet} role={userDet.role} />}
-                />
-
-                {userDet.email == "admin@hospi.com" && (
-                  <>
+                  <Route
+                    exact
+                    path="/categories/:type"
+                    element={<GetCategories role={userDet.role} />}
+                  />
+                  <Route exact path="/general" element={<General />} />
+                  <Route
+                    exact
+                    path="/products/:type"
+                    element={<ProductsManager />}
+                  />
+                  <Route exact path="/categories" element={<Categories />} />
                     <Route
                       exact
                       path="/addFirstAid"
@@ -199,6 +223,12 @@ const Home = () => {
                       element={<AddProduct />}
                     />
                     <Route exact path="/addRoom" element={<AddRoom />} />
+                    <Route exact path="/rooms" element={<Rooms />} />
+                    <Route
+                      exact
+                      path="/roomDetails"
+                      element={<RoomDetails />}
+                    />
                     <Route exact path="/addDoctor" element={<AddDoctor />} />
                     <Route exact path="/addAdmin" element={<AddAdmin />} />
                     <Route

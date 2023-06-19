@@ -15,10 +15,11 @@ doctor:[
   ["/doctor/home","la-shapes","Dashboard"],
   ["/doctor/patients","la-user-injured","Patients"],
   ["/doctor/reservations","la-calendar-check","Schedule"],
+  ["/doctor/doctorNotes","la-clipboard","Notes"],
   ["/doctor/drugsInteraction","la-capsules","Drugs Interaction"],
   ["/doctor/settings","la-cogs","Settings"]
 ],
-admin:[
+superAdmin:[
   ["/admin/dashboard","la-shapes","Dashboard"],
   ["/admin/patients","la-user-injured","Patients"],
   ["/admin/doctors","la-stethoscope","Doctors"],
@@ -28,9 +29,18 @@ admin:[
   ["/admin/laboratory","la-vials","Laboratory"],
   ["/admin/general","la-globe","General"],
   ["/admin/settings","la-cogs","Settings"],
+],
+admin:[
+  ["/admin/dashboard","la-shapes","Dashboard"],
+  ["/admin/patients","la-user-injured","Patients"],
+  ["/admin/doctors","la-stethoscope","Doctors"],
+  ["/admin/reservations","la-calendar-check","Reservations"],
+  ["/admin/reserve/rad","la-x-ray","Radiations"],
+  ["/admin/reserve/lab","la-vials","Laboratory"],
+  ["/admin/settings","la-cogs","Settings"],
 ]
-
 }
+
 return data[role]
 }
 

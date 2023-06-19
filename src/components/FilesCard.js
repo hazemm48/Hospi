@@ -5,7 +5,6 @@ import LoadingSpinner from "./Loading.js";
 const FilesCard = (props) => {
   const [files, setFiles] = useState(props.files);
   const [loading, setLoading] = useState(false);
-  console.log(props);
 
   const upload = async (e) => {
     console.log(e.target.files);

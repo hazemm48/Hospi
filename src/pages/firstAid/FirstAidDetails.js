@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  firstAids,
-} from "../../adminAPI.js";
+import { firstAids } from "../../adminAPI.js";
 import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
 import InputsHandler from "../../components/InputsHandler.js";
@@ -26,7 +24,7 @@ const FirstAidDetails = ({ role }) => {
         _id: state,
       },
     };
-    let { aids } = await firstAids(body,"POST","get");
+    let { aids } = await firstAids(body, "POST", "get");
     setData(aids[0]);
     setLoading(false);
   };
@@ -91,14 +89,26 @@ const FirstAidDetails = ({ role }) => {
     }
   };
 
+  useEffect(() => {
+    if (!loading) {
+      const tx = document.getElementsByTagName("textarea");
+      for (let i = 0; i < tx.length; i++) {
+        tx[i].setAttribute(
+          "style",
+          "height:" + tx[i].scrollHeight + "px;overflow-y:hidden;"
+        );
+      }
+    }
+  }, [loading]);
+
   return (
-    <>
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <div className="main-content">
-          {data && (
-            <div className="container-fluid">
+    <div className="main-content">
+      <div className="container-fluid">
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          data && (
+            <>
               <div className="section row title-section">
                 <div className="col-md-8">
                   <div aria-label="breadcrumb">
@@ -176,11 +186,11 @@ const FirstAidDetails = ({ role }) => {
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
-    </>
+            </>
+          )
+        )}
+      </div>
+    </div>
   );
 };
 
