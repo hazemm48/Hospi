@@ -15,7 +15,7 @@ import LoadingSpinner from "../../components/Loading.js";
 import NotesCard from "../../components/NotesCard.js";
 import Calendar from "../Calender.js";
 
-const PatientDetails = ({ role,superAdmin }) => {
+const PatientDetails = ({ role, superAdmin }) => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState();
   const [calView, setCalView] = useState(false);
@@ -50,7 +50,7 @@ const PatientDetails = ({ role,superAdmin }) => {
         "la-notes-medical",
       ],
     ];
-    if (role=="admin") {
+    if (role == "admin") {
       data.push(
         ["sta", state.isLoggedIn ? "Online" : "Offline", "member status"],
         [
@@ -75,17 +75,18 @@ const PatientDetails = ({ role,superAdmin }) => {
           },
           "reset password",
           "la-lock",
-        ],
+        ]
       );
     }
-    superAdmin&&arr.push(        [
-      "",
-      () => {
-        userDelete();
-      },
-      "delete user",
-      "la-trash",
-    ])
+    superAdmin &&
+      arr.push([
+        "",
+        () => {
+          userDelete();
+        },
+        "delete user",
+        "la-trash",
+      ]);
     setBottomBtns(arr);
     setHtmlData(data);
   };
@@ -181,6 +182,7 @@ const PatientDetails = ({ role,superAdmin }) => {
                 <>
                   <DetailsHeader
                     role={role}
+                    superAdmin={superAdmin}
                     name={state.name}
                     type={"patient"}
                     updateUserDetails={updateUserDetails}
