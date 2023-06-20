@@ -7,6 +7,7 @@ import LoadingSpinner from "../components/Loading.js";
 import { login, signUpApi } from "../adminAPI.js";
 import moment from "moment";
 import { useForm } from "react-hook-form";
+import { validate } from "./FormValidate.js";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -27,14 +28,22 @@ const Login = () => {
     }
   }, []);
 
-  const signIn = async () => {
+  const signIn = async (obj) => {
     let formEl = document.forms.signInForm;
     let formData = new FormData(formEl);
-
-    let body = {
-      email: formData.get("email").toLowerCase(),
-      password: formData.get("password"),
-    };
+    console.log(obj);
+    let body = {};
+    if (obj) {
+      body = {
+        email: obj.email,
+        password: obj.password,
+      };
+    } else {
+      body = {
+        email: formData.get("email").toLowerCase(),
+        password: formData.get("password"),
+      };
+    }
 
     let data = await login(body);
     console.log(data);
@@ -64,34 +73,24 @@ const Login = () => {
     } else {
       alert(data.message);
     }
-    setLoading(false);
   };
 
   const signUp = async (data) => {
-    let formEl = document.forms.signUpForm;
-    let formData = new FormData(formEl);
-
     let body = {
-      name: formData.get("name").toLowerCase(),
-      email: formData.get("email").toLowerCase(),
-      password: formData.get("password"),
+      ...data,
       patientInfo: {
         birthDate: moment(birthDate).format("MM-DD-YYYY"),
       },
-      gender: formData.get("gender"),
       role: "patient",
     };
-    console.log(body);
     let { message } = await signUpApi(body);
     if (message == "patient added") {
-      alert(
-        "an email confirmation message have been sent to your email\nplease confirm your email first before continue"
-      );
-      window.location.reload();
-    } else {
+      await signIn(body);
+    } else if ((message = "already registered")) {
       alert(message);
+    } else {
+      alert("Something went wrong, Please try again later");
     }
-    console.log(data);
   };
 
   useLayoutEffect(() => {
@@ -131,12 +130,10 @@ const Login = () => {
                   />
                 </div>
                 <input
-                  type="submit"
+                  type="button"
                   defaultValue="Login"
                   className="btn solid"
                   onClick={() => {
-                    document.querySelector("body").style.background = "white";
-                    setLoading(true);
                     signIn();
                   }}
                 />
@@ -162,7 +159,7 @@ const Login = () => {
                     name="name"
                     type="text"
                     placeholder="Your Full Name"
-                    {...register("name", { required: "Name is required" })}
+                    {...register("name", validate("name"))}
                   />
                   {errors.name && (
                     <>
@@ -179,7 +176,7 @@ const Login = () => {
                     name="email"
                     type="email"
                     placeholder="Email"
-                    {...register("email", { required: "email is required" })}
+                    {...register("email", validate("email"))}
                   />
                   {errors.email && (
                     <>
@@ -196,9 +193,7 @@ const Login = () => {
                     name="password"
                     type="password"
                     placeholder="Password"
-                    {...register("password", {
-                      required: "password is required",
-                    })}
+                    {...register("password", validate("password"))}
                   />
                   {errors.password && (
                     <>
@@ -219,45 +214,21 @@ const Login = () => {
                     selected={birthDate}
                     onChange={setBirthDate}
                     dateFormat="dd-MM-yyyy"
-                    showMonthDropdown
                     showYearDropdown
+                    required
                     dropdownMode="select"
-                    {...register("birthDate", {
-                      required: "Birth Date is required",
-                    })}
                   />
-                  {errors.birthDate && (
-                    <>
-                      <i className="login-warning las la-exclamation-triangle " />
-                      <small className="text-warning">
-                        {errors.birthDate.message}
-                      </small>
-                    </>
-                  )}
                 </div>
                 <div className="input-field">
                   <i className="las la-transgender" />
                   <select
                     name="gender"
                     style={{ background: "none", border: "none" }}
-                    {...register("gender", {
-                      required: "gender is required",
-                    })}
+                    {...register("gender", { required: true })}
                   >
-                    <option disabled selected>
-                      -- choose your gender --
-                    </option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                   </select>
-                  {errors.gender && (
-                    <>
-                      <i className="login-warning las la-exclamation-triangle " />
-                      <small className="text-warning">
-                        {errors.gender.message}
-                      </small>
-                    </>
-                  )}
                 </div>
                 <input type="submit" className="btn" defaultValue="Sign up" />
                 {/*                 <p className="social-text">Or Sign up with social platforms</p>
