@@ -98,7 +98,6 @@ const PatientDetails = ({ role, superAdmin }) => {
       },
     };
     let user = await users(body);
-    console.log(user);
     if (!user.users) {
       alert("patient not found");
       navigate(-1);
@@ -142,29 +141,24 @@ const PatientDetails = ({ role, superAdmin }) => {
     }
     details.name = document.getElementById("name").value;
     details.patientInfo.birthDate = moment(
-      details.patientInfo.birthDate
+      details.patientInfo.birthDate,
+      "DD-MM-YYYY"
     ).format("MM-DD-YYYY");
     let body = {
       details,
       id: state._id,
     };
-    console.log(body);
     let update = await updateUser(body);
     alert(update.message);
-    if (update.message == "update success") {
-      window.location.reload();
-    }
   };
 
   const resetPass = async () => {
-    console.log(state);
     if (window.confirm("Are you sure you want to reset user password")) {
       let body = {
-        id: state._id,
+        id: id.state,
       };
       let reset = await resetPassword(body);
       alert(reset.message);
-      console.log(reset);
     }
   };
 

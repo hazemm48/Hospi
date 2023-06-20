@@ -30,7 +30,7 @@ const AddPatient = () => {
   const data = async () => {
     let formEl = document.forms.form;
     let formData = new FormData(formEl);
-    
+
     let body = {
       patientInfo: {},
     };
@@ -47,10 +47,8 @@ const AddPatient = () => {
     body.role = "patient";
     let file = body.profile;
     delete body.profile;
-    console.log(body);
 
     let add = await addUser(body);
-    console.log(add);
     alert(add.message);
     if (add.message == "doctor added") {
       if (addProfilePic(file, add.added[0]._id)) {
@@ -84,7 +82,12 @@ const AddPatient = () => {
             <div className="card container">
               <div className="col-md-3">
                 <div className="card-header">
-                  <img className="rounded-circle" width="80%" src={manImg} loading="lazy" />
+                  <img
+                    className="rounded-circle"
+                    width="80%"
+                    src={manImg}
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div className="card-body">
@@ -123,7 +126,9 @@ const AddPatient = () => {
                               name="gender"
                               required
                             >
-                              <option disabled selected>-- choose gender --</option>
+                              <option disabled selected>
+                                -- choose gender --
+                              </option>
                               <option value="male">Male</option>
                               <option value="female">Female</option>
                             </select>
