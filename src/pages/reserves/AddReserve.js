@@ -175,7 +175,7 @@ const CreateReserve = ({ role }) => {
                                   name="patName"
                                   className="form-control"
                                   required
-                                  pattern="[A-Za-z]{3,40}"
+                                  pattern="[A-Za-z ]{3,40}"
                                 />
                               </div>
                             </div>
