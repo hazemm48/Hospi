@@ -3,7 +3,7 @@ import React from "react";
 
 const InputsHandler = (props) => {
   let { handler, disable, data } = props;
-console.log(data);
+  console.log(data);
   const viewStill = (e) => {
     let still = document.querySelector("#still");
     if (e.target.value == "true") {
@@ -19,8 +19,10 @@ console.log(data);
     let endDate = document.querySelector("#endDate");
     if (e.target.value == "false") {
       endDate.style.display = "block";
+      document.getElementsByName("endDate")[0].required = true;
     } else if (e.target.value == "true") {
       endDate.style.display = "none";
+      document.getElementsByName("endDate")[0].required = false;
     }
   };
 
@@ -39,7 +41,7 @@ console.log(data);
                 name={e[2]}
                 type={e[3]}
                 disabled={disable}
-                required
+                required={e[2]!="doctorName"?true:false}
                 defaultValue={data ? data[e[2]] : ""}
               />
             </div>
@@ -55,7 +57,6 @@ console.log(data);
                 required
                 defaultValue={data ? data[e[2]] : ""}
                 onChange={(d) => {
-                  console.log(d[2]);
                   if (e[2] == "chronic") {
                     return viewStill(d);
                   } else {

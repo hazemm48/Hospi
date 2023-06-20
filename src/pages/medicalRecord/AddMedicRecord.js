@@ -7,7 +7,6 @@ import { medicalRecord, uploadFile } from "../../adminAPI.js";
 import InputsHandler from "../../components/InputsHandler.js";
 import record from "../../images/record.jpg";
 
-
 const AddMedicRecord = () => {
   const [htmlData, setHtmlData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -41,11 +40,13 @@ const AddMedicRecord = () => {
       file: [],
     };
     for (const pair of formData.entries()) {
-      console.log(pair[0]);
-      if (pair[0] == "file") {
-        body["file"].push(pair[1]);
-      } else {
-        body[pair[0]] = pair[1];
+      if (pair[1]) {
+        console.log(pair[0], pair[1]);
+        if (pair[0] == "file") {
+          body["file"].push(pair[1]);
+        } else {
+          body[pair[0]] = pair[1];
+        }
       }
     }
     body.patientId = state;
@@ -96,7 +97,14 @@ const AddMedicRecord = () => {
                     <div className="sub-section col-sm-8 col-md-12 col-lg-8">
                       <div className="sub-section-body">
                         <div className="user-password-form">
-                          <form id="form">
+                          <form
+                            id="form"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              addRecord();
+                              setLoading(true);
+                            }}
+                          >
                             <InputsHandler handler={htmlData.data} />
                             <div className="form-group col-sm-8">
                               <label>upload files</label>
@@ -104,23 +112,17 @@ const AddMedicRecord = () => {
                                 className="form-control"
                                 name="file"
                                 type="file"
+                                max="5"
                                 multiple
                                 accept="image/*,application/pdf"
-                                required
                               />
                             </div>
+                            <input
+                              className="btn btn-dark-red-f-gr mt-4"
+                              type="submit"
+                              defaultValue="submit"
+                            />
                           </form>
-                          <button
-                            className="btn btn-dark-red-f-gr mt-4"
-                            type="button"
-                            onClick={() => {
-                              addRecord();
-                              setLoading(true);
-                            }}
-                          >
-                            <i className="las la-save" />
-                            submit
-                          </button>
                         </div>
                       </div>
                     </div>

@@ -13,13 +13,15 @@ const MedicRecordDetails = ({ role, superAdmin }) => {
 
   const { state } = useLocation();
 
-  let createHtmlData = (type) => {
-    let data = medicList(type);
+  let createHtmlData = (obj) => {
+    let data = medicList(obj.type);
+    console.log(data);
     role == "admin" &&
       data.data.push(
         ["input", "patient id", "patientId", "text"],
         ["input", "created at", "createdAt", "date"]
       );
+      !obj.doctorName&&(data.data.pop())
     setHtmlData(data);
   };
 
@@ -34,7 +36,7 @@ const MedicRecordDetails = ({ role, superAdmin }) => {
     };
     let { records } = await medicalRecord(body, "POST", "get");
     setData(records[0]);
-    createHtmlData(records[0].type);
+    createHtmlData(records[0]);
     console.log(records);
     setLoading(false);
   };
@@ -130,7 +132,7 @@ const MedicRecordDetails = ({ role, superAdmin }) => {
                     </ol>
                   </div>
                 </div>
-                {(role == "patient" || superAdmin) && (
+                {(/* role == "patient" ||  */superAdmin) && (
                   <div className="col-md-4">
                     <button
                       id="editPat"
