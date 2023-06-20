@@ -2,7 +2,7 @@ import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import sideNavData from "./SideNavData.js";
 
-const SideNav = ({ role, superAdmin }) => {
+const SideNav = ({ role, superAdmin, id }) => {
   superAdmin && (role = "superAdmin");
   let data = sideNavData(role);
   return (
@@ -12,6 +12,7 @@ const SideNav = ({ role, superAdmin }) => {
           return (
             <NavLink
               to={e[0]}
+              state={id ? id : false}
               className="list-group-item"
               data-toggle="tooltip"
               data-placement="bottom"

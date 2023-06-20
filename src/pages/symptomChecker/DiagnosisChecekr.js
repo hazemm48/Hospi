@@ -145,7 +145,6 @@ const DiagnosisChecker = (props) => {
     let data = await mainAPi(`issues/${e}/info`);
     setIssueInfo(data);
     window.scrollTo(0, document.body.scrollHeight);
-    console.log(data);
   };
 
   useEffect(() => {
@@ -164,7 +163,18 @@ const DiagnosisChecker = (props) => {
             <div className="col-sm-12">
               <div className="card container">
                 <div className="card-body">
-                  <form id="form">
+                  <form
+                    id="form"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (symView) {
+                        getResults();
+                      } else {
+                        setAllData([]);
+                        getBodySymptoms();
+                      }
+                    }}
+                  >
                     {symView && (
                       <div className="form-group col-sm-6">
                         <label>date of birth</label>
@@ -173,6 +183,7 @@ const DiagnosisChecker = (props) => {
                           selected={birthYear}
                           onChange={(date) => setBirthYear(date)}
                           showYearPicker
+                          required
                           dateFormat="yyyy"
                         />
                       </div>
@@ -212,15 +223,7 @@ const DiagnosisChecker = (props) => {
                     })}
                     <button
                       className="btn btn-dark-red-f-gr mt-4"
-                      type="button"
-                      onClick={() => {
-                        if (symView) {
-                          getResults();
-                        } else {
-                          setAllData([]);
-                          getBodySymptoms();
-                        }
-                      }}
+                      type="submit"
                     >
                       {symView ? "diagnose" : "get body symptoms"}
                     </button>

@@ -6,6 +6,7 @@ let data = {
   ["/patient/reservations","la-calendar-check","Reservations"],
   ["/patient/reserve/rad","la-x-ray","Radiations"],
   ["/patient/reserve/lab","la-vials","Laboratory"],
+  ["/patient/medicalRecord","la-notes-medical","Medical Records"],
   ["/patient/drugsInteraction","la-capsules","Drugs Interaction"],
   ["/patient/symptomChecker","la-heartbeat","Symptom checker"],
   ["/patient/firstAid","la-medkit","First Aid"],

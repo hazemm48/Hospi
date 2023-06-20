@@ -1,11 +1,10 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useParams } from "react-router-dom";
 import Select from "react-select";
 import LoadingSpinner from "../../components/Loading.js";
 import { categoriesApi, productsApi, reserve, users } from "../../adminAPI.js";
+import moment from "moment";
 
 const Reservation = ({ role, type }) => {
   const [loading, setLoading] = useState(false);
@@ -82,6 +81,7 @@ const Reservation = ({ role, type }) => {
   }, [selectedProduct]);
 
   const submit = async () => {
+    console.log("asd");
     let formEl = document.forms.form;
     let formData = new FormData(formEl);
     let data = {};
@@ -127,7 +127,14 @@ const Reservation = ({ role, type }) => {
                   id="editDet"
                   className="col d-flex justify-content-center res"
                 >
-                  <form id="form" method="post">
+                  <form
+                    id="form"
+                    onSubmit={(e) => {
+                      submit();
+                      e.preventDefault();
+                      setLoading(true);
+                    }}
+                  >
                     <div className="mini-card">
                       <div className="card-body">
                         <div className="row justify-content-center">
@@ -138,6 +145,7 @@ const Reservation = ({ role, type }) => {
                                 name="patName"
                                 className="form-control"
                                 required
+                                pattern="[A-Za-z]{3,40}"
                               />
                             </div>
                           </div>
@@ -190,7 +198,8 @@ const Reservation = ({ role, type }) => {
                               <label>date</label>
                               <DatePicker
                                 placeholderText="choose date"
-                                minDate={new Date()}
+                                minDate={moment()._d}
+                                maxDate={moment().add(2, "weeks")._d}
                                 dateFormat="dd-MM-yyyy"
                                 className="form-control"
                                 selected={startDate}
@@ -216,11 +225,7 @@ const Reservation = ({ role, type }) => {
                           <div className="col-md-4">
                             <div className="form-group">
                               <label>phone</label>
-                              <input
-                                name="phone"
-                                className="form-control"
-                                required
-                              />
+                              <input name="phone" className="form-control" />
                             </div>
                           </div>
                           {role == "admin" && (
@@ -248,17 +253,12 @@ const Reservation = ({ role, type }) => {
                         </div>
                         <div className="card-footer">
                           <div className="d-flex justify-content-center">
-                            <button
+                            <input
                               id="submit"
-                              type="button"
+                              type="submit"
+                              defaultValue="submit"
                               className="btn btn-dark-red-f-gr col-md-2"
-                              onClick={(e) => {
-                                setLoading(true);
-                                submit();
-                              }}
-                            >
-                              Submit
-                            </button>
+                            />
                           </div>
                         </div>
                       </div>

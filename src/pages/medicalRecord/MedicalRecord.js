@@ -13,7 +13,6 @@ const MedicalRecord = ({ role }) => {
   let { state } = useLocation();
   console.log(state);
 
-
   let filterValues = [
     ["all", "All"],
     ["diagnose", "diagnose"],
@@ -29,6 +28,7 @@ const MedicalRecord = ({ role }) => {
         patientId: state,
       },
     };
+    console.log(body);
     let type = document.getElementById("type").value;
     if (!(type == "all")) {
       body.filter = { ...body.filter, type: type };
@@ -40,8 +40,10 @@ const MedicalRecord = ({ role }) => {
   };
 
   useEffect(() => {
-    setLoading(true);
-    getRecordsData();
+    if (state) {
+      setLoading(true);
+      getRecordsData();
+    }
   }, []);
 
   return (

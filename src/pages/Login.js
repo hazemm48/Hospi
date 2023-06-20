@@ -7,7 +7,7 @@ import LoadingSpinner from "../components/Loading.js";
 import { login, signUpApi } from "../adminAPI.js";
 import moment from "moment";
 import { useForm } from "react-hook-form";
-import { validate } from "./FormValidate.js";
+import { validate } from "../validation/FormValidate.js";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -40,8 +40,8 @@ const Login = () => {
       };
     } else {
       body = {
-        email: formData.get("email").toLowerCase(),
-        password: formData.get("password"),
+        email: formData.get("emaill").toLowerCase(),
+        password: formData.get("passwordd"),
       };
     }
 
@@ -119,23 +119,29 @@ const Login = () => {
                 <h2 className="title">Sign in</h2>
                 <div className="input-field">
                   <i className="las la-envelope" />
-                  <input name="email" type="text" placeholder="E-mail" />
+                  <input
+                    name="emaill"
+                    type="text"
+                    placeholder="E-mail"
+                    required
+                  />
                 </div>
                 <div className="input-field">
                   <i className="las la-key" />
                   <input
-                    name="password"
+                    name="passwordd"
                     type="password"
                     placeholder="Password"
+                    required
                   />
                 </div>
                 <input
                   type="button"
-                  defaultValue="Login"
-                  className="btn solid"
                   onClick={() => {
                     signIn();
                   }}
+                  defaultValue="Login"
+                  className="btn solid"
                 />
                 {/* <p className="social-text">Or Sign in with social platforms</p>
                 <div className="social-media">

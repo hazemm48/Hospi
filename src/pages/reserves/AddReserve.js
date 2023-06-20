@@ -25,14 +25,12 @@ const CreateReserve = ({ role }) => {
   };
 
   const GetDetails = async () => {
-    console.log(state);
     let body = {
       filter: {
         _id: state.id,
       },
     };
     let user = await users(body);
-    console.log(user);
     let dates = [];
     if (user.users[0].doctorInfo?.unavailableDates) {
       user.users[0].doctorInfo.unavailableDates =
@@ -40,7 +38,6 @@ const CreateReserve = ({ role }) => {
           return moment(e).toDate();
         });
     }
-    console.log(user.users[0].doctorInfo?.unavailableDates);
     setUserDetails(user.users[0]);
     setScheduleDay(0);
   };
@@ -69,11 +66,9 @@ const CreateReserve = ({ role }) => {
     let filter = {};
     data.email && role == "admin" && (filter.email = data.email.toLowerCase());
     data.phone && role == "admin" && (filter.phone = data.phone);
-    console.log(filter);
     if (filter) {
       let body = { filter };
       let user = await users(body);
-      console.log(user);
       if (user.users.length > 0) {
         data.patientId = user.users[0]._id;
       }
@@ -91,257 +86,256 @@ const CreateReserve = ({ role }) => {
       alert(reserveData.message);
     }
     setLoading(false);
-    console.log(reserveData);
   };
 
   let time = () => {
     let time = userDetails?.doctorInfo?.schedule[scheduleDay].time;
-    let timeCon = `${moment(time.from,'HH:mm').format('h:mm A')} - ${moment(time.to,'HH:mm').format('h:mm A')}`;
+    let timeCon = `${moment(time.from, "HH:mm").format("h:mm A")} - ${moment(
+      time.to,
+      "HH:mm"
+    ).format("h:mm A")}`;
     return timeCon;
   };
 
   return (
-    <>
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        userDetails?.doctorInfo && (
-          <div className="main-content">
-            <div className="container-fluid">
-              <div className="section patient-details-section">
-                <div className="card ">
-                  <h3>{state.type} Reserve</h3>
-                  <div className="">
-                    <div className="col ">
-                      <div className="mini-card text-center">
-                        <div className="card-header">
-                          <img
-                            className="rounded-circle"
-                            src={
-                              userDetails.image
-                                ? userDetails.image
-                                : userDetails.gender == "male"
-                                ? maleImg
-                                : femaleImg
-                            }
-                            loading="lazy"
-                          />
-                        </div>
-                        <div
-                          className="card-body row"
-                          style={{ justifyContent: "center", display: "block" }}
-                        >
-                          <h3>{userDetails.name}</h3>
-                          <h4>{userDetails.doctorInfo.speciality}</h4>
-                          {role == "admin" ? (
-                            <div className="d-flex justify-content-center ">
-                              <Link
-                                to="/admin/doctorDetails"
-                                state={userDetails._id}
-                                className="btn btn-dark-red-f-gr col-md-2"
-                                style={{
-                                  margin: "0.3em",
-                                }}
-                              >
-                                <i className="las la-edit" />
-                                doctor details
-                              </Link>
-                            </div>
-                          ) : (
-                            <h6 style={{ color: "grey" }}>
-                              {userDetails.doctorInfo?.bio}
-                            </h6>
-                          )}
-                        </div>
+    <div className="main-content">
+      <div className="container-fluid">
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          userDetails?.doctorInfo && (
+            <div className="section patient-details-section">
+              <div className="card ">
+                <h3>{state.type} Reserve</h3>
+                <div className="">
+                  <div className="col ">
+                    <div className="mini-card text-center">
+                      <div className="card-header">
+                        <img
+                          className="rounded-circle"
+                          src={
+                            userDetails.image
+                              ? userDetails.image
+                              : userDetails.gender == "male"
+                              ? maleImg
+                              : femaleImg
+                          }
+                          loading="lazy"
+                        />
+                      </div>
+                      <div
+                        className="card-body row"
+                        style={{ justifyContent: "center", display: "block" }}
+                      >
+                        <h3>{userDetails.name}</h3>
+                        <h4>{userDetails.doctorInfo.speciality}</h4>
+                        {role == "admin" ? (
+                          <div className="d-flex justify-content-center ">
+                            <Link
+                              to="/admin/doctorDetails"
+                              state={userDetails._id}
+                              className="btn btn-dark-red-f-gr col-md-2"
+                              style={{
+                                margin: "0.3em",
+                              }}
+                            >
+                              <i className="las la-edit" />
+                              doctor details
+                            </Link>
+                          </div>
+                        ) : (
+                          <h6 style={{ color: "grey" }}>
+                            {userDetails.doctorInfo?.bio}
+                          </h6>
+                        )}
                       </div>
                     </div>
+                  </div>
 
-                    <div
-                      id="editDet"
-                      className="col d-flex justify-content-center res"
+                  <div
+                    id="editDet"
+                    className="col d-flex justify-content-center res"
+                  >
+                    <form
+                      id="form"
+                      onSubmit={(e) => {
+                        submit();
+                        e.preventDefault();
+                        setLoading(true);
+                      }}
                     >
-                      <form id="form" method="post">
-                        <div className="mini-card">
-                          <div className="card-body">
-                            <div className="row justify-content-center">
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>patient name</label>
-                                  <input
-                                    name="patName"
-                                    className="form-control"
-                                    required
-                                  />
-                                </div>
+                      <div className="mini-card">
+                        <div className="card-body">
+                          <div className="row justify-content-center">
+                            <div className="col-md-4">
+                              <div className="form-group">
+                                <label>patient name</label>
+                                <input
+                                  name="patName"
+                                  className="form-control"
+                                  required
+                                  pattern="[A-Za-z]{3,40}"
+                                />
                               </div>
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>visit type</label>
-                                  <select
-                                    className="selectpicker form-control form-select dropdown-toggle"
-                                    name="visitType"
-                                    id="vt"
-                                    required
-                                    data-live-search="true"
-                                    onChange={(e) => {
-                                      feesChange(e);
-                                    }}
-                                  >
-                                    <option
-                                      selected
-                                      value="examination"
-                                      data="examin"
-                                    >
-                                      Examination
-                                    </option>
-                                    <option value="follow up" data="followUp">
-                                      Follow Up
-                                    </option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>fees</label>
-                                  <input
-                                    value={userDetails?.doctorInfo?.fees[fees]}
-                                    name="fees"
-                                    id="fees"
-                                    readOnly={role == "admin" ? false : true}
-                                    className="form-control"
-                                    required
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>day</label>
-                                  <select
-                                    className="form-control form-select dropdown-toggle"
-                                    id="day"
-                                    name="day"
-                                    required
-                                    onChange={(e) => {
-                                      setScheduleDay(e.target.selectedIndex);
-                                      setStartDate();
-                                    }}
-                                  >
-                                    {userDetails?.doctorInfo?.schedule.map(
-                                      (e) => {
-                                        return (
-                                          <option value={e.day}>{e.day}</option>
-                                        );
-                                      }
-                                    )}
-                                  </select>
-                                </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>date</label>
-                                  <DatePicker
-                                    placeholderText="choose date"
-                                    minDate={new Date()}
-                                    filterDate={isWeekday}
-                                    excludeDates={
-                                      userDetails.doctorInfo?.unavailableDates
-                                        ? userDetails.doctorInfo
-                                            .unavailableDates
-                                        : []
-                                    }
-                                    dateFormat="dd-MM-yyyy"
-                                    className="form-control"
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    required
-                                    name="date"
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>time</label>
-                                  <input
-                                    className="form-control"
-                                    value={time()}
-                                    disabled
-                                    required
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>another person</label>
-                                  <select
-                                    className="form-control form-select dropdown-toggle"
-                                    name="anotherPerson"
-                                    required
-                                  >
-                                    <option value={false}>no</option>
-                                    <option value={true}>yes</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div className="col-md-4">
-                                <div className="form-group">
-                                  <label>phone</label>
-                                  <input
-                                    name="phone"
-                                    className="form-control"
-                                    required
-                                  />
-                                </div>
-                              </div>
-                              {role == "admin" && (
-                                <>
-                                  <div className="col-md-4">
-                                    <div className="form-group">
-                                      <label>email</label>
-                                      <input
-                                        name="email"
-                                        className="form-control"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="col-md-4">
-                                    <div className="form-group">
-                                      <label>patient id</label>
-                                      <input
-                                        name="patientId"
-                                        className="form-control"
-                                      />
-                                    </div>
-                                  </div>
-                                </>
-                              )}
                             </div>
-                            <div className="card-footer">
-                              <div className="d-flex justify-content-center">
-                                <button
-                                  id="submit"
-                                  type="button"
-                                  className="btn btn-dark-red-f-gr col-md-2"
-                                  onClick={(e) => {
-                                    setLoading(true);
-                                    submit();
+                            <div className="col-md-4">
+                              <div className="form-group">
+                                <label>visit type</label>
+                                <select
+                                  className="selectpicker form-control form-select dropdown-toggle"
+                                  name="visitType"
+                                  id="vt"
+                                  required
+                                  data-live-search="true"
+                                  onChange={(e) => {
+                                    feesChange(e);
                                   }}
                                 >
-                                  Submit
-                                </button>
+                                  <option
+                                    selected
+                                    value="examination"
+                                    data="examin"
+                                  >
+                                    Examination
+                                  </option>
+                                  <option value="follow up" data="followUp">
+                                    Follow Up
+                                  </option>
+                                </select>
                               </div>
+                            </div>
+                            <div className="col-md-4">
+                              <div className="form-group">
+                                <label>fees</label>
+                                <input
+                                  value={userDetails?.doctorInfo?.fees[fees]}
+                                  name="fees"
+                                  id="fees"
+                                  readOnly={role == "admin" ? false : true}
+                                  className="form-control"
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-4">
+                              <div className="form-group">
+                                <label>day</label>
+                                <select
+                                  className="form-control form-select dropdown-toggle"
+                                  id="day"
+                                  name="day"
+                                  required
+                                  onChange={(e) => {
+                                    setScheduleDay(e.target.selectedIndex);
+                                    setStartDate();
+                                  }}
+                                >
+                                  {userDetails?.doctorInfo?.schedule.map(
+                                    (e) => {
+                                      return (
+                                        <option value={e.day}>{e.day}</option>
+                                      );
+                                    }
+                                  )}
+                                </select>
+                              </div>
+                            </div>
+                            <div className="col-md-4">
+                              <div className="form-group">
+                                <label>date</label>
+                                <DatePicker
+                                  placeholderText="choose date"
+                                  minDate={moment()._d}
+                                  maxDate={moment().add(1, "months")._d}
+                                  filterDate={isWeekday}
+                                  excludeDates={
+                                    userDetails.doctorInfo?.unavailableDates
+                                      ? userDetails.doctorInfo.unavailableDates
+                                      : []
+                                  }
+                                  dateFormat="dd-MM-yyyy"
+                                  className="form-control"
+                                  selected={startDate}
+                                  onChange={(date) => setStartDate(date)}
+                                  required
+                                  name="date"
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-4">
+                              <div className="form-group">
+                                <label>time</label>
+                                <input
+                                  className="form-control"
+                                  value={time()}
+                                  disabled
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-4">
+                              <div className="form-group">
+                                <label>another person</label>
+                                <select
+                                  className="form-control form-select dropdown-toggle"
+                                  name="anotherPerson"
+                                  required
+                                >
+                                  <option value={false}>no</option>
+                                  <option value={true}>yes</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div className="col-md-4">
+                              <div className="form-group">
+                                <label>phone</label>
+                                <input name="phone" className="form-control" />
+                              </div>
+                            </div>
+                            {role == "admin" && (
+                              <>
+                                <div className="col-md-4">
+                                  <div className="form-group">
+                                    <label>email</label>
+                                    <input
+                                      name="email"
+                                      className="form-control"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col-md-4">
+                                  <div className="form-group">
+                                    <label>patient id</label>
+                                    <input
+                                      name="patientId"
+                                      className="form-control"
+                                    />
+                                  </div>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                          <div className="card-footer">
+                            <div className="d-flex justify-content-center">
+                              <input
+                                id="submit"
+                                type="submit"
+                                className="btn btn-dark-red-f-gr col-md-2"
+                                defaultValue="submit"
+                              />
                             </div>
                           </div>
                         </div>
-                      </form>
-                    </div>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        )
-      )}
-    </>
+          )
+        )}
+      </div>
+    </div>
   );
 };
 

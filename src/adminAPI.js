@@ -10,7 +10,6 @@ let tokenCheck = () => {
   if (localStorage.token) {
     let token = JSON.parse(localStorage.token);
     if (token.expiry) {
-      console.log("sss");
       let date = moment().format("YYYY-MM-DD HH:mm");
       if (moment(date).diff(moment(token.expiry)) >= 0) {
         localStorage.removeItem("token");

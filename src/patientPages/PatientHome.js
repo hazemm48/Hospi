@@ -58,7 +58,7 @@ const PatientHome = () => {
           <>
             <Header user={userDet} />
             <main>
-              <SideNav role={"patient"} />
+              <SideNav role={"patient"} id={userDet._id} />
               <Routes>
                 <Route
                   exact
