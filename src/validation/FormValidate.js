@@ -15,7 +15,7 @@ export const validate = (type) => {
     name: {
       required: "Name is required",
       pattern: {
-        value: /^[A-Za-z]+$/i,
+        value: /^[A-Za-z ]+$/i,
         message: "Enter characters only",
       },
       maxLength: {

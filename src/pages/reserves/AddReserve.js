@@ -113,6 +113,7 @@ const CreateReserve = ({ role }) => {
                       <div className="card-header">
                         <img
                           className="rounded-circle"
+                          style={{width:'9em',height:'9em'}}
                           src={
                             userDetails.image
                               ? userDetails.image

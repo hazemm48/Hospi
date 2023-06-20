@@ -60,6 +60,9 @@ const Doctors = ({ role, id, favDocs, superAdmin }) => {
         pageNo: currentPage,
         limit: resultLimit,
       };
+      if (role == "patient" || role == "admin") {
+        body.filter["doctorInfo.available"] = true;
+      }
       if (day) {
         body.filter["doctorInfo.schedule.day"] = moment()
           .format("dddd")

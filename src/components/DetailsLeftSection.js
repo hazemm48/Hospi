@@ -35,6 +35,7 @@ const DetailsLeftSection = ({ data, type, GetDetails, setLoading, role,superAdmi
         <div className="card-header">
           <img
             className="rounded-circle"
+            style={{width:'10em',height:'10em'}}
             src={
               data.image
                 ? data.image

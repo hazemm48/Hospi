@@ -1,5 +1,6 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { createRef, useEffect, useLayoutEffect, useState } from "react";
 import moment from "moment";
+import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -11,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 const Calendar = (props) => {
   const [reserves, setReserves] = useState();
+  const [initialView, setInitialView] = useState("dayGridMonth");
   const [events, setEvents] = useState();
   const [month, setMonth] = useState(moment().get("month") + 1);
   const [year, setYear] = useState(moment().get("year"));
@@ -23,8 +25,26 @@ const Calendar = (props) => {
 
   let calenderRef = createRef();
 
-  useEffect(() => { 
-    let head = "prev,next today"
+  const osCheck = () => {
+    console.log(navigator.userAgent);
+    if (
+      /Android|webOS|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent)
+    ) {
+      return "listWeek";
+    } else {
+      return "dayGridMonth";
+    }
+  };
+  useLayoutEffect(() => {
+    if (
+      /Android|webOS|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent)
+    ) {
+      document.querySelector(".fc-view-harness").style.height = "500px";
+    }
+  }, []);
+
+  useEffect(() => {
+    let head = "prev,next today";
     if (props.role != "doctor") {
       let arr = ["all", "doctor", "lab", "rad"];
       let obj = {};
@@ -36,10 +56,10 @@ const Calendar = (props) => {
           },
         };
       });
-      setHeadBar(head+" all,doctor,lab,rad")
+      setHeadBar(head + " all,doctor,lab,rad");
       setCusBtns(obj);
-    }else{
-      setHeadBar(head)
+    } else {
+      setHeadBar(head);
     }
   }, []);
 
@@ -120,13 +140,11 @@ const Calendar = (props) => {
   };
 
   let handleDateChange = (args) => {
-    console.log(args);
     setStartDate(args.start);
     let date = moment(args.start);
     setMonth(date.get("month") + 1);
     setYear(date.get("year"));
   };
-  console.log(startDate);
   return (
     <div className="main-content">
       <div className="container-fluid">
@@ -139,17 +157,18 @@ const Calendar = (props) => {
                 dayGridPlugin,
                 interactionPlugin,
                 timeGridPlugin,
+                listPlugin,
                 bootstrap5Plugin,
               ]}
               headerToolbar={{
                 left: headBar,
                 center: "title",
-                right: "dayGridMonth,timeGridWeek,timeGridDay",
+                right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
               }}
               initialDate={startDate}
               selectable={true}
               themeSystem={"bootstrap5"}
-              initialView={"dayGridMonth"}
+              initialView={osCheck()}
               datesSet={handleDateChange}
               showNonCurrentDates={false}
               events={events}
