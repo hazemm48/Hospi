@@ -91,10 +91,12 @@ const Login = () => {
       }
     } else {
       alert(data.message);
+      setLoading(false);
     }
   };
 
   const signUp = async (data) => {
+    setLoading(true)
     let bd = moment(`${data.day}-${data.month}-${data.year}`, "DMYYYY").format(
       "MM-DD-YYYY"
     );
@@ -112,8 +114,10 @@ const Login = () => {
       await signIn(body);
     } else if ((message = "already registered")) {
       alert(message);
+      setLoading(false);
     } else {
       alert("Something went wrong, Please try again later");
+      setLoading(false);
     }
   };
 

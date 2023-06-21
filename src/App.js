@@ -18,7 +18,7 @@ const App = () => {
       <Route path="/admin/*" element={<Home />} />
       <Route path="/patient/*" element={<PatientHome />} />
       <Route path="/doctor/*" element={<DoctorHome />} />
-      <Route path="/test/*" element={<LoginTest />} />
+      {/* <Route path="/test/*" element={<LoginTest />} /> */}
       <Route path="/notFound" element={<NotFoundPage />} />
       <Route path="/notAuthorized" element={<NotAuthPage />} />
       <Route path="*" element={<Navigate to="/notFound" state={pathname} replace />} />
