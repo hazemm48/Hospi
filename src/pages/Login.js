@@ -19,6 +19,25 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+  let years = () => {
+    let arr = [];
+    for (
+      let i = moment().year() - 1;
+      i > moment().subtract(100, "years").year();
+      i--
+    ) {
+      arr.push(i);
+    }
+    return arr;
+  };
+  let days = () => {
+    let arr = [];
+    for (let i = 1; i <= 31; i++) {
+      arr.push(i);
+    }
+    return arr;
+  };
+
   useEffect(() => {
     if (localStorage.token) {
       let role = localStorage.role;
@@ -76,13 +95,18 @@ const Login = () => {
   };
 
   const signUp = async (data) => {
+    let bd = moment(`${data.day}-${data.month}-${data.year}`, "DMYYYY").format(
+      "MM-DD-YYYY"
+    );
+    ["day", "month", "year"].forEach((e) => delete data[e]);
     let body = {
       ...data,
       patientInfo: {
-        birthDate: moment(birthDate).format("MM-DD-YYYY"),
+        birthDate: bd,
       },
       role: "patient",
     };
+    console.log(body);
     let { message } = await signUpApi(body);
     if (message == "patient added") {
       await signIn(body);
@@ -210,7 +234,7 @@ const Login = () => {
                     </>
                   )}
                 </div>
-                <div className="input-field">
+                {/*                 <div className="input-field">
                   <i className="las la-calendar" />
                   <DatePicker
                     name="birthDate"
@@ -224,6 +248,64 @@ const Login = () => {
                     required
                     dropdownMode="select"
                   />
+                </div> */}
+
+                <div
+                  id="fff"
+                  name="bd"
+                  className="form-row"
+                  style={{ flexWrap: "inherit", padding: "0px" }}
+                >
+                  <div className="form-group col-sm-3">
+                    <div className="input-field">
+                      <i />
+                      <select
+                        name="day"
+                        style={{ background: "none", border: "none" }}
+                        {...register("day", { required: true })}
+                      >
+                        {days().map((e) => {
+                          return <option value={e}>{e}</option>;
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-group col-sm-5">
+                    <div className="input-field">
+                      <i />
+                      <select
+                        name="month"
+                        style={{ background: "none", border: "none" }}
+                        {...register("month", { required: true })}
+                      >
+                        {moment.months().map((e, i) => {
+                          return <option value={i + 1}>{e}</option>;
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-group col-sm-4">
+                    <div className="input-field">
+                      <i />
+                      <select
+                        name="year"
+                        style={{ background: "none", border: "none" }}
+                        {...register("year", { required: true })}
+                      >
+                        {years().map((e) => {
+                          return <option value={e}>{e}</option>;
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                  {errors.year && (
+                    <>
+                      <i className="login-warning las la-exclamation-triangle " />
+                      <small className="text-warning">
+                        Birth date is required
+                      </small>
+                    </>
+                  )}
                 </div>
                 <div className="input-field">
                   <i className="las la-transgender" />
