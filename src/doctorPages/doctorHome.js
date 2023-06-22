@@ -18,6 +18,7 @@ import DrugsInteraction from "../pages/DrugsInteraction.js";
 import HomePage from "./HomePage.js";
 import DoctorSettings from "./DoctorSettings.js";
 import DoctorNotes from "./doctorNotes.js";
+import DrugsSearch from "../pages/DrugsSearch.js";
 
 const DoctorHome = () => {
   const [userDet, setUserDet] = useState();
@@ -108,6 +109,11 @@ const DoctorHome = () => {
                   exact
                   path="/drugsInteraction"
                   element={<DrugsInteraction role={userDet.role} />}
+                />
+                <Route
+                  exact
+                  path="/drugsSearch"
+                  element={<DrugsSearch role={userDet.role} />}
                 />
                 <Route
                   exact

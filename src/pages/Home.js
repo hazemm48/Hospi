@@ -39,6 +39,7 @@ import ProductsManager from "./products/ProductsManager.js";
 import Admins from "./admins/Admins.js";
 import AdminDetails from "./admins/AdminDetails.js";
 import AddProduct from "./products/AddProduct.js";
+import Login from "./test.js";
 
 const Home = () => {
   const [userDet, setUser] = useState();
@@ -89,6 +90,7 @@ console.log(superAdmin);
                   element={<Dashboard user={userDet} superAdmin={superAdmin} />}
                 />
                 <Route exact path="/addPatient" element={<AddPatient />} />
+                <Route exact path="/test" element={<Login />} />
                 <Route
                   exact
                   path="/patients"

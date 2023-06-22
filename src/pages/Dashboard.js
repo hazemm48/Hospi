@@ -75,7 +75,7 @@ const Dashboard = ({ user, superAdmin }) => {
 
   return (
     <div className="main-content">
-      <div className="container-fluid">
+      <div className="container-fluid anim">
         {loading ? (
           <LoadingSpinner />
         ) : (

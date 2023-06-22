@@ -1,61 +1,56 @@
 import React, { useEffect, useState } from "react";
-import AsyncSelect from "react-select/async";
+import Select from "react-select";
+import { drugsApi } from "../adminAPI.js";
 import warning from "../images/warning.jpg";
 import { getInteractionApi, suggestApi } from "../RxNormAPI.js";
 
-const DrugsInteraction = () => {
+const DrugsSearch = () => {
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [result, setResult] = useState([]);
   const [noResult, setNoResult] = useState(false);
+  const [allDrugs, setAllDrugs] = useState([]);
+  const [drugs, setDrugs] = useState([]);
+  const [drugsInfo, setDrugsInfo] = useState([]);
 
-  const searchSuggest = async (o) => {
-    let { approximateGroup } = await suggestApi(o);
-    let suggestions = approximateGroup.candidate;
+
+  const searchDrugs = async () => {
+    let data = await drugsApi();
+    console.log(data[0]);
     let arr = [];
-    suggestions.map((e) => {
-      if (["RXNORM"].includes(e.source)) {
-        arr.push({
-          value: e.rxcui,
-          label: e.name,
-        });
+    data.map((e) => {
+      arr.push({
+        value: e.id,
+        label: e.tradename.toLowerCase(),
+      });
+    });
+    setDrugsInfo(data)
+    setAllDrugs(arr);
+  };
+
+  const getDrugs = (e) => {
+    console.log(allDrugs[1]);
+    let arr = [];
+    allDrugs.map((o) => {
+      if (o.label.includes(e.toLowerCase())) {
+        arr.push(o);
       }
     });
-    return arr;
+    setDrugs(arr);
   };
 
-  const GetInteractions = async (o) => {
-    if (selectedDrugs.length < 2) {
-      alert("select more than one input");
-    } else {
-      let arr = [];
-      selectedDrugs.map((e) => {
-        arr.push(e.value);
-      });
-      arr = arr.join("+");
-      let { fullInteractionTypeGroup } = await getInteractionApi(arr);
-      let arr2 = [];
-      if (fullInteractionTypeGroup) {
-        let intResults = fullInteractionTypeGroup[0].fullInteractionType;
-        intResults.map((e) => {
-          let obj = {};
-          let drugNameArr = e.comment.split(".");
-          obj.drug1 = drugNameArr[0]
-            .split(",")[1]
-            .slice(drugNameArr[0].split(",")[1].indexOf("name") + 6);
-          obj.drug2 = drugNameArr[1]
-            .split(",")[1]
-            .slice(drugNameArr[1].split(",")[1].indexOf("name") + 6);
-          obj.effMaterial = drugNameArr[2].split("and")[0].trimStart();
-          obj.desc = e.interactionPair[0].description;
-          arr2.push(obj);
-        });
-        setResult(arr2);
-      } else {
-        setResult([]);
-        setNoResult(true);
+  const getDrugsInfo = (e) => {
+    let arr = [];
+    allDrugs.map((o) => {
+      if (o.label.includes(e.toLowerCase())) {
+        arr.push(o);
       }
-    }
+    });
+    setDrugs(arr);
   };
+
+  useEffect(() => {
+    searchDrugs();
+  }, []);
 
   return (
     <div className="main-content">
@@ -69,17 +64,18 @@ const DrugsInteraction = () => {
                     <div className="card-body">
                       <form id="form">
                         <div className="form-group col-sm-8" id="drug">
-                          <label>drugs</label>
-                          <AsyncSelect
+                          <label>Type drug name</label>
+                          <Select
                             name="drug"
-                            isSearchable
-                            cacheOptions
-                            isMulti
-                            loadOptions={searchSuggest}
-                            isOptionDisabled={() => selectedDrugs.length >= 50}
-                            onChange={(o) => {
-                              o ? setSelectedDrugs(o) : setResult();
+                            options={drugs}
+                            onInputChange={(e) => {
+                              if (e.trim().length >= 3) {
+                                getDrugs(e);
+                              }else{
+                                setDrugs([])
+                              }
                             }}
+                            isSearchable
                             isClearable
                             required
                           />
@@ -87,9 +83,6 @@ const DrugsInteraction = () => {
                         <button
                           className="btn btn-dark-red-f-gr mt-4"
                           type="button"
-                          onClick={() => {
-                            GetInteractions();
-                          }}
                         >
                           submit
                         </button>
@@ -97,28 +90,30 @@ const DrugsInteraction = () => {
                     </div>
                   </div>
                 </div>
+                {allDrugs.length>0&&(
+                  
                 <div className="col-sm-12">
                   <div className="card welcome-content-card label-yellow">
                     <div className="card-body">
                       <div className="row">
-                        <div style={{ maxWidth: "35%" }} class="col-md-2">
-                          <img className="patHomeImg" src={warning} />
+                        <div style={{ maxWidth: "35%" }} className="col-md-2">
+                          <img className="patHomeImg" style={{ width: "auto",height:'auto' }} src={`${process.env.REACT_APP_DRUGS_API}/assets/imgs5/drugs/${10}.jpg`} />
                         </div>
                         <div className="col-md-10 welcome-text-wrapper align-self-center">
-                          <p>
-                            It is not our intention to provide specific medical
-                            advice, but rather to provide users with information
-                            to better understand their health and their
-                            medications. we urges you to consult with a
-                            qualified physician for advice about medications.
-                          </p>
+                          <ul class="list-group">
+                            <li class="list-group-item">{drugsInfo[1].tradename}</li>
+                            <li class="list-group-item">{drugsInfo[1].price}</li>
+                            <li class="list-group-item">{drugsInfo[1].company}</li>
+                            <li class="list-group-item">{drugsInfo[1].info}</li>
+                          </ul>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+                )}
                 {result.length > 0 && (
-                  <div className="col-sm-12">
+                  <div>
                     <h2 style={{ textAlign: "center" }}>Results</h2>
                     <div className="card container">
                       <div className="card-body">
@@ -156,4 +151,4 @@ const DrugsInteraction = () => {
   );
 };
 
-export default DrugsInteraction;
+export default DrugsSearch;

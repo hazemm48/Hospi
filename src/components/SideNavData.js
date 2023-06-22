@@ -18,6 +18,7 @@ doctor:[
   ["/doctor/reservations","la-calendar-check","Schedule"],
   ["/doctor/doctorNotes","la-clipboard","Notes"],
   ["/doctor/drugsInteraction","la-capsules","Drugs Interaction"],
+  ["/doctor/drugsSearch","la-capsules","Drugs Search"],
   ["/doctor/settings","la-cogs","Settings"]
 ],
 superAdmin:[

@@ -273,3 +273,15 @@ export const productsApi = async (body, method, url) => {
     .then((data) => data);
   return data;
 };
+
+export const drugsApi = async () => {
+  let data = await fetch(
+    `${process.env.REACT_APP_DRUGS_API}/api/v5/drugs.json?fbclid=IwAR3SadQDr6vaaic-_fXu-uLPFoWItZU979I1wATMJwWDSkttqttnNnICH3A`,
+    {
+      method: "GET",
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => data);
+  return data;
+};
