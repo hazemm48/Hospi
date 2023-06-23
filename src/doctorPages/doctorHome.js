@@ -19,6 +19,7 @@ import HomePage from "./HomePage.js";
 import DoctorSettings from "./DoctorSettings.js";
 import DoctorNotes from "./doctorNotes.js";
 import DrugsSearch from "../pages/DrugsSearch.js";
+import Test from "../pages/test.js";
 
 const DoctorHome = () => {
   const [userDet, setUserDet] = useState();
@@ -64,6 +65,8 @@ const DoctorHome = () => {
                   path="/home"
                   element={<HomePage user={userDet} />}
                 />
+                <Route exact path="/test" element={<Test />} />
+
                 <Route
                   exact
                   path="/patients"

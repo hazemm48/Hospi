@@ -2,16 +2,21 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import { drugsApi } from "../adminAPI.js";
 import warning from "../images/warning.jpg";
-import { getInteractionApi, suggestApi } from "../RxNormAPI.js";
 
-const DrugsSearch = () => {
+const DrugsSearch = (props) => {
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [result, setResult] = useState([]);
   const [noResult, setNoResult] = useState(false);
   const [allDrugs, setAllDrugs] = useState([]);
   const [drugs, setDrugs] = useState([]);
   const [drugsInfo, setDrugsInfo] = useState([]);
-
+  const [info, setInfo] = useState();
+  let table = [
+    "trade name",
+    "active ingredients",
+    "company",
+    "more Information",
+  ];
 
   const searchDrugs = async () => {
     let data = await drugsApi();
@@ -23,7 +28,7 @@ const DrugsSearch = () => {
         label: e.tradename.toLowerCase(),
       });
     });
-    setDrugsInfo(data)
+    setDrugsInfo(data);
     setAllDrugs(arr);
   };
 
@@ -39,13 +44,20 @@ const DrugsSearch = () => {
   };
 
   const getDrugsInfo = (e) => {
-    let arr = [];
-    allDrugs.map((o) => {
-      if (o.label.includes(e.toLowerCase())) {
-        arr.push(o);
-      }
+    console.log(e);
+    let d = drugsInfo.filter((o) => {
+      return o.id == e;
     });
-    setDrugs(arr);
+    console.log(d);
+    setInfo(d[0].info);
+  };
+  const getSelectedDrug = (e) => {
+    console.log(e);
+    let d = drugsInfo.filter((o) => {
+      return o.id == e.value;
+    });
+    console.log(d);
+    setSelectedDrugs(d);
   };
 
   useEffect(() => {
@@ -71,77 +83,104 @@ const DrugsSearch = () => {
                             onInputChange={(e) => {
                               if (e.trim().length >= 3) {
                                 getDrugs(e);
-                              }else{
-                                setDrugs([])
+                              } else {
+                                setDrugs([]);
                               }
+                            }}
+                            onChange={(e) => {
+                              e && getSelectedDrug(e);
                             }}
                             isSearchable
                             isClearable
                             required
                           />
                         </div>
-                        <button
-                          className="btn btn-dark-red-f-gr mt-4"
-                          type="button"
-                        >
-                          submit
-                        </button>
                       </form>
                     </div>
                   </div>
                 </div>
-                {allDrugs.length>0&&(
-                  
                 <div className="col-sm-12">
-                  <div className="card welcome-content-card label-yellow">
+                  <div className="card container label-yellow">
                     <div className="card-body">
                       <div className="row">
-                        <div style={{ maxWidth: "35%" }} className="col-md-2">
-                          <img className="patHomeImg" style={{ width: "auto",height:'auto' }} src={`${process.env.REACT_APP_DRUGS_API}/assets/imgs5/drugs/${10}.jpg`} />
+                        <div style={{ maxWidth: "35%" }} class="col-md-1">
+                          <img className="patHomeImg" src={warning} />
                         </div>
                         <div className="col-md-10 welcome-text-wrapper align-self-center">
-                          <ul class="list-group">
-                            <li class="list-group-item">{drugsInfo[1].tradename}</li>
-                            <li class="list-group-item">{drugsInfo[1].price}</li>
-                            <li class="list-group-item">{drugsInfo[1].company}</li>
-                            <li class="list-group-item">{drugsInfo[1].info}</li>
-                          </ul>
+                          <p>
+                            It is not our intention to provide specific medical
+                            advice, but rather to provide users with information
+                            to better understand their health. we urges you to
+                            consult with a qualified physician for advice about
+                            your symptoms.
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                )}
-                {result.length > 0 && (
-                  <div>
-                    <h2 style={{ textAlign: "center" }}>Results</h2>
+                {selectedDrugs.length > 0 && (
+                  <div className="col-sm-12">
                     <div className="card container">
-                      <div className="card-body">
-                        {result.map((e) => {
-                          return (
-                            <div style={{ margin: "0.5em" }}>
-                              <textarea
-                                className="form-control"
-                                rows={7}
-                                readOnly
-                                value={`Drug 1: ${e.drug1}\nDrug 2: ${e.drug2}\n${e.effMaterial}\n\nDescription: ${e.desc}`}
-                              />
-                            </div>
-                          );
-                        })}
+                      <div id="tv" className={`section patients-table-view`}>
+                        <label>possible conditions</label>
+                        <table className="table table-hover table-responsive-lg">
+                          <thead>
+                            <tr>
+                              {table?.map((e) => {
+                                return <th>{e}</th>;
+                              })}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {selectedDrugs.map((e) => {
+                              return (
+                                <tr>
+                                  <td>{e.tradename}</td>
+                                  <td>
+                                    {
+                                      e.activeingredient 
+                                      .split("+")
+                                      .map((o, i) => {
+                                        return <p>{`${i + 1}-${o}`}</p>;
+                                      })
+                                    }
+                                  </td>
+                                  <td>{e.company}</td>
+                                  <td>
+                                    <button
+                                      autoFocus
+                                      className="view-more btn btn-sm btn-dark-red-f"
+                                      onClick={() => {
+                                        getDrugsInfo(e.id);
+                                      }}
+                                    >
+                                      more info
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
                 )}
-                {noResult && (
-                  <div>
-                    <div className="card container label-green">
-                      <div className="card-body">
-                        <h2>No interaction between drugs</h2>
-                      </div>
-                    </div>
+              </div>
+            </div>
+            <div className="col-sm-4">
+              <div className="card">
+                <div className="card-body">
+                  <div style={{ margin: "0.5em" }}>
+                    <textarea
+                      className="form-control"
+                      rows={16}
+                      readOnly
+                      value={info ? info : "Drug information will show here"}
+                    />
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>

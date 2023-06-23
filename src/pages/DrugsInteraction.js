@@ -50,6 +50,7 @@ const DrugsInteraction = () => {
           arr2.push(obj);
         });
         setResult(arr2);
+        setNoResult(false);
       } else {
         setResult([]);
         setNoResult(true);
@@ -139,7 +140,7 @@ const DrugsInteraction = () => {
                   </div>
                 )}
                 {noResult && (
-                  <div>
+                  <div className="col-sm-12">
                     <div className="card container label-green">
                       <div className="card-body">
                         <h2>No interaction between drugs</h2>
