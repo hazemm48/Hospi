@@ -65,7 +65,7 @@ const DoctorHome = () => {
                   path="/home"
                   element={<HomePage user={userDet} />}
                 />
-                <Route exact path="/test" element={<Test />} />
+                {/* <Route exact path="/test" element={<Test />} /> */}
 
                 <Route
                   exact

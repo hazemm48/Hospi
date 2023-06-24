@@ -98,6 +98,7 @@ const PatientDetails = ({ role, superAdmin }) => {
       },
     };
     let user = await users(body);
+    console.log(user);
     if (!user.users) {
       alert("patient not found");
       navigate(-1);

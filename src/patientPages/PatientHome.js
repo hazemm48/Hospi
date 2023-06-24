@@ -20,6 +20,7 @@ import LoadingSpinner from "../components/Loading.js";
 import HomePage from "./HomePage.js";
 import Reservation from "../pages/reserves/Reserve.js";
 import DrugsInteraction from "../pages/DrugsInteraction.js";
+import DrugsSearch from "../pages/DrugsSearch.js";
 
 const PatientHome = () => {
   const [userDet, setUserDet] = useState();
@@ -144,6 +145,11 @@ const PatientHome = () => {
                   exact
                   path="/drugsInteraction"
                   element={<DrugsInteraction role={userDet.role}/>}
+                />
+                <Route
+                  exact
+                  path="/drugsSearch"
+                  element={<DrugsSearch role={userDet.role} />}
                 />
                 <Route
                   exact

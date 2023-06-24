@@ -8,6 +8,7 @@ let data = {
   ["/patient/reserve/lab","la-vials","Laboratory"],
   ["/patient/medicalRecord","la-notes-medical","Medical Records"],
   ["/patient/drugsInteraction","la-capsules","Drugs Interaction"],
+  ["/patient/drugsSearch","la-capsules","Drugs Search"],
   ["/patient/symptomChecker","la-heartbeat","Symptom checker"],
   ["/patient/firstAid","la-medkit","First Aid"],
   ["/patient/settings","la-cogs","Settings"],

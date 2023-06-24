@@ -14,6 +14,8 @@ const DrugsSearch = (props) => {
   let table = [
     "trade name",
     "active ingredients",
+    "price",
+    "form",
     "company",
     "more Information",
   ];
@@ -69,7 +71,7 @@ const DrugsSearch = (props) => {
       <div className="container-fluid">
         <div className="section patient-details-section">
           <div className="row">
-            <div className="col-md-8">
+            <div className="col-md-12">
               <div className="row">
                 <div className="col-sm-12">
                   <div className="card container">
@@ -138,14 +140,14 @@ const DrugsSearch = (props) => {
                                 <tr>
                                   <td>{e.tradename}</td>
                                   <td>
-                                    {
-                                      e.activeingredient 
+                                    {e.activeingredient
                                       .split("+")
                                       .map((o, i) => {
                                         return <p>{`${i + 1}-${o}`}</p>;
-                                      })
-                                    }
+                                      })}
                                   </td>
+                                  <td>{e.price} LE</td>
+                                  <td>{e.form}</td>
                                   <td>{e.company}</td>
                                   <td>
                                     <button
@@ -169,18 +171,17 @@ const DrugsSearch = (props) => {
                 )}
               </div>
             </div>
-            <div className="col-sm-4">
-              <div className="card">
-                <div className="card-body">
-                  <div style={{ margin: "0.5em" }}>
-                    <textarea
-                      className="form-control"
-                      rows={16}
-                      readOnly
-                      value={info ? info : "Drug information will show here"}
-                    />
-                  </div>
-                </div>
+          </div>
+          <div className="col-md-12">
+            <h2 style={{ textAlign: "center" }}>Information</h2>
+            <div className="card container">
+              <div className="card-body">
+                <textarea
+                  className="form-control"
+                  rows={16}
+                  readOnly
+                  value={info ? info : "Drug information will show here"}
+                />
               </div>
             </div>
           </div>

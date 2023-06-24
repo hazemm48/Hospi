@@ -51,6 +51,7 @@ const Patients = ({ role, docId, superAdmin }) => {
     role == "doctor" && (body.filter["patientInfo.reservedDoctors"] = docId);
     srchFilter && (body.filter = { ...body.filter, ...srchFilter });
     let user = await users(body);
+    console.log(user);
     setLength(user.count);
     setPatients(user.users);
     setLoading(false);
