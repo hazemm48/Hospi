@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { users, reserve } from "../../src/adminAPI";
+import { users, reserve, productsApi } from "../../src/adminAPI";
 import maleImg from "../images/male.jpg";
 import femaleImg from "../images/female.jpg";
 import welcome from "../images/79755644.jpg";
@@ -15,6 +15,7 @@ const Dashboard = ({ user, superAdmin }) => {
   const [admins, setAdmins] = useState();
   const [length, setLength] = useState();
   const [reserveUsers, setReserveUsers] = useState();
+  const [products, setProducts] = useState();
 
   const GetDetails = async () => {
     let body = {
@@ -54,12 +55,19 @@ const Dashboard = ({ user, superAdmin }) => {
           status: false,
           type: "doctor",
         },
-        sort: "date",
+        sort: "date time.from",
         limit: 5,
         count: true,
       },
     };
     let reserves = await reserve(resBody);
+    let prodBody = {
+      filter: {},
+      sort: "-sold",
+      limit: 10,
+    };
+    let { products } = await productsApi(prodBody, "POST", "get");
+    setProducts(products);
     setReserveUsers(reserves.reservations);
     setLength(reserves.length);
     setAdmins(admins);
@@ -180,24 +188,19 @@ const Dashboard = ({ user, superAdmin }) => {
                 <div className="card-deck">
                   <div className="card">
                     <div className="card-header">
-                      <h5>top treatments</h5>
+                      <h5>top analysis & scans</h5>
                     </div>
                     <div className="card-body">
                       <ol type={1}>
-                        <li>consultation</li>
-                        <li>scaling</li>
-                        <li>root canal</li>
-                        <li>bleaching</li>
-                        <li>transplants</li>
-                        <li>cesarean</li>
-                        <li>x-rays</li>
+                        {products &&
+                          products.map((e) => {
+                            return (
+                              <li style={{ marginBottom: "0.4em" }}>{`${
+                                e.name
+                              } [${e.sold ? e.sold : 0}]`}</li>
+                            );
+                          })}
                       </ol>
-                    </div>
-                    <div className="card-footer">
-                      <a className="view-more">
-                        more
-                        <i className="las la-angle-right" />
-                      </a>
                     </div>
                   </div>
                   <div className="card total-counts-summary">
@@ -228,12 +231,12 @@ const Dashboard = ({ user, superAdmin }) => {
                         </div>
                       </div>
                     </div>
-                    <div className="card-footer">
+                    {/* <div className="card-footer">
                       <a className="view-more">
                         more
                         <i className="las la-angle-right" />
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="card">
                     <div className="card-header">

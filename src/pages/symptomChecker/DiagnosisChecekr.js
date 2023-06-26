@@ -6,6 +6,7 @@ import { BodyComponent } from "reactjs-human-body";
 import warning from "../../images/warning.jpg";
 
 import moment from "moment";
+import WarningCard from "../../components/WarningCard.js";
 
 const DiagnosisChecker = (props) => {
   const [allData, setAllData] = useState([]);
@@ -118,6 +119,8 @@ const DiagnosisChecker = (props) => {
     ];
     let data = await getData(url, arr);
     setAllData(data);
+    setSelectedBodyLoc();
+    setSelectedGender();
   };
   console.log(allData);
 
@@ -183,13 +186,15 @@ const DiagnosisChecker = (props) => {
                           selected={birthYear}
                           onChange={(date) => setBirthYear(date)}
                           showYearPicker
+                          maxDate={moment().toDate()}
+                          minDate={moment().subtract(100, "years")._d}
                           required
                           dateFormat="yyyy"
                         />
                       </div>
                     )}
 
-                    {allData.map((e) => {
+                    {allData?.map((e) => {
                       return (
                         <div
                           className="form-group col-sm-6"
@@ -199,6 +204,7 @@ const DiagnosisChecker = (props) => {
                           <label>{e[0]}</label>
                           <Select
                             name={e[0]}
+                            key={e[0]}
                             options={e[1]}
                             onChange={(o) => {
                               e[3](o);
@@ -232,24 +238,13 @@ const DiagnosisChecker = (props) => {
               </div>
             </div>
             <div className="col-sm-12">
-              <div className="card container label-yellow">
-                <div className="card-body">
-                  <div className="row">
-                    <div style={{ maxWidth: "35%" }} class="col-md-1">
-                      <img className="patHomeImg" src={warning} />
-                    </div>
-                    <div className="col-md-10 welcome-text-wrapper align-self-center">
-                      <p>
-                        It is not our intention to provide specific medical
+              <WarningCard
+                text="It is not our intention to provide specific medical
                         advice, but rather to provide users with information to
                         better understand their health. we urges you to consult
                         with a qualified physician for advice about your
-                        symptoms.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                        symptoms."
+              />
             </div>
             {result.length > 0 && (
               <div className="col-sm-12">

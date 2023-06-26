@@ -28,7 +28,7 @@ const Doctors = ({ role, id, favDocs, superAdmin }) => {
   const [spec, setSpec] = useState();
   const [favDoc, setFavDoc] = useState(favDocs);
 
-  let resultLimit = 12;
+  let resultLimit = 21;
   let sortValues = [
     ["createdAt:-1", "Newest"],
     ["createdAt:1", "Oldest"],

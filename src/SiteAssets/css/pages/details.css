@@ -126,12 +126,12 @@ label {
 }
 
 .patient-details-section .patients-details-card-wrapper {
-  border-left:  0.05em solid #cccccc;
-  padding-top:2em;
+  border-left: 0.05em solid #cccccc;
+  padding-top: 2em;
 }
-.patient-details-section .res{
-  border-top:  0.05em solid #cccccc;
-  padding-top:2em;
+.patient-details-section .res {
+  border-top: 0.05em solid #cccccc;
+  padding-top: 2em;
 }
 .patient-details-section .card {
   margin-bottom: 1.5em;
@@ -151,7 +151,7 @@ label {
   margin: 0;
   text-transform: capitalize;
 }
-.patient-details-section .mini-card .card-body h3{
+.patient-details-section .mini-card .card-body h3 {
   text-transform: capitalize;
   color: #0466c8;
 }
@@ -161,7 +161,14 @@ label {
   height: 3em;
 }
 
-.patient-details-section .mini-card .card-body .row .col-md-4 .form-group  label,.patient-details-section .mini-card .card-body .row .col-md-12 .form-group  label{
+.patient-details-section .mini-card .card-body .row .col-md-4 .form-group label,
+.patient-details-section
+  .mini-card
+  .card-body
+  .row
+  .col-md-12
+  .form-group
+  label {
   color: #0466c8;
 }
 .patient-details-section .mini-card .card-footer button {
@@ -332,39 +339,19 @@ label {
   color: #a8001f;
   margin-right: 0.5em;
 }
-.patient-details-section .files-card .card-body .list-group .list-group-item {
+.files-card .card-body .list-group .list-group-item {
   padding: 1em 0.5em;
   text-transform: capitalize;
   color: #333333;
   border: 1px solid #d8d8d8;
   margin: 0.25em 0;
 }
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item
-  .float-right
-  small,
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item
-  .float-right
-  .text-muted {
+.files-card .card-body .list-group .list-group-item .float-right small,
+.files-card .card-body .list-group .list-group-item .float-right .text-muted {
   text-transform: uppercase;
 }
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item:hover,
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item:focus {
+.files-card .card-body .list-group .list-group-item:hover,
+.files-card .card-body .list-group .list-group-item:focus {
   text-decoration: none;
   border-color: transparent;
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
@@ -372,56 +359,24 @@ label {
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
   transition: all ease-in-out 150ms;
 }
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item:hover
-  small,
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item:hover
-  .text-muted,
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item:focus
-  small,
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item:focus
-  .text-muted {
+.files-card .card-body .list-group .list-group-item:hover small,
+.files-card .card-body .list-group .list-group-item:hover .text-muted,
+.files-card .card-body .list-group .list-group-item:focus small,
+.files-card .card-body .list-group .list-group-item:focus .text-muted {
   display: none;
 }
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item:hover
-  .action-buttons,
-.patient-details-section
-  .files-card
-  .card-body
-  .list-group
-  .list-group-item:focus
-  .action-buttons {
+.files-card .card-body .list-group .list-group-item:hover .action-buttons,
+.files-card .card-body .list-group .list-group-item:focus .action-buttons {
   display: block;
   transition: all ease-in-out 150ms;
 }
-.patient-details-section
-  .files-card
+.files-card
   .card-body
   .list-group
   .list-group-item:hover
   .action-buttons
   button,
-.patient-details-section
-  .files-card
+.files-card
   .card-body
   .list-group
   .list-group-item:focus
@@ -431,16 +386,14 @@ label {
   text-align: center;
   margin-right: 0.2em;
 }
-.patient-details-section
-  .files-card
+.files-card
   .card-body
   .list-group
   .list-group-item:hover
   .action-buttons
   button
   i,
-.patient-details-section
-  .files-card
+.files-card
   .card-body
   .list-group
   .list-group-item:focus
@@ -529,7 +482,5 @@ label {
     float: none !important;
   }
 }
-
-
 
 /*# sourceMappingURL=details.css.map */

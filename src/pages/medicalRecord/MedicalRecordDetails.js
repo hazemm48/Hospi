@@ -16,12 +16,13 @@ const MedicRecordDetails = ({ role, superAdmin }) => {
   let createHtmlData = (obj) => {
     let data = medicList(obj.type);
     console.log(data);
+    role != "patient" && data.data.pop();
     role == "admin" &&
       data.data.push(
         ["input", "patient id", "patientId", "text"],
         ["input", "created at", "createdAt", "date"]
       );
-      !obj.doctorName&&(data.data.pop())
+    !obj.doctorName && data.data.pop();
     setHtmlData(data);
   };
 
@@ -132,7 +133,7 @@ const MedicRecordDetails = ({ role, superAdmin }) => {
                     </ol>
                   </div>
                 </div>
-                {(/* role == "patient" ||  */superAdmin) && (
+                {role == "patient" && (
                   <div className="col-md-4">
                     <button
                       id="editPat"

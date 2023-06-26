@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
+import WarningCard from "../components/WarningCard.js";
 import warning from "../images/warning.jpg";
 import { getInteractionApi, suggestApi } from "../RxNormAPI.js";
 
@@ -63,7 +64,7 @@ const DrugsInteraction = () => {
       <div className="container-fluid">
         <div className="section patient-details-section">
           <div className="row">
-            <div className="col-md-8">
+            <div className="col-md-12">
               <div className="row">
                 <div className="col-sm-12">
                   <div className="card container">
@@ -99,24 +100,13 @@ const DrugsInteraction = () => {
                   </div>
                 </div>
                 <div className="col-sm-12">
-                  <div className="card welcome-content-card label-yellow">
-                    <div className="card-body">
-                      <div className="row">
-                        <div style={{ maxWidth: "35%" }} class="col-md-2">
-                          <img className="patHomeImg" src={warning} />
-                        </div>
-                        <div className="col-md-10 welcome-text-wrapper align-self-center">
-                          <p>
-                            It is not our intention to provide specific medical
-                            advice, but rather to provide users with information
-                            to better understand their health and their
-                            medications. we urges you to consult with a
-                            qualified physician for advice about medications.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <WarningCard
+                    text="It is not our intention to provide specific medical
+                advice, but rather to provide users with information
+                to better understand their health and their
+                medications. we urges you to consult with a
+                qualified physician for advice about medications."
+                  />
                 </div>
                 {result.length > 0 && (
                   <div className="col-sm-12">

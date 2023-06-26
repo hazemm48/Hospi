@@ -176,6 +176,7 @@ const CreateReserve = ({ role }) => {
                                   className="form-control"
                                   required
                                   pattern="[A-Za-z ]{3,40}"
+                                  defaultValue='Patient'
                                 />
                               </div>
                             </div>

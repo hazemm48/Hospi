@@ -11,7 +11,7 @@ const AddProduct = () => {
   const htmlData = [
     ["input", "Name", "name", "text"],
     ["input", "Price", "price", "number"],
-    ["textarea", "Description", "description", 500],
+    ["textarea", "Precautions", "precaution", 500],
   ];
 
   let { type } = useParams();
@@ -26,6 +26,8 @@ const AddProduct = () => {
       body[pair[0]] = pair[1];
     }
     body.name = body.name.toLowerCase();
+    !body.precaution && (body.precaution = "no precautions");
+    console.log(body);
     let add = await productsApi(body, "POST");
     alert(add.message);
     setLoading(false);

@@ -4,6 +4,7 @@ import femaleImg from "../images/female.jpg";
 import ChangePassword from "../components/ChangePassword.js";
 import DoctorScheduleCard from "../components/DoctorScheduleCard.js";
 import moment from "moment";
+import DoctorsUnavailableDays from "../pages/doctors/DoctorUnavailableDays.js";
 
 const DoctorSettings = ({ user }) => {
   const [htmlData, setHtmlData] = useState([]);
@@ -41,79 +42,86 @@ const DoctorSettings = ({ user }) => {
               <h5>personal details</h5>
             </div>
             <div className="card-body">
-            <div className="row justify-content-center">
-              <img
-                className="rounded-circle"
-                src={
-                  user.image
-                    ? user.image
-                    : user.gender == "male"
-                    ? maleImg
-                    : femaleImg
-                }
-              />
-              <div className="section patient-details-section">
-                <div className="row">
-                  <div
-                    id="editDet"
-                    className="col-md-12 doctors-details-card-wrapper"
-                  >
-                    <form id="form">
-                      <div className="mini-card">
-                        <div className="card-body">
-                          <div className="row">
-                            {htmlData.map((e) => {
-                              return (
-                                <div className="col-md-4">
-                                  <div className="form-group">
-                                    <label>{e[2]}</label>
-                                    <input
-                                      name={e[0]}
-                                      className="form-control"
-                                      disabled
-                                      required
-                                      defaultValue={e[1]}
-                                    />
+              <div className="row justify-content-center">
+                <img
+                  className="rounded-circle"
+                  src={
+                    user.image
+                      ? user.image
+                      : user.gender == "male"
+                      ? maleImg
+                      : femaleImg
+                  }
+                />
+                <div className="section patient-details-section">
+                  <div className="row">
+                    <div
+                      id="editDet"
+                      className="col-md-12 doctors-details-card-wrapper"
+                    >
+                      <form id="form">
+                        <div className="mini-card">
+                          <div className="card-body">
+                            <div className="row">
+                              {htmlData.map((e) => {
+                                return (
+                                  <div className="col-md-4">
+                                    <div className="form-group">
+                                      <label>{e[2]}</label>
+                                      <input
+                                        name={e[0]}
+                                        className="form-control"
+                                        disabled
+                                        required
+                                        defaultValue={e[1]}
+                                      />
+                                    </div>
                                   </div>
-                                </div>
-                              );
-                            })}
+                                );
+                              })}
 
-                            <div className="col-md-12">
-                              <div className="form-group">
-                                <label>email</label>
-                                <input
-                                  name="email"
-                                  className="form-control"
-                                  disabled
-                                  required
-                                  defaultValue={user.email}
-                                />
+                              <div className="col-md-12">
+                                <div className="form-group">
+                                  <label>email</label>
+                                  <input
+                                    name="email"
+                                    className="form-control"
+                                    disabled
+                                    required
+                                    defaultValue={user.email}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                            <div className="col-md-12">
-                              <div className="form-group">
-                                <label>bioghraphy</label>
-                                <textarea
-                                  name="bio"
-                                  className="form-control"
-                                  rows={6}
-                                  disabled
-                                  required
-                                  defaultValue={user.doctorInfo?.bio}
-                                />
+                              <div className="col-md-12">
+                                <div className="form-group">
+                                  <label>bioghraphy</label>
+                                  <textarea
+                                    name="bio"
+                                    className="form-control"
+                                    rows={6}
+                                    disabled
+                                    required
+                                    defaultValue={user.doctorInfo?.bio}
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </form>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
-              </div>
             </div>
             <DoctorScheduleCard user={user} />
+          </div>
+          <div className="card container">
+            <DoctorsUnavailableDays
+              dates={user.doctorInfo.unavailableDates}
+              days={user.doctorInfo.schedule}
+              id={user._id}
+            />
           </div>
           <ChangePassword />
         </div>

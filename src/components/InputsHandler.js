@@ -16,6 +16,7 @@ const InputsHandler = (props) => {
   };
 
   const viewEndDate = (e) => {
+    console.log(e.target.name);
     let endDate = document.querySelector("#endDate");
     if (e.target.value == "false") {
       endDate.style.display = "block";
@@ -41,7 +42,7 @@ const InputsHandler = (props) => {
                 name={e[2]}
                 type={e[3]}
                 disabled={disable}
-                required={e[2]!="doctorName"?true:false}
+                required={e[2] != "doctorName" ? true : false}
                 defaultValue={data ? data[e[2]] : ""}
               />
             </div>
@@ -57,10 +58,12 @@ const InputsHandler = (props) => {
                 required
                 defaultValue={data ? data[e[2]] : ""}
                 onChange={(d) => {
-                  if (e[2] == "chronic") {
-                    return viewStill(d);
-                  } else {
-                    return viewEndDate(d);
+                  if (d.target.name != "show") {
+                    if (e[2] == "chronic") {
+                      return viewStill(d);
+                    } else {
+                      return viewEndDate(d);
+                    }
                   }
                 }}
               >

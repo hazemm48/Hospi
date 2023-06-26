@@ -67,7 +67,11 @@ const PatientDetails = ({ role, superAdmin }) => {
           },
           "view appointments",
           "la-calendar-day",
-        ],
+        ]
+      );
+    }
+    superAdmin &&
+      arr.push(
         [
           "",
           () => {
@@ -75,11 +79,7 @@ const PatientDetails = ({ role, superAdmin }) => {
           },
           "reset password",
           "la-lock",
-        ]
-      );
-    }
-    superAdmin &&
-      arr.push([
+        ],[
         "",
         () => {
           userDelete();

@@ -19,7 +19,7 @@ const Admins = ({ role }) => {
   const [length, setLength] = useState();
   const [srchFilter, setSrchFilter] = useState();
 
-  let resultLimit = 12;
+  let resultLimit = 21;
   let sortValues = [
     ["createdAt:-1", "Newest"],
     ["createdAt:1", "Oldest"],

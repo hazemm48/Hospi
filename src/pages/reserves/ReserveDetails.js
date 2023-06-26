@@ -7,7 +7,7 @@ import FilesCard from "../../components/FilesCard.js";
 import LoadingSpinner from "../../components/Loading.js";
 import { resDetList } from "./ReserveDetailsData.js";
 
-const ReserveDetails = ({ role,superAdmin }) => {
+const ReserveDetails = ({ role, superAdmin }) => {
   let navigate = useNavigate();
   const id = useLocation();
   const [reserves, setReserves] = useState();
@@ -16,6 +16,7 @@ const ReserveDetails = ({ role,superAdmin }) => {
   const [feedData, setFeedData] = useState();
   const [htmlData, setHtmlData] = useState([]);
   const [headBtns, setHeadBtns] = useState([]);
+  const [allowReport, setAllowReport] = useState(false);
   const [type, setType] = useState();
 
   const Data = async () => {
@@ -28,12 +29,23 @@ const ReserveDetails = ({ role,superAdmin }) => {
       },
     };
     let reserveData = await reserve(body);
-    let data = reserveData.reservations[0];
-    setHtmlData(resDetList(data.type, data, role));
-    setHeadBtns(headBtn(data));
-    setReserves(data);
-    setType(data.type);
-    setLoading(false);
+    if (!reserveData.reservations[0]) {
+      alert("reservation not found");
+      navigate(-1);
+    } else {
+      let data = reserveData.reservations[0];
+      let resDate = moment(
+        moment(data.date).format("DD/MM/YYYY") + " " + data.time.from,
+        "DD/MM/YYYY HH:mm"
+      );
+      let date = moment();
+      resDate.diff(date, "minutes") <= 0 && setAllowReport(true);
+      setHtmlData(resDetList(data.type, data, role));
+      setHeadBtns(headBtn(data));
+      setReserves(data);
+      setType(data.type);
+      setLoading(false);
+    }
   };
 
   const Delete = async () => {
@@ -47,7 +59,11 @@ const ReserveDetails = ({ role,superAdmin }) => {
     let deleteReserve = await reserve(body);
     console.log(deleteReserve.message);
     alert(deleteReserve.message);
-    if (deleteReserve.message == "reservation cancelled") {
+    if (
+      ["reservation cancelled", "reservation deleted"].includes(
+        deleteReserve.message
+      )
+    ) {
       navigate(-1);
     }
   };
@@ -308,7 +324,7 @@ const ReserveDetails = ({ role,superAdmin }) => {
                     </div>
                   </div>
                 </div>
-                {(reserves.status || role == "doctor") && (
+                {(reserves.status || role == "doctor") && allowReport && (
                   <div>
                     <h2 style={{ textAlign: "center" }}>Report</h2>
                     <div className="card">
@@ -338,7 +354,7 @@ const ReserveDetails = ({ role,superAdmin }) => {
                             generate PDF
                           </button>
                         </h3>
-                        {role == "doctor" && (
+                        {role == "doctor" && !reserves.status && (
                           <button
                             name="submitPresc"
                             onClick={() => {
@@ -358,13 +374,32 @@ const ReserveDetails = ({ role,superAdmin }) => {
                           className="form-control"
                           style={{ height: "auto" }}
                           defaultValue={reserves.report.prescription}
-                          readOnly={role != "doctor" ? true : false}
+                          readOnly={
+                            role != "doctor"
+                              ? true
+                              : reserves.status
+                              ? true
+                              : false
+                          }
                           rows={12}
                         />
                       </div>
-                      {(role == "doctor" || superAdmin) && (
+                      {role == "doctor" && (
                         <div>
-                          <h3 style={{ color: "#0466c8" }}>Notes</h3>
+                          <h3 style={{ color: "#0466c8" }}>
+                            Notes
+                            <button
+                              name="submitPresc"
+                              onClick={() => {
+                                addReserveReport();
+                              }}
+                              className="btn label-green  float-right "
+                              style={{ margin: "0.5em" }}
+                            >
+                              <i className="las la-save" />
+                              save
+                            </button>
+                          </h3>
                           <textarea
                             id="note"
                             name="note"

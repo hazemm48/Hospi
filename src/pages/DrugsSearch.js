@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import { drugsApi } from "../adminAPI.js";
+import WarningCard from "../components/WarningCard.js";
 import warning from "../images/warning.jpg";
 
 const DrugsSearch = (props) => {
@@ -102,24 +103,13 @@ const DrugsSearch = (props) => {
                   </div>
                 </div>
                 <div className="col-sm-12">
-                  <div className="card container label-yellow">
-                    <div className="card-body">
-                      <div className="row">
-                        <div style={{ maxWidth: "35%" }} class="col-md-1">
-                          <img className="patHomeImg" src={warning} />
-                        </div>
-                        <div className="col-md-10 welcome-text-wrapper align-self-center">
-                          <p>
-                            It is not our intention to provide specific medical
-                            advice, but rather to provide users with information
-                            to better understand their health. we urges you to
-                            consult with a qualified physician for advice about
-                            your symptoms.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <WarningCard
+                    text="It is not our intention to provide specific medical
+                advice, but rather to provide users with information
+                to better understand their health and their
+                medications. we urges you to consult with a
+                qualified physician for advice about medications."
+                  />
                 </div>
                 {selectedDrugs.length > 0 && (
                   <div className="col-sm-12">
@@ -172,19 +162,21 @@ const DrugsSearch = (props) => {
               </div>
             </div>
           </div>
-          <div className="col-md-12">
-            <h2 style={{ textAlign: "center" }}>Information</h2>
-            <div className="card container">
-              <div className="card-body">
-                <textarea
-                  className="form-control"
-                  rows={16}
-                  readOnly
-                  value={info ? info : "Drug information will show here"}
-                />
+          {info && (
+            <div className="col-md-12">
+              <h2 style={{ textAlign: "center" }}>Information</h2>
+              <div className="card container">
+                <div className="card-body">
+                  <textarea
+                    className="form-control"
+                    rows={16}
+                    readOnly
+                    value={info ? info : "Drug information will show here"}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

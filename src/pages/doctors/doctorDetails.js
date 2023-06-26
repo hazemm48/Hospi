@@ -18,6 +18,7 @@ import LoadingSpinner from "../../components/Loading.js";
 import NotesCard from "../../components/NotesCard.js";
 import Schedule from "../../components/Schedule.js";
 import Calendar from "../Calender.js";
+import DoctorsUnavailableDays from "./DoctorUnavailableDays.js";
 
 const DoctorDetails = ({ role, userId, superAdmin }) => {
   const [loading, setLoading] = useState(true);
@@ -73,24 +74,26 @@ const DoctorDetails = ({ role, userId, superAdmin }) => {
         "Reserve Doctor",
         "la-stethoscope",
       ],
-      [
-        "",
-        () => {
-          resetPass();
-        },
-        "reset password",
-        "la-lock",
-      ],
     ];
     superAdmin &&
-      arr.push([
-        "",
-        () => {
-          userDelete();
-        },
-        "delete user",
-        "la-trash",
-      ]);
+      arr.push(
+        [
+          "",
+          () => {
+            resetPass();
+          },
+          "reset password",
+          "la-lock",
+        ],
+        [
+          "",
+          () => {
+            userDelete();
+          },
+          "delete user",
+          "la-trash",
+        ]
+      );
     setBottomBtns(arr);
   };
 
@@ -103,9 +106,14 @@ const DoctorDetails = ({ role, userId, superAdmin }) => {
     };
     let user = await users(body);
     console.log(user);
-    setState(user.users[0]);
-    createHtmlData(user.users[0]);
-    setLoading(false);
+    if (!user.users[0]) {
+      alert("user not found");
+      navigate(-1);
+    } else {
+      setState(user.users[0]);
+      createHtmlData(user.users[0]);
+      setLoading(false);
+    }
   };
 
   const GetSpecialities = async () => {
@@ -221,7 +229,8 @@ const DoctorDetails = ({ role, userId, superAdmin }) => {
       "DD-MM-YYYY"
     ).format("MM-DD-YYYY");
     let currentRoom = document.getElementById("room");
-    details.doctorInfo.room=currentRoom.options[currentRoom.selectedIndex].innerHTML
+    details.doctorInfo.room =
+      currentRoom.options[currentRoom.selectedIndex].innerHTML;
     let body = {
       details,
       id: state._id,
@@ -351,7 +360,6 @@ const DoctorDetails = ({ role, userId, superAdmin }) => {
                                           </div>
                                         );
                                       })}
-
                                       <div className="col-md-12">
                                         <div className="form-group">
                                           <label>email</label>
@@ -397,6 +405,13 @@ const DoctorDetails = ({ role, userId, superAdmin }) => {
                       id={state._id}
                       fieldName={"users"}
                     />
+                    {superAdmin && (
+                      <DoctorsUnavailableDays
+                        dates={state.doctorInfo.unavailableDates}
+                        days={state.doctorInfo.schedule}
+                        id={state._id}
+                      />
+                    )}
                   </div>
                 </div>
               </div>

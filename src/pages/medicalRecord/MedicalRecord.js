@@ -26,8 +26,10 @@ const MedicalRecord = ({ role }) => {
     let body = {
       filter: {
         patientId: state,
+        show: true,
       },
     };
+    role == "patient" && delete body.filter.show;
     console.log(body);
     let type = document.getElementById("type").value;
     if (!(type == "all")) {

@@ -24,7 +24,7 @@ const HomePage = (props) => {
         filter: {
           doctorId: data.users._id,
         },
-        sort:"date"
+        sort:"date time.from"
       },
     };
     let reserves = await reserve(resBody);

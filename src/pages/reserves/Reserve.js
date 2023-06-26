@@ -5,6 +5,7 @@ import Select from "react-select";
 import LoadingSpinner from "../../components/Loading.js";
 import { categoriesApi, productsApi, reserve, users } from "../../adminAPI.js";
 import moment from "moment";
+import WarningCard from "../../components/WarningCard.js";
 
 const Reservation = ({ role, type }) => {
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,8 @@ const Reservation = ({ role, type }) => {
   const [selectedProduct, setSelectedProduct] = useState();
   const [productFees, setProductFees] = useState([]);
   const [selectedProductFees, setSelectedProductFees] = useState(0);
+  const [selectedProductPrecaution, setSelectedProductPrecaution] = useState();
+  const [productPrecautions, setProductPrecautions] = useState([]);
 
   const GetCategories = async () => {
     let body = {
@@ -45,15 +48,19 @@ const Reservation = ({ role, type }) => {
       let { message, products } = await productsApi(body, "POST", "get");
       console.log(products);
       let arr = [];
-      products = products.map((e) => {
-        arr.push([e._id, e.price]);
-        return {
-          value: e._id,
-          label: e.name,
-        };
-      });
+      let arr2 = [];
+      products &&
+        (products = products.map((e) => {
+          arr.push([e._id, e.price]);
+          arr2.push([e._id, e.precaution]);
+          return {
+            value: e._id,
+            label: e.name,
+          };
+        }));
       setProducts(products);
       setProductFees(arr);
+      setProductPrecautions(arr2);
     } else {
       setProducts([]);
     }
@@ -71,12 +78,22 @@ const Reservation = ({ role, type }) => {
     setSelectedProductFees(fees[1]);
     console.log(fees);
   };
+  const getPrecaution = () => {
+    let precaution = productPrecautions.find((e) => {
+      return e[0] == selectedProduct.value;
+    });
+    !precaution[1] && (precaution[1] = "no precautions");
+    setSelectedProductPrecaution(precaution[1]);
+    console.log(precaution);
+  };
 
   useEffect(() => {
     if (selectedProduct) {
       getFees();
+      getPrecaution();
     } else {
       setSelectedProductFees(0);
+      setSelectedProductPrecaution();
     }
   }, [selectedProduct]);
 
@@ -146,6 +163,7 @@ const Reservation = ({ role, type }) => {
                                 className="form-control"
                                 required
                                 pattern="[A-Za-z ]{3,40}"
+                                defaultValue="Patient"
                               />
                             </div>
                           </div>
@@ -267,6 +285,11 @@ const Reservation = ({ role, type }) => {
                 </div>
               </div>
             </div>
+            {selectedProductPrecaution && (
+              <div className="col-sm-12">
+                <WarningCard text={selectedProductPrecaution} />
+              </div>
+            )}
           </div>
         )}
       </div>

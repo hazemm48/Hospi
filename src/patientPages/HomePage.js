@@ -23,10 +23,11 @@ const HomePage = (props) => {
       data: {
         filter: {
           patientId: data.users._id,
-        },
+        },sort: "date time.from",
       },
     };
     let reserves = await reserve(resBody);
+    console.log(reserves);
     let filtered = reserves.reservations.filter((e) => {
       return e.status == false;
     });
