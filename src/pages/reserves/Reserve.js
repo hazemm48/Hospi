@@ -171,8 +171,10 @@ const Reservation = ({ role, type }) => {
                             <div className="form-group">
                               <label>category</label>
                               <Select
+                                key="category"
                                 options={categories}
                                 onChange={(o) => {
+                                  setSelectedProduct('')
                                   GetProducts(o);
                                 }}
                                 isSearchable
@@ -188,11 +190,13 @@ const Reservation = ({ role, type }) => {
                               </label>
                               <Select
                                 name="productId"
+                                key="product"
                                 options={products}
                                 onChange={(o) => {
                                   setSelectedProduct(o);
                                 }}
                                 isSearchable
+                                value={selectedProduct}
                                 isClearable
                                 required
                               />

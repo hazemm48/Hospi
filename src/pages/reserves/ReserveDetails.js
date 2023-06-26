@@ -34,12 +34,13 @@ const ReserveDetails = ({ role, superAdmin }) => {
       navigate(-1);
     } else {
       let data = reserveData.reservations[0];
-      let resDate = moment(
-        moment(data.date).format("DD/MM/YYYY") + " " + data.time.from,
-        "DD/MM/YYYY HH:mm"
-      );
-      let date = moment();
-      resDate.diff(date, "minutes") <= 0 && setAllowReport(true);
+      if (data.type == "doctor") {
+        let resDate = moment(
+          moment(data.date).format("DD/MM/YYYY") + " " + data.time.from,
+          "DD/MM/YYYY HH:mm"
+        );
+        resDate.diff(moment(), "minutes") <= 0 && setAllowReport(true);
+      }
       setHtmlData(resDetList(data.type, data, role));
       setHeadBtns(headBtn(data));
       setReserves(data);
