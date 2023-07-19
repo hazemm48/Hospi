@@ -31,7 +31,6 @@ const CreateReserve = ({ role }) => {
       },
     };
     let user = await users(body);
-    let dates = [];
     if (user.users[0].doctorInfo?.unavailableDates) {
       user.users[0].doctorInfo.unavailableDates =
         user.users[0].doctorInfo.unavailableDates.map((e) => {
@@ -86,6 +85,8 @@ const CreateReserve = ({ role }) => {
       alert(reserveData.message);
     }
     setLoading(false);
+    setStartDate()
+    setFees('examin')
   };
 
   let time = () => {
