@@ -168,6 +168,7 @@ const Login = () => {
                 <input
                   type="button"
                   onClick={() => {
+                    setLoading(true)
                     signIn();
                   }}
                   defaultValue="Login"
